@@ -61,3 +61,12 @@ body {
   ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7ab49f', endColorstr='#313353',GradientType=1 ); /* IE6-9 */
 }
+
+nav {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+a:hover {
+  color: red;
+}
