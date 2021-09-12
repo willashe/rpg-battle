@@ -10,16 +10,13 @@ export default function App() {
       <div className="App">
         <nav>
           <Link to="/">Home</Link>
-          <Link to="/battlePage">Battle!</Link>
+          <Link to="/battlepage">Battle!</Link>
         </nav>
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route exact path="/battlePage" component={battlePage} />
+          <Route exact path="/battlepage" component={battlePage} />
         </Switch>
       </div>
     </Router>
   );
 }
-
-
-
