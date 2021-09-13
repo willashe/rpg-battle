@@ -5,7 +5,7 @@ const Home = () =>
     <div>
         <h1>New Game</h1>
         <h1>Continue</h1>
-        <Link to="credits"><h1>Credits</h1></Link>
+        <Link to="About"><h1>About</h1></Link>
     </div>
 
 
