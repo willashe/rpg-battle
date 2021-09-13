@@ -1,6 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom"
-import Home  from "./components/Home";
+import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
+import Home from './components/Home';
 import Battle from './components/Battle';
 import Player from './components/Player';
 import Monsters from './components/Monsters';
@@ -16,7 +16,7 @@ export default function App() {
           <Link to="/battle">Fight Screen</Link>
           <Link to="/player">Player Stuff</Link>
           <Link to="/monsters">Monsters</Link>
-          
+
           <Link to="about">About</Link>
         </nav>
         <Switch>
