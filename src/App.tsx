@@ -16,7 +16,6 @@ export default function App() {
           <Link to="/battle">Fight Screen</Link>
           <Link to="/player">Player Stuff</Link>
           <Link to="/monsters">Monsters</Link>
-
           <Link to="about">About</Link>
         </nav>
         <Switch>
