@@ -1,13 +1,26 @@
+* {
+  box-sizing: border-box;
+}
+
 a:hover {
   color: red;
 }
 
 .App {
   text-align: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .battle-container {
-  max-width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  align-items: stretch;
 }
 
 body {
@@ -43,7 +56,7 @@ body {
 }
 
 .l-monster-dmg {
-  display: inline-block;
+  display: flex;
   color: blue;
 }
 
@@ -52,6 +65,15 @@ body {
   color: blue;
 }
 
+.monster-info-section {
+  flex: 0 1 200px;
+  background-color: red;
+}
+
+.main-battle-section {
+  flex: 0 1 100%;
+  background-color: dodgerblue;
+}
 .main-party-menu {
   display: inline-block;
 }
@@ -62,7 +84,12 @@ nav {
 }
 
 .player-info-section {
-  align-self: flex-end;
+  background-color: lime;
+  flex: 0 1 200px;
+}
+
+.player-info-section .main-party-menu p {
+  display: inline-block;
 }
 
 .r-monster-content {
