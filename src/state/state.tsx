@@ -3,6 +3,7 @@ import { createContext, useReducer } from 'react';
 import { EntityTypesEnum } from '../constants';
 import { Entity } from '../types';
 import { actionTypes } from '../actions';
+import { generateHeroes, generateEnemies } from '../utils';
 
 const { START_NEW_GAME, GAME_OVER } = actionTypes;
 
@@ -39,57 +40,6 @@ const reducer = (state: AppState, { type, payload }: Action) => {
     default:
       return state;
   }
-};
-
-const generateEntity = (
-  name: string,
-  type: EntityTypesEnum,
-  maxHp: number,
-  attack: number,
-  defense: number,
-  speed: number,
-  inventory: object[]
-) => ({
-  name,
-  type: type,
-  maxHp: maxHp,
-  hp: maxHp,
-  attack: attack,
-  defense: defense,
-  speed: speed,
-  inventory: inventory,
-});
-
-const generateHeroes = (count: number) => {
-  const heroes: Entity[] = [];
-
-  for (let i = 0; i < count; i++) {
-    heroes.push(
-      generateEntity(
-        `hero-${Math.random()}`,
-        EntityTypesEnum.HERO,
-        10,
-        1,
-        3,
-        1,
-        []
-      )
-    );
-  }
-
-  return heroes;
-};
-
-const generateEnemies = (count: number, type: EntityTypesEnum) => {
-  const enemies: Entity[] = [];
-
-  for (let i = 0; i < count; i++) {
-    enemies.push(
-      generateEntity(`monster-${Math.random()}`, type, 10, 1, 3, 1, [])
-    );
-  }
-
-  return enemies;
 };
 
 export const initialState = {
