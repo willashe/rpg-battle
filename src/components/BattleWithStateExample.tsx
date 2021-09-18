@@ -6,7 +6,8 @@ import { actions } from '../actions';
 const { startNewGame, gameOver } = actions;
 
 const Battle = () => {
-  const [{ heroes, enemies }, dispatch] = useContext(AppStateContext);
+  const [state, dispatch] = useContext(AppStateContext);
+  const { heroes, enemies } = state;
 
   console.log(heroes);
   console.log(enemies);
