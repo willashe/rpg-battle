@@ -1,4 +1,4 @@
-import { Entity } from './types';
+import { EntityType } from './types';
 import { EntityTypesEnum } from './constants';
 
 export const generateEntity = (
@@ -21,7 +21,7 @@ export const generateEntity = (
 });
 
 export const generateHeroes = (count: number) => {
-  const heroes: Entity[] = [];
+  const heroes: EntityType[] = [];
 
   for (let i = 0; i < count; i++) {
     heroes.push(
@@ -41,7 +41,7 @@ export const generateHeroes = (count: number) => {
 };
 
 export const generateEnemies = (count: number, type: EntityTypesEnum) => {
-  const enemies: Entity[] = [];
+  const enemies: EntityType[] = [];
 
   for (let i = 0; i < count; i++) {
     enemies.push(
