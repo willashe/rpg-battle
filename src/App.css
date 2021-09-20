@@ -75,7 +75,8 @@ body {
   background-color: dodgerblue;
 }
 .main-party-menu {
-  display: inline-block;
+  display: flex;
+  justify-content: center;
 }
 
 nav {

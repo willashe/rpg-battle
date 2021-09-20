@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 
-import './App.css';
 import { AppStateProvider } from './state';
 import Home from './components/Home';
 import Battle from './components/Battle';
@@ -8,6 +7,8 @@ import Battle from './components/Battle';
 import Player from './components/Player';
 import Monsters from './components/Monsters';
 import About from './components/About';
+import './Reset.css';
+import './App.css';
 
 export default function App() {
   return (
