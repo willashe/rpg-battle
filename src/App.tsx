@@ -16,19 +16,21 @@ export default function App() {
       <Router>
         <div className="App">
           <nav>
-            <Link to="/">New Game</Link>
+            <Link to="/">New Games</Link>
             <Link to="/battle">Fight Screen</Link>
             <Link to="/player">Player Stuff</Link>
             <Link to="/monsters">Monsters</Link>
             <Link to="about">About</Link>
           </nav>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/battle" component={Battle} />
-            <Route exact path="/player" component={Player} />
-            <Route exact path="/monsters" component={Monsters} />
-            <Route exact path="/about" component={About} />
-          </Switch>
+          <main>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route exact path="/battle" component={Battle} />
+              <Route exact path="/player" component={Player} />
+              <Route exact path="/monsters" component={Monsters} />
+              <Route exact path="/about" component={About} />
+            </Switch>
+          </main>
         </div>
       </Router>
     </AppStateProvider>
