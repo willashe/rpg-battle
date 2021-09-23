@@ -10,7 +10,7 @@ import {
   SET_TARGET,
   QUEUE_ACTION,
 } from './actionTypes';
-import { ActionType, AppStateType } from '../types';
+import { ActionType } from '../types';
 import { EntityTypesEnum } from '../constants';
 
 export const startNewGame = () => ({ type: START_NEW_GAME });
