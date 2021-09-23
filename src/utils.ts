@@ -1,7 +1,9 @@
 import { EntityType } from './types';
 import { EntityTypesEnum } from './constants';
+const { HERO } = EntityTypesEnum;
 
 export const generateEntity = (
+  status: string,
   name: string,
   type: EntityTypesEnum,
   maxHp: number,
@@ -10,30 +12,31 @@ export const generateEntity = (
   speed: number,
   inventory: object[]
 ) => ({
+  status,
   name,
-  type: type,
-  maxHp: maxHp,
+  type,
+  maxHp,
   hp: maxHp,
-  attack: attack,
-  defense: defense,
-  speed: speed,
-  inventory: inventory,
+  attack,
+  defense,
+  speed,
+  inventory,
 });
+
+const generateHeroName = (index: number) => {
+  return `Hero-${index}`;
+};
+
+const generateEnemyName = (type: EntityTypesEnum, index: number) => {
+  return `${type}-${index}`;
+};
 
 export const generateHeroes = (count: number) => {
   const heroes: EntityType[] = [];
 
   for (let i = 0; i < count; i++) {
     heroes.push(
-      generateEntity(
-        `hero-${Math.random()}`,
-        EntityTypesEnum.HERO,
-        10,
-        1,
-        3,
-        1,
-        []
-      )
+      generateEntity('idle', generateHeroName(i), HERO, 10, 1, 3, 1, [])
     );
   }
 
@@ -45,7 +48,7 @@ export const generateEnemies = (count: number, type: EntityTypesEnum) => {
 
   for (let i = 0; i < count; i++) {
     enemies.push(
-      generateEntity(`monster-${Math.random()}`, type, 10, 1, 3, 1, [])
+      generateEntity('idle', generateEnemyName(type, i), type, 10, 1, 3, 1, [])
     );
   }
 
