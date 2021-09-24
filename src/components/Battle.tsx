@@ -3,16 +3,13 @@ import React from 'react';
 const Battle = () => (
   <div className="battle-container">
     <section className="monster-info-section">
-      <h1>Monster info section here</h1>
-      <div className="battle-container">
-        <div className="l-monster-content">
-          <div className="l-monster-name">Left monster name</div>
-          <div className="l-monster-dmg">Left monster atk numbers</div>
-        </div>
-        <div className="r-monster-content">
-          <div className="r-monster-name">Right monster name</div>
-          <div className="r-monster-dmg">Right monster atk numbers</div>
-        </div>
+      <div className="monster-content">
+        <div className="monster-name">&nbsp;SUELO</div>
+        <div className="monster-dmg">&nbsp;99</div>
+      </div>
+      <div className="monster-content">
+        <div className="monster-name">&nbsp;ROBOT</div>
+        <div className="monster-dmg">&nbsp;20</div>
       </div>
     </section>
 

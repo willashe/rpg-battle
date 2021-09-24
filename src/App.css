@@ -60,26 +60,35 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7ab49f', endColorstr='#313353',GradientType=1 ); /* IE6-9 */
 }
 
-.l-monster-content {
+.monster-dmg {
   display: flex;
-  justify-content: flex-start;
-  height: 80px;
-  width: 100px;
+  align-items: center;
+  color: green;
+  font-size: 1.4rem;
+  border: 1px solid black;
 }
 
-.l-monster-dmg {
+.monster-name {
   display: flex;
-  color: blue;
+  align-items: center;
+  font-size: 1.4rem;
+  width: 50%;
 }
-
-.l-monster-name {
-  display: inline-block;
-  color: blue;
+.monster-content {
+  width: 30%;
+  display: flex;
+  justify-content: flex-end;
+  color: green;
+  border: 1px solid black;
 }
 
 .monster-info-section {
   flex: 0 1 200px;
   background-color: red;
+  height: 100%;
+  display: flex;
+  top: 0;
+  justify-content: space-around;
 }
 
 .main-battle-section {
@@ -98,19 +107,4 @@ body {
 
 .player-info-section .main-party-menu p {
   display: inline-block;
-}
-
-.r-monster-content {
-  display: flex;
-  justify-content: flex-end;
-  color: green;
-}
-
-.r-monster-dmg {
-  color: green;
-}
-
-.r-monster-name {
-  display: flex;
-  align-items: flex-end;
 }
