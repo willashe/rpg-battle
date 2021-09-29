@@ -27,14 +27,6 @@ main {
   flex: 1 0 auto;
 }
 
-.battle-container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  top: 0;
-  align-items: stretch;
-}
-
 body {
   padding: 1rem;
   /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#7ab49f+0,628dab+50,313353+100 */
@@ -58,77 +50,4 @@ body {
     #313353 100%
   ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7ab49f', endColorstr='#313353',GradientType=1 ); /* IE6-9 */
-}
-
-.main-battle-section {
-  display: flex;
-  flex: 0 1 100%;
-  background-color: rgb(35, 19, 136);
-}
-
-.main-party-menu {
-  display: flex;
-  justify-content: center;
-}
-
-.monster-content {
-  width: 30%;
-  display: flex;
-  justify-content: flex-end;
-  border: 8px solid darkgrey;
-}
-
-.monster-dmg {
-  display: flex;
-  align-items: center;
-  font-size: 1.4rem;
-  padding: 0 4rem;
-  border: 3px solid darkgrey;
-  border-bottom-width: 0.5px;
-  border-top-width: 0.5px;
-  border-left-width: 9px;
-}
-
-.monster-info-section {
-  flex: 0 1 200px;
-  height: 100%;
-  display: flex;
-  top: 0;
-  justify-content: space-around;
-}
-
-.monster-name {
-  display: flex;
-  align-items: center;
-  font-size: 1.4rem;
-  width: 50%;
-}
-
-.player-button {
-  background-color: red;
-  padding: 10px;
-}
-
-.player-hp-text {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 1.4rem;
-  padding: 0 70px;
-  margin: 0 1.1px;
-  border: 10px solid darkgrey;
-}
-
-.player-info-section {
-  background-color: purple;
-  flex: 0 1 200px;
-}
-
-.ability-used-window {
-  width: 10%;
-  font-size: 1.4rem;
-  border: 10px solid darkgrey;
-  margin: 0 auto;
-  align-self: flex-end;
-  padding: 15px;
 }

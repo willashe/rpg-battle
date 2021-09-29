@@ -10,11 +10,12 @@ const BattleSection = styled.div`
 const MessageBox = styled.div`
   width: 10%;
   font-size: 1.4rem;
-  border: 10px solid darkgrey;
+  border: 10px solid silver;
   margin: 0 auto;
   align-self: flex-end;
   padding: 15px;
   margin-bottom: 4px;
+  color: silver;
 `;
 
 const MainBattleSection = () => {
