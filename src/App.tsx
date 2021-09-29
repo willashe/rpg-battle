@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import Battle from './pages/Battle';
 // import Battle from './components/BattleWithStateExample';
 import Player from './components/Player';
-import Monsters from './components/Monsters';
+import Monsters from './components/Enemies';
 import About from './pages/About';
 import './Reset.css';
 import './App.css';
