@@ -1,8 +1,8 @@
 import React from 'react';
-import MonsterInfoSection from '../components/MonsterInfoSection';
-import MainBattleSection from '../components/MainBattleSection';
-import PlayerInfoMenu from '../components/PlayerInfoMenu';
 import styled from 'styled-components';
+import EnemyGroupSection from '../components/EnemyGroupSection';
+import MainBattleSection from '../components/MainBattleSection';
+import PlayerInfoSection from '../components/PlayerInfoSection';
 
 const BattleContainer = styled.div`
   height: 100%;
@@ -14,15 +14,13 @@ const BattleContainer = styled.div`
 
 const Battle = () => (
   <BattleContainer>
-    <MonsterInfoSection />
+    <EnemyGroupSection />
     <MainBattleSection />
-    <PlayerInfoMenu
-      firstPlayerName="ROLF"
-      secondPlayerName="NEI"
-      thirdPlayerName="ODIN"
-      fourthPlayerName="ANNA"
-      hp={20}
-      tp={5}
+    <PlayerInfoSection
+      firstHeroName="ROLF"
+      secondHeroName="NEI"
+      thirdHeroName="ODIN"
+      fourthHeroName="ANNA"
     />
   </BattleContainer>
 );

@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const BattleSection = styled.div`
+const BattleSection = styled.section`
   display: flex;
   flex: 0 1 100%;
-  background-color: darkblue;
+  background-color: #07119b;
 `;
 
 const MessageBox = styled.div`
