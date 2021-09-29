@@ -60,12 +60,10 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7ab49f', endColorstr='#313353',GradientType=1 ); /* IE6-9 */
 }
 
-.monster-dmg {
+.main-battle-section {
   display: flex;
-  align-items: center;
-  color: green;
-  font-size: 1.4rem;
-  border: 1px solid black;
+  flex: 0 1 100%;
+  background-color: rgb(35, 19, 136);
 }
 
 .monster-name {
@@ -78,8 +76,18 @@ body {
   width: 30%;
   display: flex;
   justify-content: flex-end;
-  color: green;
-  border: 1px solid black;
+  border: 8px solid darkgrey;
+}
+
+.monster-dmg {
+  display: flex;
+  align-items: center;
+  font-size: 1.4rem;
+  padding: 0 4rem;
+  border: 3px solid darkgrey;
+  border-bottom-width: 0.5px;
+  border-top-width: 0.5px;
+  border-left-width: 9px;
 }
 
 .monster-info-section {
@@ -91,9 +99,16 @@ body {
   justify-content: space-around;
 }
 
-.main-battle-section {
-  flex: 0 1 100%;
-  background-color: dodgerblue;
+.monster-name {
+  display: flex;
+  align-items: center;
+  font-size: 1.4rem;
+  width: 50%;
+}
+
+.player-button {
+  background-color: red;
+  padding: 10px;
 }
 .main-party-menu {
   display: flex;
@@ -105,6 +120,10 @@ body {
   flex: 0 1 200px;
 }
 
-.player-info-section .main-party-menu p {
-  display: inline-block;
+.ability-used-window {
+  width: 10%;
+  font-size: 1.4rem;
+  border: 10px solid darkgrey;
+  margin: 0 auto;
+  align-self: flex-end;
 }
