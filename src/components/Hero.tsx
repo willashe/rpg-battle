@@ -8,17 +8,19 @@ const HeroContainer = styled.div`
   font-size: 1.4rem;
   padding: 0 70px;
   margin: 0 1.1px;
-  border: 10px solid silver;
+  border: 10px solid #e5e4e2;
+  flex: 0 1 auto;
 `;
 
 interface HeroProps {
   name: string;
   hp: number;
   tp: number;
+  index: number;
 }
 
-const Hero = ({ hp, tp, name }: HeroProps) => (
-  <HeroContainer>
+const Hero = ({ hp, tp, name, index }: HeroProps) => (
+  <HeroContainer style={{ order: index }}>
     <p>HP: {hp <= 0 ? '✞' : hp}</p>
     <p>TP: {tp}</p>
     <p>{name}</p>

@@ -5,7 +5,7 @@ const EnemyGroupContainer = styled.div`
   width: 30%;
   display: flex;
   justify-content: flex-end;
-  border: 8px solid silver;
+  border: 8px solid #e5e4e2;
 `;
 
 const EnemyDmg = styled.div`
@@ -13,7 +13,7 @@ const EnemyDmg = styled.div`
   align-items: center;
   font-size: 1.4rem;
   padding: 0 40px;
-  border: 3px solid silver;
+  border: 3px solid #e5e4e2;
   border-bottom-width: 1px;
   border-top-width: 1px;
   border-left-width: 9px;

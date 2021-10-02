@@ -5,7 +5,16 @@ import reducer from './reducer';
 
 const initialState = {
   heroes: [],
-  enemies: { left: [], right: [] },
+  enemies: {
+    left: {
+      name: '',
+      entities: [],
+    },
+    right: {
+      name: '',
+      entities: [],
+    },
+  },
 };
 
 export const AppStateProvider = ({ children }: any) => {

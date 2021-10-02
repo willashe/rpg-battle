@@ -9,10 +9,16 @@ const reducer = (state: AppStateType, { type, payload }: ActionType) => {
     case START_NEW_GAME:
       return {
         ...state,
-        heroes: generateHeroes(3),
+        heroes: generateHeroes(4),
         enemies: {
-          left: generateEnemies(3, EntityTypesEnum.MONSTER),
-          right: generateEnemies(3, EntityTypesEnum.ROBOT),
+          left: {
+            name: EntityTypesEnum.MONSTER,
+            entities: generateEnemies(3),
+          },
+          right: {
+            name: EntityTypesEnum.ROBOT,
+            entities: generateEnemies(3),
+          },
         },
       };
     case GAME_OVER:
@@ -20,8 +26,14 @@ const reducer = (state: AppStateType, { type, payload }: ActionType) => {
         ...state,
         heroes: [],
         enemies: {
-          left: [],
-          right: [],
+          left: {
+            name: '',
+            entities: [],
+          },
+          right: {
+            name: '',
+            entities: [],
+          },
         },
       };
     default:
