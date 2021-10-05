@@ -1,11 +1,10 @@
-import { EntityTypesEnum } from './constants';
-
 // TODO: review interface vs. type
 export interface EntityType {
   name: string;
-  type: EntityTypesEnum;
   hp: number;
   maxHp: number;
+  tp: number;
+  maxTp: number;
   attack: number;
   defense: number;
   speed: number;
@@ -14,7 +13,16 @@ export interface EntityType {
 
 export interface AppStateType {
   heroes: EntityType[];
-  enemies: { left: EntityType[]; right: EntityType[] };
+  enemies: {
+    left: {
+      name: string;
+      entities: EntityType[];
+    };
+    right: {
+      name: string;
+      entities: EntityType[];
+    };
+  };
 }
 
 export interface ActionType {

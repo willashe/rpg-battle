@@ -1,19 +1,20 @@
 import { EntityType } from './types';
-import { EntityTypesEnum } from './constants';
+import { HERO_NAMES } from './constants';
 
 export const generateEntity = (
   name: string,
-  type: EntityTypesEnum,
   maxHp: number,
+  maxTp: number,
   attack: number,
   defense: number,
   speed: number,
   inventory: object[]
 ) => ({
   name,
-  type: type,
   maxHp: maxHp,
   hp: maxHp,
+  maxTp: maxTp,
+  tp: maxTp,
   attack: attack,
   defense: defense,
   speed: speed,
@@ -25,28 +26,18 @@ export const generateHeroes = (count: number) => {
 
   for (let i = 0; i < count; i++) {
     heroes.push(
-      generateEntity(
-        `hero-${Math.random()}`,
-        EntityTypesEnum.HERO,
-        10,
-        1,
-        3,
-        1,
-        []
-      )
+      generateEntity(HERO_NAMES[i] || `hero-${i}`, 10, 10, 1, 3, 1, [])
     );
   }
 
   return heroes;
 };
 
-export const generateEnemies = (count: number, type: EntityTypesEnum) => {
+export const generateEnemies = (count: number) => {
   const enemies: EntityType[] = [];
 
   for (let i = 0; i < count; i++) {
-    enemies.push(
-      generateEntity(`monster-${Math.random()}`, type, 10, 1, 3, 1, [])
-    );
+    enemies.push(generateEntity(`monster-${i}`, 10, 10, 1, 3, 1, []));
   }
 
   return enemies;

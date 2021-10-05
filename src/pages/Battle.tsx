@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { AppStateContext } from '../state';
+import { actions } from '../actions';
 import styled from 'styled-components';
 import EnemyGroupSection from '../components/EnemyGroupSection';
 import MainBattleSection from '../components/MainBattleSection';
@@ -12,17 +14,26 @@ const BattleContainer = styled.div`
   align-items: stretch;
 `;
 
-const Battle = () => (
-  <BattleContainer>
-    <EnemyGroupSection />
-    <MainBattleSection />
-    <PlayerInfoSection
-      firstHeroName="ROLF"
-      secondHeroName="NEI"
-      thirdHeroName="ODIN"
-      fourthHeroName="ANNA"
-    />
-  </BattleContainer>
-);
+const { startNewGame, gameOver } = actions;
+
+const Battle = () => {
+  const [state, dispatch] = useContext(AppStateContext);
+  const { heroes, enemies } = state;
+
+  console.log(heroes);
+  console.log(enemies);
+
+  return (
+    <>
+      <BattleContainer>
+        <EnemyGroupSection enemies={enemies} />
+        <MainBattleSection />
+        <PlayerInfoSection heroes={heroes} />
+        <button onClick={() => dispatch(startNewGame())}>New Game</button>
+        <button onClick={() => dispatch(gameOver())}>Game Over</button>
+      </BattleContainer>
+    </>
+  );
+};
 
 export default Battle;
