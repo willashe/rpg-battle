@@ -9,10 +9,12 @@ const initialState = {
     left: {
       name: '',
       entities: [],
+      dmg: 0,
     },
     right: {
       name: '',
       entities: [],
+      dmg: 0,
     },
   },
 };

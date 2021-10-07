@@ -17,10 +17,12 @@ export interface AppStateType {
     left: {
       name: string;
       entities: EntityType[];
+      dmg: number;
     };
     right: {
       name: string;
       entities: EntityType[];
+      dmg: number;
     };
   };
 }

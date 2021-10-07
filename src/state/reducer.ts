@@ -14,10 +14,12 @@ const reducer = (state: AppStateType, { type, payload }: ActionType) => {
           left: {
             name: EntityTypesEnum.MONSTER,
             entities: generateEnemies(3),
+            dmg: 0,
           },
           right: {
             name: EntityTypesEnum.ROBOT,
             entities: generateEnemies(3),
+            dmg: 0,
           },
         },
       };
@@ -29,10 +31,12 @@ const reducer = (state: AppStateType, { type, payload }: ActionType) => {
           left: {
             name: '',
             entities: [],
+            dmg: 0,
           },
           right: {
             name: '',
             entities: [],
+            dmg: 0,
           },
         },
       };
