@@ -10,7 +10,7 @@ export const initialState = {
   gameState: INIT,
   message: 'idle',
   heroes: [],
-  enemies: { left: [], right: [] },
+  enemies: {},
   activeHero: null,
   queue: [],
   queueIndex: null,

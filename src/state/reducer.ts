@@ -9,6 +9,7 @@ const {
   GAME_LOST,
   SET_GAME_STATE,
   SET_MESSAGE,
+  SET_ENEMY_MESSAGE,
   SET_STATUS,
   DAMAGE,
   SET_ACTIVE_HERO,
@@ -80,6 +81,19 @@ const reducer = (state: AppStateType, action: ActionType) => {
         ...state,
         message: payload,
       };
+    case SET_ENEMY_MESSAGE:
+      const { targetGroup, message } = payload;
+
+      return {
+        ...state,
+        enemies: {
+          ...state.enemies,
+          [targetGroup]: {
+            ...state.enemies[targetGroup],
+            message,
+          },
+        },
+      };
     case SET_STATUS: {
       const { targetGroup, targetIndex, status } = payload;
 
@@ -102,15 +116,19 @@ const reducer = (state: AppStateType, action: ActionType) => {
         };
       } else {
         const group = state.enemies[targetGroup];
+        const { entities } = group;
         const newEnemy = {
-          ...group[targetIndex],
+          ...entities[targetIndex],
           status,
         };
-        const newGroup = [
-          ...group.slice(0, targetIndex),
-          newEnemy,
-          ...group.slice(targetIndex + 1),
-        ];
+        const newGroup = {
+          ...group,
+          entities: [
+            ...entities.slice(0, targetIndex),
+            newEnemy,
+            ...entities.slice(targetIndex + 1),
+          ],
+        };
 
         return {
           ...state,
@@ -143,15 +161,19 @@ const reducer = (state: AppStateType, action: ActionType) => {
         };
       } else {
         const group = state.enemies[targetGroup];
+        const { entities } = group;
         const newEntity = {
-          ...group[targetIndex],
-          hp: group[targetIndex].hp - attackPower,
+          ...entities[targetIndex],
+          hp: entities[targetIndex].hp - attackPower,
         };
-        const newGroup = [
-          ...group.slice(0, targetIndex),
-          newEntity,
-          ...group.slice(targetIndex + 1),
-        ];
+        const newGroup = {
+          ...group,
+          entities: [
+            ...entities.slice(0, targetIndex),
+            newEntity,
+            ...entities.slice(targetIndex + 1),
+          ],
+        };
 
         return {
           ...state,

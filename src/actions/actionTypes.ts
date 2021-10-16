@@ -6,6 +6,7 @@ export const GAME_LOST = 'GAME_LOST';
 export const SET_GAME_STATE = 'SET_GAME_STATE';
 
 export const SET_MESSAGE = 'SET_MESSAGE';
+export const SET_ENEMY_MESSAGE = 'SET_ENEMY_MESSAGE';
 export const SET_STATUS = 'SET_STATUS';
 export const DAMAGE = 'DAMAGE';
 

@@ -61,8 +61,9 @@ const Battle = () => {
           (actor.group === HERO && heroes[actor.index].hp <= 0) ||
           (actor.group !== HERO &&
             enemies[actor.group] &&
-            enemies[actor.group][actor.index] &&
-            enemies[actor.group][actor.index].hp <= 0)
+            enemies[actor.group].entities &&
+            enemies[actor.group].entities[actor.index] &&
+            enemies[actor.group].entities[actor.index].hp <= 0)
         ) {
           dispatch(incrementQueueIndex());
           return;
@@ -79,13 +80,18 @@ const Battle = () => {
           }
         } else if (
           !enemies[targetGroup] ||
-          !enemies[targetGroup][targetIndex] ||
-          enemies[targetGroup][targetIndex].hp <= 0
+          !enemies[targetGroup].entities ||
+          !enemies[targetGroup].entities[targetIndex] ||
+          enemies[targetGroup].entities[targetIndex].hp <= 0
         ) {
-          targetIndex = enemies[targetGroup].findIndex(({ hp }) => hp > 0);
+          targetIndex = enemies[targetGroup].entities.findIndex(
+            ({ hp }) => hp > 0
+          );
           if (targetIndex === -1) {
             targetGroup = targetGroup === 'left' ? 'right' : 'left';
-            targetIndex = enemies[targetGroup].findIndex(({ hp }) => hp > 0);
+            targetIndex = enemies[targetGroup].entities.findIndex(
+              ({ hp }) => hp > 0
+            );
 
             if (targetIndex === -1) {
               dispatch(gameWon());
@@ -177,7 +183,10 @@ const Battle = () => {
       gameState: INIT,
       message: 'idle',
       heroes: newHeroes,
-      enemies: { left: leftEnemies, right: rightEnemies },
+      enemies: {
+        left: { name: 'Monster', message: '', entities: leftEnemies },
+        right: { name: 'Robot', message: '', entities: rightEnemies },
+      },
       activeHero: null,
       queue,
       queueIndex: null,
@@ -259,17 +268,71 @@ const Battle = () => {
 
       <div>Game State: {gameState}</div>
 
-      <h3>{message}</h3>
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div
+          style={{
+            color: 'white',
+            height: 100,
+            width: 400,
+            background: 'blue',
+          }}
+        >
+          <div>{enemies?.left?.name || ''}</div>
+          <div>{enemies?.left?.message || ''}</div>
+        </div>
+        <div
+          style={{
+            color: 'white',
+            height: 100,
+            width: 400,
+            background: 'blue',
+          }}
+        >
+          <div>{enemies?.right?.name || ''}</div>
+          <div>{enemies?.right?.message || ''}</div>
+        </div>
+      </div>
 
       <div style={{ display: 'flex' }}>
-        {Boolean(heroes.length) && (
+        {Boolean(enemies?.left?.entities?.length) && (
           <>
-            {heroes.map((data: EntityType, index) => (
-              <Hero
+            {enemies.left.entities.map((data: EntityType, index) => (
+              <Enemy
                 key={index}
                 index={index}
-                active={activeHero === index}
-                handleClick={() => dispatch(setActiveHero(index))}
+                handleClick={() =>
+                  dispatch(
+                    attackThunk(
+                      { group: HERO, index },
+                      { group: 'left', index }
+                    )
+                  )
+                }
+                {...data}
+              />
+            ))}
+          </>
+        )}
+        {Boolean(enemies?.right?.entities?.length) && (
+          <>
+            {enemies.right.entities.map((data: EntityType, index) => (
+              <Enemy
+                key={index}
+                index={index}
+                handleClick={() =>
+                  dispatch(
+                    attackThunk(
+                      { group: HERO, index },
+                      { group: 'right', index }
+                    )
+                  )
+                }
                 {...data}
               />
             ))}
@@ -277,6 +340,7 @@ const Battle = () => {
         )}
       </div>
 
+      <h3>{message}</h3>
       {activeHero !== null && (
         <>
           <button
@@ -332,39 +396,14 @@ const Battle = () => {
       )}
 
       <div style={{ display: 'flex' }}>
-        {Boolean(enemies.left.length) && (
+        {Boolean(heroes.length) && (
           <>
-            {enemies.left.map((data: EntityType, index) => (
-              <Enemy
+            {heroes.map((data: EntityType, index) => (
+              <Hero
                 key={index}
                 index={index}
-                handleClick={() =>
-                  dispatch(
-                    attackThunk(
-                      { group: HERO, index },
-                      { group: 'left', index }
-                    )
-                  )
-                }
-                {...data}
-              />
-            ))}
-          </>
-        )}
-        {Boolean(enemies.right.length) && (
-          <>
-            {enemies.right.map((data: EntityType, index) => (
-              <Enemy
-                key={index}
-                index={index}
-                handleClick={() =>
-                  dispatch(
-                    attackThunk(
-                      { group: HERO, index },
-                      { group: 'right', index }
-                    )
-                  )
-                }
+                active={activeHero === index}
+                handleClick={() => dispatch(setActiveHero(index))}
                 {...data}
               />
             ))}

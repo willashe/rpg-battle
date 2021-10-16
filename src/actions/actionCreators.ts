@@ -6,6 +6,7 @@ import {
   GAME_LOST,
   SET_GAME_STATE,
   SET_MESSAGE,
+  SET_ENEMY_MESSAGE,
   SET_STATUS,
   DAMAGE,
   SET_ACTIVE_HERO,
@@ -44,6 +45,13 @@ export const setStatus = (
 ) => ({
   type: SET_STATUS,
   payload: { targetGroup, targetIndex, status },
+});
+export const setEnemyMessage = (
+  targetGroup: string,
+  message: string | number
+) => ({
+  type: SET_ENEMY_MESSAGE,
+  payload: { targetGroup, message },
 });
 export const damage = (
   targetGroup: string,
@@ -117,8 +125,14 @@ export const attackThunk =
       if (crit) {
         dispatch(setMessage('terrific blow!!!'));
       }
+      if (actorGroup === HERO) {
+        dispatch(setEnemyMessage(targetGroup, attackPower));
+      }
       dispatch(setStatus(targetGroup, targetIndex, 'hurt'));
-      await timeout(500);
+      await timeout(1000);
+      if (actorGroup === HERO) {
+        dispatch(setEnemyMessage(targetGroup, ''));
+      }
       dispatch(setStatus(targetGroup, targetIndex, 'alive'));
       dispatch(
         damage(targetGroup, targetIndex, crit ? attackPower * 2 : attackPower)
@@ -127,8 +141,14 @@ export const attackThunk =
         dispatch(setMessage('idle'));
       }
     } else {
+      if (actorGroup === HERO) {
+        dispatch(setEnemyMessage(targetGroup, 'miss'));
+      }
       dispatch(setMessage('missed!'));
       await timeout(1000);
+      if (actorGroup === HERO) {
+        dispatch(setEnemyMessage(targetGroup, ''));
+      }
       dispatch(setMessage('idle'));
     }
 
@@ -158,7 +178,7 @@ export const deathCycleThunk =
         dispatch(setStatus(HERO, index, 'dead'));
       }
     }
-    for (const [index, enemy] of left.entries()) {
+    for (const [index, enemy] of left.entities.entries()) {
       const { status, hp } = enemy;
 
       if (hp > 0) {
@@ -171,7 +191,7 @@ export const deathCycleThunk =
         dispatch(setStatus('left', index, 'dead'));
       }
     }
-    for (const [index, enemy] of right.entries()) {
+    for (const [index, enemy] of right.entities.entries()) {
       const { status, hp } = enemy;
 
       if (hp > 0) {

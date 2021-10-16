@@ -5,7 +5,13 @@ export interface AppStateType {
   gameState: GameStatesEnum;
   message: string;
   heroes: EntityType[];
-  enemies: { [key: string]: EntityType[] };
+  enemies: {
+    [key: string]: {
+      name: string;
+      message: string | number;
+      entities: EntityType[];
+    };
+  };
   activeHero: number | null;
   queue: HeroActionType[];
   queueIndex: number | null;
