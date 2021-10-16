@@ -1,10 +1,13 @@
 import { createContext, Dispatch, useReducer, useCallback } from 'react';
 
 import { AppStateType, ActionType } from '../types';
+import { GameStatesEnum } from '../constants';
 import reducer from './reducer';
 
+const { INIT } = GameStatesEnum;
+
 export const initialState = {
-  gameState: 'INIT',
+  gameState: INIT,
   message: 'idle',
   heroes: [],
   enemies: { left: [], right: [] },

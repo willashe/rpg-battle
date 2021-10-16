@@ -1,8 +1,8 @@
-import { EntityTypesEnum } from './constants';
+import { GameStatesEnum, EntityTypesEnum } from './constants';
 
 // TODO: review interface vs. type
 export interface AppStateType {
-  gameState: string;
+  gameState: GameStatesEnum;
   message: string;
   heroes: EntityType[];
   enemies: { [key: string]: EntityType[] };
@@ -25,6 +25,7 @@ export interface EntityType {
 }
 
 export interface HeroActionType {
+  actor: TargetType;
   target: TargetType;
   actionCreator: any; // TODO
 }

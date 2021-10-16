@@ -17,7 +17,13 @@ const Hero = ({ index, active, name, status, hp, handleClick }: HeroProps) => (
       width: 100,
       color: 'black',
       background:
-        status === 'hurt' ? 'red' : status === 'dead' ? 'black' : 'white',
+        status === 'acting'
+          ? 'green'
+          : status === 'hurt'
+          ? 'red'
+          : status === 'dead'
+          ? 'black'
+          : 'white',
       transformOrigin: 'bottom right',
       transform: `rotate(${status === 'dead' ? 90 : 0}deg)`,
       animation:

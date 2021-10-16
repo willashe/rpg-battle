@@ -4,7 +4,7 @@ export enum EntityTypesEnum {
   ROBOT = 'ROBOT',
 }
 
-export enum GAME_STATES {
+export enum GameStatesEnum {
   INIT = 'INIT',
   GAME_WON = 'GAME_WON',
   GAME_LOST = 'GAME_LOST',
@@ -12,4 +12,7 @@ export enum GAME_STATES {
   EXECUTING_ACTION = 'EXECUTING_ACTION',
   AI_EXECUTING = 'AI_EXECUTING',
   POST_EXECUTION = 'POST_EXECUTION',
+
+  EXECUTING = 'EXECUTING',
+  INTERRUPT = 'INTERRUPT',
 }

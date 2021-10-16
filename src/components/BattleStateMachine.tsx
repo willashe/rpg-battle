@@ -3,7 +3,7 @@ import { useContext, useEffect } from 'react';
 
 import { AppStateContext } from '../state';
 import { actionCreators } from '../actions';
-import { GAME_STATES } from '../constants';
+import { GameStatesEnum } from '../constants';
 const {
   INIT,
   GAME_WON,
@@ -12,7 +12,7 @@ const {
   EXECUTING_ACTION,
   AI_EXECUTING,
   POST_EXECUTION,
-} = GAME_STATES;
+} = GameStatesEnum;
 
 /*
 

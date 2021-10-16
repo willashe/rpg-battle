@@ -1,6 +1,8 @@
 // these should be more descriptions of what happened
 export const START_NEW_GAME = 'START_NEW_GAME';
 export const GAME_OVER = 'GAME_OVER';
+export const GAME_WON = 'GAME_WON';
+export const GAME_LOST = 'GAME_LOST';
 export const SET_GAME_STATE = 'SET_GAME_STATE';
 
 export const SET_MESSAGE = 'SET_MESSAGE';

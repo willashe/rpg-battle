@@ -2,6 +2,8 @@ import { Dispatch } from 'react';
 import {
   START_NEW_GAME,
   GAME_OVER,
+  GAME_WON,
+  GAME_LOST,
   SET_GAME_STATE,
   SET_MESSAGE,
   SET_STATUS,
@@ -14,14 +16,17 @@ import {
   INCREMENT_PREV_QUEUE_INDEX,
 } from './actionTypes';
 import { AppStateType, ActionType, TargetType } from '../types';
-import { GAME_STATES } from '../constants';
-const { EXECUTING_ACTION, POST_EXECUTION } = GAME_STATES;
+import { GameStatesEnum, EntityTypesEnum } from '../constants';
+const { EXECUTING_ACTION, POST_EXECUTION } = GameStatesEnum;
+const { HERO } = EntityTypesEnum;
 
 export const startNewGame = (newGameState: AppStateType) => ({
   type: START_NEW_GAME,
   payload: newGameState,
 });
 export const gameOver = () => ({ type: GAME_OVER });
+export const gameWon = () => ({ type: GAME_WON });
+export const gameLost = () => ({ type: GAME_LOST });
 
 export const setGameState = (state: string) => ({
   type: SET_GAME_STATE,
@@ -90,13 +95,18 @@ export const executeQueuedActionsThunk = async () => {
 };
 
 export const attackThunk =
-  (target: TargetType) => async (dispatch: Dispatch<ActionType>) => {
-    const { group, index } = target;
+  (actor: TargetType, target: TargetType) =>
+  async (dispatch: Dispatch<ActionType>) => {
+    const { group: actorGroup, index: actorIndex } = actor;
+    const { group: targetGroup, index: targetIndex } = target;
 
     dispatch(setMessage('attacking...'));
+    dispatch(setStatus(actorGroup, actorIndex, 'acting'));
     await timeout(1000);
     dispatch(setMessage('idle'));
+    dispatch(setStatus(actorGroup, actorIndex, 'idle'));
 
+    // const attackPower = Math.ceil(Math.random() * 10);
     const attackPower = Math.floor(Math.random() * 5);
     let crit = false;
     if (Math.random() > 0.85) {
@@ -107,10 +117,12 @@ export const attackThunk =
       if (crit) {
         dispatch(setMessage('terrific blow!!!'));
       }
-      dispatch(setStatus(group, index, 'hurt'));
+      dispatch(setStatus(targetGroup, targetIndex, 'hurt'));
       await timeout(500);
-      dispatch(setStatus(group, index, 'alive'));
-      dispatch(damage(group, index, crit ? attackPower * 2 : attackPower));
+      dispatch(setStatus(targetGroup, targetIndex, 'alive'));
+      dispatch(
+        damage(targetGroup, targetIndex, crit ? attackPower * 2 : attackPower)
+      );
       if (crit) {
         dispatch(setMessage('idle'));
       }
@@ -124,26 +136,32 @@ export const attackThunk =
     dispatch(incrementPrevQueueIndex());
   };
 
-// export const deathThunk =
-//   (targetGroup: string, targetIndex: number) =>
-//   async (dispatch: Dispatch<ActionType>) => {
-//     dispatch(setStatus(targetGroup, targetIndex, 'dying'));
-//     await timeout(1000);
-//     dispatch(setStatus(targetGroup, targetIndex, 'dead'));
-//   };
-
-// TODO
+// TODO: ts
 export const deathCycleThunk =
-  (enemies: any) => async (dispatch: Dispatch<ActionType>) => {
+  (heroes: any, enemies: any) => async (dispatch: Dispatch<ActionType>) => {
     const { left, right } = enemies;
 
+    let livingHeroes = 0;
     let livingLeft = 0;
     let livingRight = 0;
 
+    for (const [index, hero] of heroes.entries()) {
+      const { status, hp } = hero;
+
+      if (hp > 0) {
+        livingHeroes++;
+      }
+
+      if (status !== 'dying' && status !== 'dead' && hp <= 0) {
+        dispatch(setStatus(HERO, index, 'dying'));
+        await timeout(1000);
+        dispatch(setStatus(HERO, index, 'dead'));
+      }
+    }
     for (const [index, enemy] of left.entries()) {
       const { status, hp } = enemy;
 
-      if (hp >= 0) {
+      if (hp > 0) {
         livingLeft++;
       }
 
@@ -156,7 +174,7 @@ export const deathCycleThunk =
     for (const [index, enemy] of right.entries()) {
       const { status, hp } = enemy;
 
-      if (hp >= 0) {
+      if (hp > 0) {
         livingRight++;
       }
 
@@ -167,11 +185,10 @@ export const deathCycleThunk =
       }
     }
 
-    if (!livingLeft && !livingRight) {
-      console.log(livingLeft);
-      console.log(livingRight);
-      console.log('game over');
-      dispatch(gameOver());
+    if (!livingHeroes) {
+      dispatch(gameLost());
+    } else if (!livingLeft && !livingRight) {
+      dispatch(gameWon());
     } else {
       dispatch(incrementQueueIndex());
     }
