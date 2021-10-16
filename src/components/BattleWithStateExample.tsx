@@ -344,7 +344,16 @@ const Battle = () => {
         )}
       </div>
 
-      <h3>{message}</h3>
+      <div
+        style={{
+          height: 100,
+          display: 'flex',
+          alignItems: 'flex-end',
+          justifyContent: 'space-evenly',
+        }}
+      >
+        <h3>{message}</h3>
+      </div>
 
       {activeHero !== null && (
         <>
