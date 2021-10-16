@@ -313,6 +313,7 @@ const Battle = () => {
             Execute!
           </button>
           <button
+            disabled={queueIndex === null || gameState !== EXECUTING}
             onClick={() => {
               dispatch(setGameState(INTERRUPT));
             }}
