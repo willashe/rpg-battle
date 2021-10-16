@@ -17,7 +17,6 @@ const {
   setQueueIndex,
   deathCycleThunk,
   gameOver,
-  // incrementQueueIndex,
 } = actionCreators;
 
 const Battle = () => {
@@ -32,84 +31,12 @@ const Battle = () => {
     prevQueueIndex,
   } = state;
 
-  /*
-
-  useEffect(() => {
-    // Create an scoped async function in the hook
-    async function anyNameFunction() {
-      await loadContent();
-    }
-    // Execute the created function directly
-    anyNameFunction();
-  }, []);
-
-  queueIndex increments
-  await async operations
-    dispatch action
-      animations
-      update stats
-*** KEY: need to update state here!!! ***
-    check for deaths/endgame
-  increment queueIndex
-
-
-
-States:
-INIT
-GAME_WON
-GAME_LOST
-PLAYER_INPUT
-EXECUTING_ACTION
-AI_EXECUTING
-POST_EXECUTION
-
-
-state: 'INIT'
-player hits "start"
-dispatch action to set game state to PLAYER_INPUT (or go straight to AI_EXECUTING, chosen by enemy speed or something)
-...user makes selections, dispatch actions that update queue/etc.
-player hits "execute"
-dispatch action to update game state to either AI_EXECUTING or increment queueIndex
-
-useEffect: AI_EXECUTING
-  ...loop over each enemy (by speed?) and select a target/action and execute
-  dispatch action to increment queueIndex
-
-useEffect: queueIndex increments
-  dispatch action to set game state to EXECUTING_ACTION
-    if no more actions in queue
-      dispatch action to set queueIndex to null
-      dispatch action to set game state to PLAYER_INPUT
-    else
-      ...perform necessary AI and dispatch actions/thunks for current queue action
-      dispatch action to set game state to POST_EXECUTION
-
-useEffect: POST_EXECUTION
-  ...perform death/gameOver checks
-  dispatch action to increment queueIndex
-
-
-*/
-
   useEffect(() => {
     console.log('useEffect, queueIndex: ' + queueIndex);
 
     // user does something
     // dispatch action to update state immediately and kick off async stuff
     // trigger another action on resolution of async stuff
-
-    // const executeAction = async (action: any) => {
-    //   // this works because it returns a promise that resolves when the timeout executes
-    //   // await timeout(1000);
-    //   // figure out how to make this work
-    //   // I believe "action" itself is a promise...
-    //   await dispatch(action);
-    //   console.log('action complete');
-    //   // could also loop here and dispatch deathThunk...
-    //   await dispatch(deathCycleThunk(enemies));
-    //   console.log('death cycle complete');
-    //   dispatch(incrementQueueIndex());
-    // };
 
     if (queueIndex !== null) {
       if (queue[queueIndex]) {
@@ -118,26 +45,14 @@ useEffect: POST_EXECUTION
 
         let { group, index } = target;
 
-        // console.log('****');
-        // @ts-ignore
-        // console.log(enemies[group]);
-        // @ts-ignore
-        // console.log(enemies[group][index]);
-        // console.log(enemies[group === 'left' ? 'left' : 'right']); // TODO: wtf
-
         if (
-          // @ts-ignore
           !enemies[group] ||
-          // @ts-ignore
           !enemies[group][index] ||
-          // @ts-ignore
           enemies[group][index].hp <= 0
         ) {
-          // @ts-ignore
           index = enemies[group].findIndex(({ hp }) => hp > 0);
           if (index === -1) {
             group = group === 'left' ? 'right' : 'left';
-            // @ts-ignore
             index = enemies[group].findIndex(({ hp }) => hp > 0);
 
             if (index === -1) {
@@ -147,24 +62,26 @@ useEffect: POST_EXECUTION
         }
 
         dispatch(actionCreator({ group, index }));
-        // console.log('execute action');
-        // executeAction(actionCreator({ group, index }));
       } else {
         dispatch(setQueueIndex(null));
       }
     }
+    // eslint-disable-next-line
   }, [queueIndex, queue, dispatch]);
 
   useEffect(() => {
     console.log('useEffect, prevQueueIndex: ' + prevQueueIndex);
 
-    dispatch(deathCycleThunk(enemies));
+    if (prevQueueIndex !== null) {
+      dispatch(deathCycleThunk(enemies));
+    }
+    // eslint-disable-next-line
   }, [prevQueueIndex, dispatch]);
 
   const startNewGame = () => {
     const heroes = generateHeroes(4);
-    const leftEnemies = generateEnemies(3, MONSTER);
-    const rightEnemies = generateEnemies(3, ROBOT);
+    const leftEnemies = generateEnemies(1, MONSTER);
+    const rightEnemies = generateEnemies(1, ROBOT);
     const queue = heroes.map((hero: EntityType) => ({
       actionCreator: attackThunk,
       target: {

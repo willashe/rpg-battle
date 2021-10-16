@@ -5,9 +5,9 @@ export interface AppStateType {
   gameState: string;
   message: string;
   heroes: EntityType[];
-  enemies: { left: EntityType[]; right: EntityType[] };
+  enemies: { [key: string]: EntityType[] };
   activeHero: number | null;
-  queue: Array<HeroActionType>;
+  queue: HeroActionType[];
   queueIndex: number | null;
   prevQueueIndex: number | null;
 }
@@ -35,6 +35,6 @@ export interface ActionType {
 }
 
 export interface TargetType {
-  group: string; // TODO: EntityTypesEnum
+  group: string;
   index: number;
 }
