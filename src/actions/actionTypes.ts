@@ -1,15 +1,18 @@
 // these should be more descriptions of what happened
 export const START_NEW_GAME = 'START_NEW_GAME';
 export const GAME_OVER = 'GAME_OVER';
+export const SET_GAME_STATE = 'SET_GAME_STATE';
 
 export const SET_MESSAGE = 'SET_MESSAGE';
 export const SET_STATUS = 'SET_STATUS';
 export const DAMAGE = 'DAMAGE';
 
 export const SET_ACTIVE_HERO = 'SET_ACTIVE_HERO';
-export const SET_TARGET_TYPE = 'SET_TARGET_TYPE';
-export const SET_TARGET = 'SET_TARGET';
 export const QUEUE_ACTION = 'QUEUE_ACTION';
+export const SET_QUEUE_INDEX = 'SET_QUEUE_INDEX';
+export const INCREMENT_QUEUE_INDEX = 'INCREMENT_QUEUE_INDEX';
+export const SET_PREV_QUEUE_INDEX = 'SET_PREV_QUEUE_INDEX';
+export const INCREMENT_PREV_QUEUE_INDEX = 'INCREMENT_PREV_QUEUE_INDEX';
 
 /*
 

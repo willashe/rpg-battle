@@ -1,38 +1,73 @@
-import { EntityTypesEnum } from '../constants';
 import { AppStateType, ActionType } from '../types';
-import { generateHeroes, generateEnemies } from '../utils';
+import { initialState } from './state';
 import { actionTypes } from '../actions';
 const {
   START_NEW_GAME,
   GAME_OVER,
+  SET_GAME_STATE,
   SET_MESSAGE,
   SET_STATUS,
   DAMAGE,
   SET_ACTIVE_HERO,
-  SET_TARGET_TYPE,
   QUEUE_ACTION,
+  SET_QUEUE_INDEX,
+  INCREMENT_QUEUE_INDEX,
+  SET_PREV_QUEUE_INDEX,
+  INCREMENT_PREV_QUEUE_INDEX,
 } = actionTypes;
-const { MONSTER, ROBOT } = EntityTypesEnum;
 
 const reducer = (state: AppStateType, { type, payload }: ActionType) => {
   switch (type) {
+    case SET_GAME_STATE:
+      console.log(`SET_GAME_STATE: ${payload}`);
+      return {
+        ...state,
+        gameState: payload,
+      };
     case SET_ACTIVE_HERO:
       return {
         ...state,
         activeHero: payload,
       };
-    case SET_TARGET_TYPE:
+    case QUEUE_ACTION: {
+      const { heroIndex, target, actionCreator } = payload;
+      const { queue } = state;
+
       return {
         ...state,
-        targetType: payload,
-      };
-    case QUEUE_ACTION:
-      return {
-        ...state,
-        target: payload, // TODO: maybe don't even need this
         activeHero: null,
-        queue: [...state.queue, payload],
+        queue: [
+          ...queue.slice(0, heroIndex),
+          { target, actionCreator },
+          ...queue.slice(heroIndex + 1),
+        ],
       };
+    }
+    case SET_QUEUE_INDEX: {
+      return {
+        ...state,
+        queueIndex: payload,
+      };
+    }
+    case INCREMENT_QUEUE_INDEX: {
+      return {
+        ...state,
+        queueIndex: state.queueIndex === null ? 0 : state.queueIndex + 1,
+      };
+    }
+    case SET_PREV_QUEUE_INDEX: {
+      return {
+        ...state,
+        prevQueueIndex: payload,
+      };
+    }
+    case INCREMENT_PREV_QUEUE_INDEX: {
+      return {
+        ...state,
+        prevQueueIndex:
+          state.prevQueueIndex === null ? 0 : state.prevQueueIndex + 1,
+      };
+    }
     case SET_MESSAGE:
       return {
         ...state,
@@ -85,23 +120,15 @@ const reducer = (state: AppStateType, { type, payload }: ActionType) => {
       };
     }
     case START_NEW_GAME:
-      // TODO: entities shouldn't be generated randomly here...
       return {
         ...state,
-        heroes: generateHeroes(3),
-        enemies: {
-          left: generateEnemies(3, MONSTER),
-          right: generateEnemies(3, ROBOT),
-        },
+        ...payload,
       };
     case GAME_OVER:
+      console.log('GAME_OVER');
       return {
         ...state,
-        heroes: [],
-        enemies: {
-          left: [],
-          right: [],
-        },
+        ...initialState,
       };
     default:
       return state;

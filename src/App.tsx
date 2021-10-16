@@ -5,6 +5,7 @@ import { AppStateProvider } from './state';
 import Home from './components/Home';
 // import Battle from './components/Battle';
 import Battle from './components/BattleWithStateExample';
+// import Battle from './components/BattleStateMachine';
 import Player from './components/Player';
 import Monsters from './components/Monsters';
 import About from './components/About';

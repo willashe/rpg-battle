@@ -1,14 +1,15 @@
 import { EntityTypesEnum } from './constants';
-// TODO: review interface vs. type
 
+// TODO: review interface vs. type
 export interface AppStateType {
+  gameState: string;
   message: string;
   heroes: EntityType[];
   enemies: { left: EntityType[]; right: EntityType[] };
   activeHero: number | null;
-  targetType: EntityTypesEnum | null; // or array of type...
-  target: number | string | null;
   queue: Array<HeroActionType>;
+  queueIndex: number | null;
+  prevQueueIndex: number | null;
 }
 
 export interface EntityType {
@@ -24,12 +25,16 @@ export interface EntityType {
 }
 
 export interface HeroActionType {
-  action: ActionType | any; // TODO
-  heroIndex: number;
-  target: string;
+  target: TargetType;
+  actionCreator: any; // TODO
 }
 
 export interface ActionType {
   type: string;
-  payload?: any;
+  payload?: any; // TODO
+}
+
+export interface TargetType {
+  group: string; // TODO: EntityTypesEnum
+  index: number;
 }

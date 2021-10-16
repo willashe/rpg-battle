@@ -1,4 +1,4 @@
 import * as actionTypes from './actionTypes';
-import * as actionsCreators from './actionCreators';
+import * as actionCreators from './actionCreators';
 
-export { actionTypes, actionsCreators };
+export { actionTypes, actionCreators };
