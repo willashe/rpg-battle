@@ -8,7 +8,8 @@ import { generateHeroes, generateEnemies } from '../utils';
 import Hero from './Hero';
 import Enemy from './Enemy';
 const { HERO, MONSTER, ROBOT } = EntityTypesEnum;
-const { INIT, EXECUTING, PLAYER_INPUT, GAME_WON, GAME_LOST } = GameStatesEnum;
+const { INIT, EXECUTING, PLAYER_INPUT, GAME_WON, GAME_LOST, INTERRUPT } =
+  GameStatesEnum;
 
 const {
   startNewGame: startNewGameAction,
@@ -97,8 +98,13 @@ const Battle = () => {
           actionCreator(actor, { group: targetGroup, index: targetIndex })
         );
       } else {
-        dispatch(setGameState(PLAYER_INPUT));
-        dispatch(setQueueIndex(null));
+        if (gameState === INTERRUPT) {
+          dispatch(setGameState(PLAYER_INPUT));
+          dispatch(setQueueIndex(null));
+          dispatch(setGameState(PLAYER_INPUT));
+        } else {
+          dispatch(setQueueIndex(0));
+        }
       }
     }
     // eslint-disable-next-line
@@ -295,16 +301,25 @@ const Battle = () => {
       )}
 
       {Boolean(queue.length) && (
-        <button
-          disabled={
-            queueIndex !== null ||
-            gameState === GAME_WON ||
-            gameState === GAME_LOST
-          }
-          onClick={() => dispatch(setQueueIndex(0))}
-        >
-          Execute!
-        </button>
+        <>
+          <button
+            disabled={
+              queueIndex !== null ||
+              gameState === GAME_WON ||
+              gameState === GAME_LOST
+            }
+            onClick={() => dispatch(setQueueIndex(0))}
+          >
+            Execute!
+          </button>
+          <button
+            onClick={() => {
+              dispatch(setGameState(INTERRUPT));
+            }}
+          >
+            Interrupt
+          </button>
+        </>
       )}
 
       <div style={{ display: 'flex' }}>
