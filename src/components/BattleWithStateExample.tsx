@@ -253,7 +253,7 @@ const Battle = () => {
             gameState === INTERRUPT
           }
         />
-
+        <br />
         <button
           onClick={startNewGame}
           disabled={
@@ -266,38 +266,42 @@ const Battle = () => {
         </button>
       </div>
 
-      <div>Game State: {gameState}</div>
+      {/* <div>Game State: {gameState}</div> */}
 
-      <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
+      {Boolean(
+        enemies?.left?.entities?.length || enemies?.right?.entities?.length
+      ) && (
         <div
           style={{
-            color: 'white',
-            height: 100,
-            width: 400,
-            background: 'blue',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
           }}
         >
-          <div>{enemies?.left?.name || ''}</div>
-          <div>{enemies?.left?.message || ''}</div>
+          <div
+            style={{
+              color: 'white',
+              height: 100,
+              width: 400,
+              background: 'blue',
+            }}
+          >
+            <div>{enemies?.left?.name || ''}</div>
+            <div>{enemies?.left?.message || ''}</div>
+          </div>
+          <div
+            style={{
+              color: 'white',
+              height: 100,
+              width: 400,
+              background: 'blue',
+            }}
+          >
+            <div>{enemies?.right?.name || ''}</div>
+            <div>{enemies?.right?.message || ''}</div>
+          </div>
         </div>
-        <div
-          style={{
-            color: 'white',
-            height: 100,
-            width: 400,
-            background: 'blue',
-          }}
-        >
-          <div>{enemies?.right?.name || ''}</div>
-          <div>{enemies?.right?.message || ''}</div>
-        </div>
-      </div>
+      )}
 
       <div style={{ display: 'flex' }}>
         {Boolean(enemies?.left?.entities?.length) && (
@@ -340,7 +344,8 @@ const Battle = () => {
         )}
       </div>
 
-      <h3>{message}</h3>
+      {/* <h3>{message}</h3> */}
+
       {activeHero !== null && (
         <>
           <button

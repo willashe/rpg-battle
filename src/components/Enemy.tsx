@@ -19,7 +19,8 @@ const Enemy = ({ index, name, status, hp, handleClick }: EnemyProps) => {
 
   return (
     <button
-      disabled={hp <= 0}
+      // disabled={hp <= 0}
+      disabled
       onClick={() => handleClick()}
       style={{
         margin: '0 auto',
