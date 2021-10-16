@@ -181,7 +181,7 @@ const Battle = () => {
     // TODO: figure out where best to compose all this...
     const newGameData = {
       gameState: INIT,
-      message: 'idle',
+      message: '',
       heroes: newHeroes,
       enemies: {
         left: { name: 'Monster', message: '', entities: leftEnemies },
@@ -344,7 +344,7 @@ const Battle = () => {
         )}
       </div>
 
-      {/* <h3>{message}</h3> */}
+      <h3>{message}</h3>
 
       {activeHero !== null && (
         <>

@@ -108,10 +108,8 @@ export const attackThunk =
     const { group: actorGroup, index: actorIndex } = actor;
     const { group: targetGroup, index: targetIndex } = target;
 
-    dispatch(setMessage('attacking...'));
     dispatch(setStatus(actorGroup, actorIndex, 'acting'));
     await timeout(1000);
-    dispatch(setMessage('idle'));
     dispatch(setStatus(actorGroup, actorIndex, 'idle'));
 
     // const attackPower = Math.ceil(Math.random() * 10);
@@ -138,18 +136,16 @@ export const attackThunk =
         damage(targetGroup, targetIndex, crit ? attackPower * 2 : attackPower)
       );
       if (crit) {
-        dispatch(setMessage('idle'));
+        dispatch(setMessage(''));
       }
     } else {
       if (actorGroup === HERO) {
         dispatch(setEnemyMessage(targetGroup, 'miss'));
       }
-      dispatch(setMessage('missed!'));
       await timeout(1000);
       if (actorGroup === HERO) {
         dispatch(setEnemyMessage(targetGroup, ''));
       }
-      dispatch(setMessage('idle'));
     }
 
     // need to dispatch this at the end of any queue action to progress the queue

@@ -8,7 +8,7 @@ const { INIT } = GameStatesEnum;
 
 export const initialState = {
   gameState: INIT,
-  message: 'idle',
+  message: '',
   heroes: [],
   enemies: {},
   activeHero: null,
