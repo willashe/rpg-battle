@@ -205,7 +205,9 @@ const Battle = () => {
           min="1"
           max="10"
           disabled={
-            numLeftEnemies + numRightEnemies <= 0 || gameState === EXECUTING
+            numLeftEnemies + numRightEnemies <= 0 ||
+            gameState === EXECUTING ||
+            gameState === INTERRUPT
           }
         />
         <label htmlFor="numLeftEnemies">Left Enemy Group: </label>
@@ -220,7 +222,9 @@ const Battle = () => {
           min="0"
           max="10"
           disabled={
-            numLeftEnemies + numRightEnemies <= 0 || gameState === EXECUTING
+            numLeftEnemies + numRightEnemies <= 0 ||
+            gameState === EXECUTING ||
+            gameState === INTERRUPT
           }
         />
         <label htmlFor="numRightEnemies">Right Enemy Group: </label>
@@ -235,14 +239,18 @@ const Battle = () => {
           min="0"
           max="10"
           disabled={
-            numLeftEnemies + numRightEnemies <= 0 || gameState === EXECUTING
+            numLeftEnemies + numRightEnemies <= 0 ||
+            gameState === EXECUTING ||
+            gameState === INTERRUPT
           }
         />
 
         <button
           onClick={startNewGame}
           disabled={
-            numLeftEnemies + numRightEnemies <= 0 || gameState === EXECUTING
+            numLeftEnemies + numRightEnemies <= 0 ||
+            gameState === EXECUTING ||
+            gameState === INTERRUPT
           }
         >
           New Game
