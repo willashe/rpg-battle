@@ -14,7 +14,6 @@ export const initialState = {
   activeHero: null,
   queue: [],
   queueIndex: null,
-  prevQueueIndex: null,
   playerInterrupt: false,
 };
 

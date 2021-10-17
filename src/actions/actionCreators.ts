@@ -2,21 +2,18 @@ import { Dispatch } from 'react';
 import {
   START_NEW_GAME,
   START_NEW_ROUND,
-  GAME_OVER,
   GAME_WON,
   GAME_LOST,
-  SET_GAME_STATE,
-  SET_MESSAGE,
-  SET_ENEMY_MESSAGE,
-  SET_STATUS,
-  DAMAGE,
-  SET_ACTIVE_HERO,
-  QUEUE_ACTION,
   SET_QUEUE_INDEX,
   INCREMENT_QUEUE_INDEX,
-  SET_PREV_QUEUE_INDEX,
-  INCREMENT_PREV_QUEUE_INDEX,
+  SET_GAME_STATE,
   SET_PLAYER_INTERRUPT,
+  SET_ACTIVE_HERO,
+  QUEUE_ACTION,
+  SET_PLAYER_MESSAGE,
+  SET_ENEMY_GROUP_MESSAGE,
+  SET_ENTITY_STATUS,
+  ENTITY_DAMAGE,
 } from './actionTypes';
 import {
   AppStateType,
@@ -25,59 +22,47 @@ import {
   EntityActionType,
 } from '../types';
 import { GameStatesEnum, EntityTypesEnum } from '../constants';
-const { EXECUTING_ACTION, EXECUTING, POST_EXECUTION } = GameStatesEnum;
+const { EXECUTING, POST_EXECUTION } = GameStatesEnum;
 const { HERO } = EntityTypesEnum;
 
 export const startNewGame = (newGameState: AppStateType) => ({
   type: START_NEW_GAME,
   payload: newGameState,
 });
+
 export const startNewRound = (queue: EntityActionType[]) => ({
   type: START_NEW_ROUND,
   payload: queue,
 });
-export const gameOver = () => ({ type: GAME_OVER });
+
 export const gameWon = () => ({ type: GAME_WON });
+
 export const gameLost = () => ({ type: GAME_LOST });
+
+export const setQueueIndex = (index: number | null) => ({
+  type: SET_QUEUE_INDEX,
+  payload: index,
+});
+
+export const incrementQueueIndex = () => ({
+  type: INCREMENT_QUEUE_INDEX,
+});
 
 export const setGameState = (state: string) => ({
   type: SET_GAME_STATE,
   payload: state,
 });
+
 export const setPlayerInterrupt = (interrupt: boolean) => ({
   type: SET_PLAYER_INTERRUPT,
   payload: interrupt,
 });
 
-export const setMessage = (message: string) => ({
-  type: SET_MESSAGE,
-  payload: message,
-});
-export const setStatus = (
-  targetGroup: string,
-  targetIndex: number,
-  status: string
-) => ({
-  type: SET_STATUS,
-  payload: { targetGroup, targetIndex, status },
-});
-export const setEnemyMessage = (
-  targetGroup: string,
-  message: string | number
-) => ({
-  type: SET_ENEMY_MESSAGE,
-  payload: { targetGroup, message },
-});
-export const damage = (
-  targetGroup: string,
-  targetIndex: number,
-  attackPower: number
-) => ({ type: DAMAGE, payload: { targetGroup, targetIndex, attackPower } });
-
 export const setActiveHero = (activeIndex: number) => ({
   type: SET_ACTIVE_HERO,
   payload: activeIndex,
 });
+
 export const queueAction = ({
   heroIndex,
   target,
@@ -94,28 +79,41 @@ export const queueAction = ({
     actionCreator,
   },
 });
-export const setQueueIndex = (index: number | null) => ({
-  type: SET_QUEUE_INDEX,
-  payload: index,
+
+export const setMessage = (message: string) => ({
+  type: SET_PLAYER_MESSAGE,
+  payload: message,
 });
-export const setPrevQueueIndex = (index: number | null) => ({
-  type: SET_PREV_QUEUE_INDEX,
-  payload: index,
+
+export const setEntityStatus = (
+  targetGroup: string,
+  targetIndex: number,
+  status: string
+) => ({
+  type: SET_ENTITY_STATUS,
+  payload: { targetGroup, targetIndex, status },
 });
-export const incrementQueueIndex = () => ({
-  type: INCREMENT_QUEUE_INDEX,
+
+export const setEnemyGroupMessage = (
+  targetGroup: string,
+  message: string | number
+) => ({
+  type: SET_ENEMY_GROUP_MESSAGE,
+  payload: { targetGroup, message },
 });
-export const incrementPrevQueueIndex = () => ({
-  type: INCREMENT_PREV_QUEUE_INDEX,
+
+export const entityDamage = (
+  targetGroup: string,
+  targetIndex: number,
+  attackPower: number
+) => ({
+  type: ENTITY_DAMAGE,
+  payload: { targetGroup, targetIndex, attackPower },
 });
 
 function timeout(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-
-export const executeQueuedActionsThunk = async () => {
-  console.log('execute!');
-};
 
 export const attackThunk =
   (actor: TargetType, target: TargetType) =>
@@ -123,11 +121,10 @@ export const attackThunk =
     const { group: actorGroup, index: actorIndex } = actor;
     const { group: targetGroup, index: targetIndex } = target;
 
-    dispatch(setStatus(actorGroup, actorIndex, 'acting'));
+    dispatch(setEntityStatus(actorGroup, actorIndex, 'acting'));
     await timeout(1000);
-    dispatch(setStatus(actorGroup, actorIndex, 'idle'));
+    dispatch(setEntityStatus(actorGroup, actorIndex, 'idle'));
 
-    // const attackPower = Math.ceil(Math.random() * 10);
     const attackPower = Math.floor(Math.random() * 5);
     let crit = false;
     if (Math.random() > 0.85) {
@@ -139,27 +136,31 @@ export const attackThunk =
         dispatch(setMessage('terrific blow!!!'));
       }
       if (actorGroup === HERO) {
-        dispatch(setEnemyMessage(targetGroup, attackPower));
+        dispatch(setEnemyGroupMessage(targetGroup, attackPower));
       }
-      dispatch(setStatus(targetGroup, targetIndex, 'hurt'));
+      dispatch(setEntityStatus(targetGroup, targetIndex, 'hurt'));
       await timeout(1000);
       if (actorGroup === HERO) {
-        dispatch(setEnemyMessage(targetGroup, ''));
+        dispatch(setEnemyGroupMessage(targetGroup, ''));
       }
-      dispatch(setStatus(targetGroup, targetIndex, 'alive'));
+      dispatch(setEntityStatus(targetGroup, targetIndex, 'alive'));
       dispatch(
-        damage(targetGroup, targetIndex, crit ? attackPower * 2 : attackPower)
+        entityDamage(
+          targetGroup,
+          targetIndex,
+          crit ? attackPower * 2 : attackPower
+        )
       );
       if (crit) {
         dispatch(setMessage(''));
       }
     } else {
       if (actorGroup === HERO) {
-        dispatch(setEnemyMessage(targetGroup, 'miss'));
+        dispatch(setEnemyGroupMessage(targetGroup, 'miss'));
       }
       await timeout(1000);
       if (actorGroup === HERO) {
-        dispatch(setEnemyMessage(targetGroup, ''));
+        dispatch(setEnemyGroupMessage(targetGroup, ''));
       }
     }
 
@@ -184,9 +185,9 @@ export const deathCycleThunk =
       }
 
       if (status !== 'dying' && status !== 'dead' && hp <= 0) {
-        dispatch(setStatus(HERO, index, 'dying'));
+        dispatch(setEntityStatus(HERO, index, 'dying'));
         await timeout(1000);
-        dispatch(setStatus(HERO, index, 'dead'));
+        dispatch(setEntityStatus(HERO, index, 'dead'));
       }
     }
     for (const [index, enemy] of left.entities.entries()) {
@@ -197,9 +198,9 @@ export const deathCycleThunk =
       }
 
       if (status !== 'dying' && status !== 'dead' && hp <= 0) {
-        dispatch(setStatus('left', index, 'dying'));
+        dispatch(setEntityStatus('left', index, 'dying'));
         await timeout(1000);
-        dispatch(setStatus('left', index, 'dead'));
+        dispatch(setEntityStatus('left', index, 'dead'));
       }
     }
     for (const [index, enemy] of right.entities.entries()) {
@@ -210,9 +211,9 @@ export const deathCycleThunk =
       }
 
       if (status !== 'dying' && status !== 'dead' && hp <= 0) {
-        dispatch(setStatus('right', index, 'dying'));
+        dispatch(setEntityStatus('right', index, 'dying'));
         await timeout(1000);
-        dispatch(setStatus('right', index, 'dead'));
+        dispatch(setEntityStatus('right', index, 'dead'));
       }
     }
 
@@ -225,25 +226,3 @@ export const deathCycleThunk =
       dispatch(setGameState(EXECUTING));
     }
   };
-
-export const executeThunk = () => async (dispatch: Dispatch<ActionType>) => {
-  dispatch(setMessage('doing stuff...'));
-  await timeout(1000);
-  dispatch(setMessage('idle'));
-  dispatch(setGameState(POST_EXECUTION));
-};
-
-export const postExecuteThunk =
-  () => async (dispatch: Dispatch<ActionType>) => {
-    dispatch(setMessage('doing post-execution stuff...'));
-    await timeout(1000);
-    dispatch(setMessage('idle'));
-    dispatch(setGameState(EXECUTING_ACTION));
-    dispatch(incrementQueueIndex());
-  };
-
-export const testThunk = () => async (dispatch: Dispatch<ActionType>) => {
-  dispatch(setGameState('thunk stuff...'));
-  await timeout(1000);
-  dispatch(setGameState('idle'));
-};

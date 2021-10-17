@@ -1,6 +1,6 @@
 import { EntityType } from './types';
 import { EntityTypesEnum } from './constants';
-const { HERO } = EntityTypesEnum;
+const { HERO, MONSTER } = EntityTypesEnum;
 
 export const generateEntity = ({
   status,
@@ -47,7 +47,7 @@ export const generateHeroes = (count: number) => {
         hp: 10,
         attack: 1,
         defense: 3,
-        speed: 1,
+        speed: 2,
         inventory: [],
         queuedActions: [],
       })
@@ -70,7 +70,7 @@ export const generateEnemies = (count: number, type: EntityTypesEnum) => {
         hp: 10,
         attack: 1,
         defense: 3,
-        speed: 1,
+        speed: type === MONSTER ? 2 : 3,
         inventory: [],
         queuedActions: [],
       })
@@ -78,4 +78,18 @@ export const generateEnemies = (count: number, type: EntityTypesEnum) => {
   }
 
   return enemies;
+};
+
+export const sortEntitiesBySpeed = (
+  firstEntity: EntityType,
+  secondEntity: EntityType
+) => {
+  const { speed: speedA } = firstEntity;
+  const { speed: speedB } = secondEntity;
+
+  if (speedA === speedB) {
+    return Math.random() > 0.5 ? 1 : -1;
+  } else {
+    return speedA > speedB ? -1 : 1;
+  }
 };

@@ -1,25 +1,21 @@
 import { AppStateType, ActionType } from '../types';
-import { initialState } from './state';
 import { actionTypes } from '../actions';
 import { EntityTypesEnum, GameStatesEnum } from '../constants';
 const {
   START_NEW_GAME,
   START_NEW_ROUND,
-  GAME_OVER,
   GAME_WON,
   GAME_LOST,
-  SET_GAME_STATE,
-  SET_MESSAGE,
-  SET_ENEMY_MESSAGE,
-  SET_STATUS,
-  DAMAGE,
-  SET_ACTIVE_HERO,
-  QUEUE_ACTION,
   SET_QUEUE_INDEX,
   INCREMENT_QUEUE_INDEX,
-  SET_PREV_QUEUE_INDEX,
-  INCREMENT_PREV_QUEUE_INDEX,
+  SET_GAME_STATE,
   SET_PLAYER_INTERRUPT,
+  SET_ACTIVE_HERO,
+  QUEUE_ACTION,
+  SET_PLAYER_MESSAGE,
+  SET_ENEMY_GROUP_MESSAGE,
+  SET_ENTITY_STATUS,
+  ENTITY_DAMAGE,
 } = actionTypes;
 
 const reducer = (state: AppStateType, action: ActionType) => {
@@ -27,10 +23,10 @@ const reducer = (state: AppStateType, action: ActionType) => {
   const { type, payload } = action;
 
   switch (type) {
-    case SET_PLAYER_INTERRUPT: {
+    case START_NEW_GAME: {
       return {
         ...state,
-        playerInterrupt: payload,
+        ...payload,
       };
     }
     case START_NEW_ROUND: {
@@ -41,17 +37,55 @@ const reducer = (state: AppStateType, action: ActionType) => {
         gameState: GameStatesEnum.EXECUTING,
       };
     }
-    case SET_GAME_STATE:
+    case GAME_WON: {
+      console.log('GAME_WON');
+      return {
+        ...state,
+        message: 'You win! :)',
+        queueIndex: null,
+        gameState: GameStatesEnum.GAME_WON,
+      };
+    }
+    case GAME_LOST: {
+      console.log('GAME_LOST');
+      return {
+        ...state,
+        message: 'You lose! :(',
+        queueIndex: null,
+        gameState: GameStatesEnum.GAME_LOST,
+      };
+    }
+    case SET_QUEUE_INDEX: {
+      return {
+        ...state,
+        queueIndex: payload,
+      };
+    }
+    case INCREMENT_QUEUE_INDEX: {
+      return {
+        ...state,
+        queueIndex: state.queueIndex === null ? 0 : state.queueIndex + 1,
+      };
+    }
+    case SET_GAME_STATE: {
       console.log(`SET_GAME_STATE: ${payload}`);
       return {
         ...state,
         gameState: payload,
       };
-    case SET_ACTIVE_HERO:
+    }
+    case SET_PLAYER_INTERRUPT: {
+      return {
+        ...state,
+        playerInterrupt: payload,
+      };
+    }
+    case SET_ACTIVE_HERO: {
       return {
         ...state,
         activeHero: payload,
       };
+    }
     case QUEUE_ACTION: {
       const { heroIndex, target, actionCreator } = payload;
       const { heroes } = state;
@@ -76,37 +110,13 @@ const reducer = (state: AppStateType, action: ActionType) => {
         ],
       };
     }
-    case SET_QUEUE_INDEX: {
-      return {
-        ...state,
-        queueIndex: payload,
-      };
-    }
-    case INCREMENT_QUEUE_INDEX: {
-      return {
-        ...state,
-        queueIndex: state.queueIndex === null ? 0 : state.queueIndex + 1,
-      };
-    }
-    case SET_PREV_QUEUE_INDEX: {
-      return {
-        ...state,
-        prevQueueIndex: payload,
-      };
-    }
-    case INCREMENT_PREV_QUEUE_INDEX: {
-      return {
-        ...state,
-        prevQueueIndex:
-          state.prevQueueIndex === null ? 0 : state.prevQueueIndex + 1,
-      };
-    }
-    case SET_MESSAGE:
+    case SET_PLAYER_MESSAGE: {
       return {
         ...state,
         message: payload,
       };
-    case SET_ENEMY_MESSAGE:
+    }
+    case SET_ENEMY_GROUP_MESSAGE: {
       const { targetGroup, message } = payload;
 
       return {
@@ -119,7 +129,8 @@ const reducer = (state: AppStateType, action: ActionType) => {
           },
         },
       };
-    case SET_STATUS: {
+    }
+    case SET_ENTITY_STATUS: {
       const { targetGroup, targetIndex, status } = payload;
 
       // TODO: clean up code dup
@@ -164,7 +175,7 @@ const reducer = (state: AppStateType, action: ActionType) => {
         };
       }
     }
-    case DAMAGE: {
+    case ENTITY_DAMAGE: {
       const { targetGroup, targetIndex, attackPower } = payload;
 
       // TODO: clean up code dup
@@ -209,35 +220,6 @@ const reducer = (state: AppStateType, action: ActionType) => {
         };
       }
     }
-    case START_NEW_GAME:
-      return {
-        ...state,
-        ...payload,
-      };
-    case GAME_OVER:
-      console.log('GAME_OVER');
-      return {
-        ...state,
-        ...initialState,
-      };
-    case GAME_WON:
-      console.log('GAME_WON');
-      return {
-        ...state,
-        message: 'You win! :)',
-        queueIndex: null,
-        prevQueueIndex: null,
-        gameState: GameStatesEnum.GAME_WON,
-      };
-    case GAME_LOST:
-      console.log('GAME_LOST');
-      return {
-        ...state,
-        message: 'You lose! :(',
-        queueIndex: null,
-        prevQueueIndex: null,
-        gameState: GameStatesEnum.GAME_LOST,
-      };
     default:
       return state;
   }

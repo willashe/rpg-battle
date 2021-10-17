@@ -5,9 +5,18 @@ interface HeroProps {
   name: string;
   status: string;
   hp: number;
+  speed: number;
 }
 
-const Hero = ({ index, active, name, status, hp, handleClick }: HeroProps) => (
+const Hero = ({
+  index,
+  active,
+  name,
+  status,
+  hp,
+  speed,
+  handleClick,
+}: HeroProps) => (
   <button
     disabled={hp <= 0}
     // disabled
@@ -37,6 +46,7 @@ const Hero = ({ index, active, name, status, hp, handleClick }: HeroProps) => (
   >
     <div>{name}</div>
     <div>HP: {hp}</div>
+    <div>Speed: {speed}</div>
   </button>
 );
 

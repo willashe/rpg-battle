@@ -5,10 +5,11 @@ interface EnemyProps {
   name: string;
   status: string;
   hp: number;
+  speed: number;
   handleClick: () => void;
 }
 
-const Enemy = ({ index, name, status, hp, handleClick }: EnemyProps) => {
+const Enemy = ({ index, name, status, hp, speed, handleClick }: EnemyProps) => {
   useEffect(() => {
     console.log('hp useEffect');
   }, [hp]);
@@ -46,6 +47,7 @@ const Enemy = ({ index, name, status, hp, handleClick }: EnemyProps) => {
     >
       <div>{name}</div>
       <div>HP: {hp}</div>
+      <div>Speed: {speed}</div>
     </button>
   );
 };

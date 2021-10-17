@@ -3,6 +3,10 @@ import { GameStatesEnum, EntityTypesEnum } from './constants';
 // TODO: review interface vs. type
 export interface AppStateType {
   gameState: GameStatesEnum;
+  queue: EntityActionType[];
+  queueIndex: number | null;
+  playerInterrupt: boolean;
+  activeHero: number | null;
   message: string;
   heroes: EntityType[];
   enemies: {
@@ -12,19 +16,14 @@ export interface AppStateType {
       entities: EntityType[];
     };
   };
-  activeHero: number | null;
-  queue: EntityActionType[];
-  queueIndex: number | null;
-  prevQueueIndex: number | null;
-  playerInterrupt: boolean;
 }
 
 export interface EntityType {
   status: string;
   name: string;
   type: EntityTypesEnum;
-  hp: number;
   maxHp: number;
+  hp: number;
   attack: number;
   defense: number;
   speed: number;
@@ -48,14 +47,14 @@ export interface EquippableItemType {
 }
 
 export interface EntityActionType {
+  actionCreator: any; // TODO
   actor: TargetType;
   target: TargetType;
-  actionCreator: any; // TODO
 }
 
 export interface ActionType {
   type: string;
-  payload?: any; // TODO
+  payload?: any;
 }
 
 export interface TargetType {
