@@ -4,6 +4,7 @@ import { actionTypes } from '../actions';
 import { EntityTypesEnum, GameStatesEnum } from '../constants';
 const {
   START_NEW_GAME,
+  START_NEW_ROUND,
   GAME_OVER,
   GAME_WON,
   GAME_LOST,
@@ -18,6 +19,7 @@ const {
   INCREMENT_QUEUE_INDEX,
   SET_PREV_QUEUE_INDEX,
   INCREMENT_PREV_QUEUE_INDEX,
+  SET_PLAYER_INTERRUPT,
 } = actionTypes;
 
 const reducer = (state: AppStateType, action: ActionType) => {
@@ -25,6 +27,20 @@ const reducer = (state: AppStateType, action: ActionType) => {
   const { type, payload } = action;
 
   switch (type) {
+    case SET_PLAYER_INTERRUPT: {
+      return {
+        ...state,
+        playerInterrupt: payload,
+      };
+    }
+    case START_NEW_ROUND: {
+      return {
+        ...state,
+        queue: payload,
+        queueIndex: 0,
+        gameState: GameStatesEnum.EXECUTING,
+      };
+    }
     case SET_GAME_STATE:
       console.log(`SET_GAME_STATE: ${payload}`);
       return {
@@ -37,17 +53,26 @@ const reducer = (state: AppStateType, action: ActionType) => {
         activeHero: payload,
       };
     case QUEUE_ACTION: {
-      // TODO: this is broken right now, need to account for enemies in the queue
       const { heroIndex, target, actionCreator } = payload;
-      const { queue } = state;
+      const { heroes } = state;
 
       return {
         ...state,
         activeHero: null,
-        queue: [
-          ...queue.slice(0, heroIndex),
-          { target, actionCreator },
-          ...queue.slice(heroIndex + 1),
+        heroes: [
+          ...heroes.slice(0, heroIndex),
+          {
+            ...heroes[heroIndex],
+            queuedActions: [
+              // TODO: loop over equipped weapons here if physical attack?
+              {
+                actor: { group: EntityTypesEnum.HERO, index: heroIndex },
+                target,
+                actionCreator,
+              },
+            ],
+          },
+          ...heroes.slice(heroIndex + 1),
         ],
       };
     }

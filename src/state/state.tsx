@@ -15,6 +15,7 @@ export const initialState = {
   queue: [],
   queueIndex: null,
   prevQueueIndex: null,
+  playerInterrupt: false,
 };
 
 export const AppStateContext = createContext<[AppStateType, Dispatch<any>]>([

@@ -13,9 +13,10 @@ export interface AppStateType {
     };
   };
   activeHero: number | null;
-  queue: HeroActionType[];
+  queue: EntityActionType[];
   queueIndex: number | null;
   prevQueueIndex: number | null;
+  playerInterrupt: boolean;
 }
 
 export interface EntityType {
@@ -27,10 +28,26 @@ export interface EntityType {
   attack: number;
   defense: number;
   speed: number;
-  inventory: object[];
+  inventory: ItemType[];
+  // equipment: EntityEquipmentType;
+  queuedActions: EntityActionType[];
 }
 
-export interface HeroActionType {
+export interface ItemType {}
+
+export interface EntityEquipmentType {
+  // head: EquippableItemType | null;
+  // leftHand: EquippableItemType | null;
+  // rightHand: EquippableItemType | null;
+  // body: EquippableItemType | null;
+  // legs: EquippableItemType | null;
+}
+
+export interface EquippableItemType {
+  twoHanded: boolean;
+}
+
+export interface EntityActionType {
   actor: TargetType;
   target: TargetType;
   actionCreator: any; // TODO

@@ -9,8 +9,8 @@ interface HeroProps {
 
 const Hero = ({ index, active, name, status, hp, handleClick }: HeroProps) => (
   <button
-    // disabled={hp <= 0}
-    disabled
+    disabled={hp <= 0}
+    // disabled
     onClick={() => handleClick()}
     style={{
       margin: '0 auto',

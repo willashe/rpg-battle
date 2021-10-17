@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useRef, useEffect, useState } from 'react';
 
 import { AppStateContext } from '../state';
 import { actionCreators } from '../actions';
@@ -8,11 +8,20 @@ import { generateHeroes, generateEnemies } from '../utils';
 import Hero from './Hero';
 import Enemy from './Enemy';
 const { HERO, MONSTER, ROBOT } = EntityTypesEnum;
-const { INIT, EXECUTING, PLAYER_INPUT, GAME_WON, GAME_LOST, INTERRUPT } =
-  GameStatesEnum;
+const {
+  INIT,
+  NEW_GAME,
+  PLAYER_INPUT,
+  EXECUTING,
+  POST_EXECUTION,
+  GAME_WON,
+  GAME_LOST,
+  INTERRUPT,
+} = GameStatesEnum;
 
 const {
   startNewGame: startNewGameAction,
+  startNewRound: startNewRoundAction,
   attackThunk,
   setActiveHero,
   queueAction,
@@ -22,6 +31,7 @@ const {
   gameWon,
   gameLost,
   setGameState,
+  setPlayerInterrupt,
 } = actionCreators;
 
 const Battle = () => {
@@ -34,26 +44,29 @@ const Battle = () => {
     activeHero,
     queue,
     queueIndex,
-    prevQueueIndex,
+    playerInterrupt,
   } = state;
   const [numHeroes, setNumHeroes] = useState(1);
   const [numLeftEnemies, setNumLeftEnemies] = useState(1);
   const [numRightEnemies, setNumRightEnemies] = useState(1);
 
-  useEffect(() => {
-    console.log('useEffect, queueIndex: ' + queueIndex);
-    console.log(queue);
+  const prevQueueIndex = useRef(queueIndex);
+  const prevGameState = useRef(gameState);
 
-    if (queueIndex !== null) {
+  useEffect(() => {
+    if (queueIndex !== null && queueIndex !== prevQueueIndex.current) {
+      console.log(
+        `useEffect, queueIndex: ${queueIndex}, prevQueueIndex: ${prevQueueIndex.current}`
+      );
+      console.log(queue);
+
+      prevQueueIndex.current = queueIndex;
+
       if (queue[queueIndex]) {
         console.log(queue[queueIndex]);
         const { actor, target, actionCreator } = queue[queueIndex];
+
         // TODO: randomize target selection from target group (only pass target group in queue object, no target index needed)
-
-        if (queueIndex === 0) {
-          dispatch(setGameState(EXECUTING));
-        }
-
         let { group: targetGroup, index: targetIndex } = target;
 
         // TODO: clean this code up
@@ -103,84 +116,101 @@ const Battle = () => {
         dispatch(
           actionCreator(actor, { group: targetGroup, index: targetIndex })
         );
+
+        // TODO: ideally we would be able to wait for actionCreator to finish and then dispatch gameState: POST_EXECUTION here (should be doable since no new state is needed)
       } else {
-        if (gameState === INTERRUPT) {
+        if (playerInterrupt) {
+          // TODO: maybe combine into single action?
           dispatch(setGameState(PLAYER_INPUT));
           dispatch(setQueueIndex(null));
-          dispatch(setGameState(PLAYER_INPUT));
+          dispatch(setPlayerInterrupt(false));
         } else {
           dispatch(setQueueIndex(0));
         }
       }
     }
-    // eslint-disable-next-line
-  }, [queueIndex, queue, dispatch]);
+  }, [
+    queueIndex,
+    gameState,
+    queue,
+    enemies,
+    heroes,
+    playerInterrupt,
+    dispatch,
+  ]);
 
   useEffect(() => {
-    console.log('useEffect, prevQueueIndex: ' + prevQueueIndex);
+    if (gameState !== prevGameState.current) {
+      console.log(
+        `useEffect, gameState: ${gameState}, prevGameState: ${prevGameState.current}`
+      );
 
-    if (prevQueueIndex !== null) {
-      dispatch(deathCycleThunk(heroes, enemies));
+      if (prevGameState.current === INIT && gameState === NEW_GAME) {
+        console.log('useEffect process new game');
+        // check for enemy pre-emptive attack
+        if (Math.random() > 0.1) {
+          console.log('trigger enemy pre-emptive attack');
+
+          // collect queued actions from left/right enemy groups
+          const newQueue = [...enemies.left.entities, ...enemies.right.entities]
+            .map((entity) => entity.queuedActions)
+            .reduce((prev, curr) => [...prev, ...curr], []);
+
+          dispatch(startNewRoundAction(newQueue));
+          dispatch(setPlayerInterrupt(true));
+        } else {
+          dispatch(setGameState(PLAYER_INPUT));
+        }
+      }
+
+      prevGameState.current = gameState;
+
+      if (gameState === POST_EXECUTION) {
+        dispatch(deathCycleThunk(heroes, enemies));
+      }
     }
-    // eslint-disable-next-line
-  }, [prevQueueIndex, dispatch]);
+  }, [gameState, enemies, heroes, dispatch]);
 
   const startNewGame = () => {
-    const newHeroes = generateHeroes(numHeroes);
-    const leftEnemies = generateEnemies(numLeftEnemies, MONSTER);
-    const rightEnemies = generateEnemies(numRightEnemies, ROBOT);
-
-    // TODO: clean up all this code duplication
-    // TODO: need to loop through equipped weapons and queue action for each if necessary
-    const heroActionQueue = newHeroes.map((entity: EntityType, index) => ({
-      actionCreator: attackThunk,
-      actor: {
-        group: HERO,
-        index,
-      },
-      target: {
-        group: 'left',
-        index: 0,
-      },
+    // TODO: abstract building of queuedActions into reusable util function (check equipped weapons)
+    const newHeroes = generateHeroes(numHeroes).map((hero, index) => ({
+      ...hero,
+      queuedActions: [
+        {
+          actionCreator: attackThunk,
+          actor: { group: HERO, index },
+          target: { group: 'left', index: 0 },
+        },
+      ],
     }));
-
-    const leftEnemyActionQueue = leftEnemies.map(
-      (entity: EntityType, index) => ({
-        actionCreator: attackThunk,
-        actor: {
-          group: 'left',
-          index,
-        },
-        target: {
-          group: HERO,
-          index: 0,
-        },
+    const leftEnemies = generateEnemies(numLeftEnemies, MONSTER).map(
+      (enemy, index) => ({
+        ...enemy,
+        queuedActions: [
+          {
+            actionCreator: attackThunk,
+            actor: { group: 'left', index },
+            target: { group: HERO, index: 0 },
+          },
+        ],
       })
     );
-
-    const rightEnemyActionQueue = rightEnemies.map(
-      (entity: EntityType, index) => ({
-        actionCreator: attackThunk,
-        actor: {
-          group: 'right',
-          index,
-        },
-        target: {
-          group: HERO,
-          index: 0,
-        },
+    const rightEnemies = generateEnemies(numRightEnemies, ROBOT).map(
+      (enemy, index) => ({
+        ...enemy,
+        queuedActions: [
+          {
+            actionCreator: attackThunk,
+            actor: { group: 'right', index },
+            target: { group: HERO, index: 0 },
+          },
+        ],
       })
     );
-
-    const queue = [
-      ...heroActionQueue,
-      ...leftEnemyActionQueue,
-      ...rightEnemyActionQueue,
-    ];
 
     // TODO: figure out where best to compose all this...
     const newGameData = {
-      gameState: INIT,
+      gameState: NEW_GAME,
       message: '',
       heroes: newHeroes,
       enemies: {
@@ -188,7 +218,7 @@ const Battle = () => {
         right: { name: 'Robot', message: '', entities: rightEnemies },
       },
       activeHero: null,
-      queue,
+      queue: [],
       queueIndex: null,
       prevQueueIndex: null,
       playerInterrupt: false,
@@ -196,6 +226,24 @@ const Battle = () => {
 
     // TODO: preemptive attack chance
     dispatch(startNewGameAction(newGameData));
+  };
+
+  const startNewRound = () => {
+    console.log('start new round');
+
+    /*
+      - build queue by iterating over living heroes/enemies
+      - sort by speed with random tie-breaker
+    */
+    const newQueue = [
+      ...heroes,
+      ...enemies.left.entities,
+      ...enemies.right.entities,
+    ]
+      .map((entity) => entity.queuedActions)
+      .reduce((prev, curr) => [...prev, ...curr], []);
+
+    dispatch(startNewRoundAction(newQueue));
   };
 
   return (
@@ -267,7 +315,8 @@ const Battle = () => {
         </button>
       </div>
 
-      {/* <div>Game State: {gameState}</div> */}
+      <div>Game State: {gameState}</div>
+      <div>Player Interrupt: {String(playerInterrupt)}</div>
 
       {Boolean(
         enemies?.left?.entities?.length || enemies?.right?.entities?.length
@@ -387,7 +436,7 @@ const Battle = () => {
         </>
       )}
 
-      {Boolean(queue.length) && (
+      {gameState !== INIT && (
         <>
           <button
             disabled={
@@ -395,14 +444,14 @@ const Battle = () => {
               gameState === GAME_WON ||
               gameState === GAME_LOST
             }
-            onClick={() => dispatch(setQueueIndex(0))}
+            onClick={startNewRound}
           >
             Execute!
           </button>
           <button
             disabled={queueIndex === null || gameState !== EXECUTING}
             onClick={() => {
-              dispatch(setGameState(INTERRUPT));
+              dispatch(setPlayerInterrupt(true));
             }}
           >
             Interrupt

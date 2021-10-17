@@ -1,6 +1,7 @@
 import { Dispatch } from 'react';
 import {
   START_NEW_GAME,
+  START_NEW_ROUND,
   GAME_OVER,
   GAME_WON,
   GAME_LOST,
@@ -15,15 +16,25 @@ import {
   INCREMENT_QUEUE_INDEX,
   SET_PREV_QUEUE_INDEX,
   INCREMENT_PREV_QUEUE_INDEX,
+  SET_PLAYER_INTERRUPT,
 } from './actionTypes';
-import { AppStateType, ActionType, TargetType } from '../types';
+import {
+  AppStateType,
+  ActionType,
+  TargetType,
+  EntityActionType,
+} from '../types';
 import { GameStatesEnum, EntityTypesEnum } from '../constants';
-const { EXECUTING_ACTION, POST_EXECUTION } = GameStatesEnum;
+const { EXECUTING_ACTION, EXECUTING, POST_EXECUTION } = GameStatesEnum;
 const { HERO } = EntityTypesEnum;
 
 export const startNewGame = (newGameState: AppStateType) => ({
   type: START_NEW_GAME,
   payload: newGameState,
+});
+export const startNewRound = (queue: EntityActionType[]) => ({
+  type: START_NEW_ROUND,
+  payload: queue,
 });
 export const gameOver = () => ({ type: GAME_OVER });
 export const gameWon = () => ({ type: GAME_WON });
@@ -32,6 +43,10 @@ export const gameLost = () => ({ type: GAME_LOST });
 export const setGameState = (state: string) => ({
   type: SET_GAME_STATE,
   payload: state,
+});
+export const setPlayerInterrupt = (interrupt: boolean) => ({
+  type: SET_PLAYER_INTERRUPT,
+  payload: interrupt,
 });
 
 export const setMessage = (message: string) => ({
@@ -149,7 +164,7 @@ export const attackThunk =
     }
 
     // need to dispatch this at the end of any queue action to progress the queue
-    dispatch(incrementPrevQueueIndex());
+    dispatch(setGameState(POST_EXECUTION));
   };
 
 // TODO: ts
@@ -207,6 +222,7 @@ export const deathCycleThunk =
       dispatch(gameWon());
     } else {
       dispatch(incrementQueueIndex());
+      dispatch(setGameState(EXECUTING));
     }
   };
 

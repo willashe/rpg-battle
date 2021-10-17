@@ -6,6 +6,7 @@ export enum EntityTypesEnum {
 
 export enum GameStatesEnum {
   INIT = 'INIT',
+  NEW_GAME = 'NEW_GAME',
   GAME_WON = 'GAME_WON',
   GAME_LOST = 'GAME_LOST',
   PLAYER_INPUT = 'PLAYER_INPUT',
