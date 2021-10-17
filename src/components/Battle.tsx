@@ -46,8 +46,8 @@ const Battle = () => {
     queueIndex,
     playerInterrupt,
   } = state;
-  const [numHeroes, setNumHeroes] = useState(1);
-  const [numLeftEnemies, setNumLeftEnemies] = useState(1);
+  const [numHeroes, setNumHeroes] = useState(4);
+  const [numLeftEnemies, setNumLeftEnemies] = useState(3);
   const [numRightEnemies, setNumRightEnemies] = useState(1);
 
   const prevQueueIndex = useRef(queueIndex);
@@ -262,7 +262,7 @@ const Battle = () => {
             gameState === INTERRUPT
           }
         />
-        <label htmlFor="numLeftEnemies">Left Enemy Group: </label>
+        <label htmlFor="numLeftEnemies">Monsters: </label>
         <input
           type="number"
           id="numLeftEnemies"
@@ -279,7 +279,7 @@ const Battle = () => {
             gameState === INTERRUPT
           }
         />
-        <label htmlFor="numRightEnemies">Right Enemy Group: </label>
+        <label htmlFor="numRightEnemies">Robots: </label>
         <input
           type="number"
           id="numRightEnemies"
