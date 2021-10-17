@@ -1,0 +1,37 @@
+PS2 OBSERVATIONS:
+- chance of enemy preemtptive attack
+- enemies and heroes act interchangeably, there are no distinct enemy/hero "turns"
+- speed seems to play a part?
+- once started, queue keeps going until player interrupts
+- there do appear to be distinct "rounds"
+  - each round every entity gets a turn
+  - order is different each round
+  - GUESS: order is based on speed with random tie-breaker
+
+
+EQUIPMENT:
+head
+right
+Left
+body
+legs
+legs
+
+
+STATS:
+name
+job?
+--------
+hp
+tp
+--------
+level
+exp
+--------
+strength
+mental
+agility
+luck
+dexterity
+attack
+defense

@@ -1,0 +1,36 @@
+- EnemyGroupContainer
+  - left/right containers
+    - enemy name
+    - message
+      - damage taken / "miss"
+- AnimationContainer
+  - combine left/right enemy group arrays
+    - map over enemy array
+      - render sprite for current status
+  - map over state.effects
+    - render sprite for current effect
+  - map over state.heroes
+    - render sprite for current status
+- HeroContainer
+  - map over state.heroes
+    - render in specific order
+      - name
+      - hp
+      - mp
+      - queued action
+      - status
+
+{
+  name: 'Nei',
+  hp: 14,
+  mp: 6,
+  action: {
+    actionCreator: attackThunk,
+    targets: 'left',
+  },
+  animation: {
+    sprite: '',
+    location: ???
+  }
+}
+

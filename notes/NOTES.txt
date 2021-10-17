@@ -1,0 +1,195 @@
+
+
+- user does something
+- dispatch action to update state immediately and kick off async stuff
+- trigger another action on resolution of async stuff
+
+
+
+
+- new game begins
+- populate game state
+- preemptive attack chance
+- player queues up actions
+- player clicks execute
+  - disable controls
+- cycle through queued actions
+  - trigger actor animation start
+  - wait
+  - trigger actor animation end
+  - target animation needed?
+    - trigger target animation start
+    - wait
+    - trigger target animation end
+  - update entity state
+  - trigger post-action phase
+    - cycle through all entities
+      - trigger death/resurrection/status animation start
+      - wait
+      - trigger death/resurrection/status animation end
+    - check end game conditions
+    - check player interrupt condition
+      - stop processing queue
+      - enable player controls
+      - only after hero action?
+    - increment queue index
+
+
+PS2 WAY:
+- "round" begins
+- collect all living/active entities and sort them by speed
+- go through each entity and execute its queued action on its specified target
+- 
+
+
+THUNKS:
+- attackThunk
+- multiAttackThunk
+- itemThunk
+- abilityThunk
+
+
+
+
+
+
+
+
+
+
+
+
+*** the below would work but lacks a mechanism to cycle through the queue
+
+- gameState: IDLE
+- gameState: EXECUTING
+- gameState: POST_EXECUTION
+
+const prevGameState = useRef(gameState)
+
+useEffect(() => {
+  if (gameState !== prevGameState.current()) {
+    prevGameState.current === gameState;
+
+    switch (gameState) {
+      case EXECUTING: {
+        // ...fire off async thunk: animations, update state, then change gameState to POST_EXECUTION
+      }
+      case POST_EXECUTION: {
+        // ...fire off async thunk: animations, update state, check end-game conditions, etc., then change gameState to IDLE
+      }
+      default: {
+        // ...
+      }
+    }
+  }
+}, [gameState, dispatch, state]);
+
+
+
+
+
+
+- when a physical attack is queued we need to look at the currently equipped weapon/s to determine what to queue
+  - check leftHand
+    - add action to entity queuedActions
+    - if twoHanded weapon, skip rightHand check
+  - check rightHand
+    - add action to entity queuedActions
+
+
+entity = {
+  ...
+  queuedActions: [{
+    actionCreator: attackThunk,
+    actor: {
+      group: HERO,
+      index: 2,
+    },
+    target: {
+      group: 'left', // maybe add array support here to target both enemy groups?
+      index: 0, // if index is null, attack targets entire group
+    },
+  }]
+}
+
+
+
+
+
+- queue up actions for each hero and enemy
+  - actions set on actual entities
+  - defaults or player selection for heroes
+  - AI for enemies
+    - do we determine enemy actions at beginning of each round or on actor selection?
+- begin round
+  - build queue
+    - array of living actors (group, index) ordered by speed with random tie-breaker
+  - iterate over queue
+    - fire off each actors queued actions
+    - when end of queue reached
+      - check for user interrupt
+        - if interrupt, set state so user can interact with UI
+        - if not interrupt, begin new round
+
+
+Game States:
+INIT
+NEW_GAME
+PLAYER_INPUT
+EXECUTING
+POST_EXECUTION
+PLAYER_INTERRUPT
+GAME_WON
+GAME_LOST
+
+
+const prevQueueIndex = useRef(queueIndex)
+const prevGameState = useRef(gameState)
+
+useEffect(() => {
+  if (queueIndex !== null && queueIndex !== prevQueueIndex.current()) {
+    prevQueueIndex.current = queueIndex;
+
+    // process current queued action
+    // - if no more queued actions, check PLAYER_INTERRUPT
+    //  - if interrupted
+    //    - setQueueIndex(null)
+    //    - setGameState(PLAYER_INPUT)
+    //  - if not interrupted
+    //    - beginNewRound()
+    // when complete: setGameState(POST_EXECUTION)
+  }
+}, [queueIndex, dispatch, ...state]);
+
+useEffect(() => {
+  if (gameState === POST_EXECUTION && gameState !== prevGameState.current()) {
+    prevGameState.current === gameState;
+
+    // process post execution actions
+    // after complete:
+    // - if game end conditions met:
+    //   - setQueueIndex(null)
+    //   - setGameState(GAME_WON / GAME_LOST)
+    // - if game end conditions not met:
+    //   - incrementQueueIndex() and setGameState(EXECUTING)
+  }
+}, [gameState, dispatch, ...state]);
+
+const beginNewRound = () => {
+  /*
+    - build queue by iterating over living heroes/enemies
+    - sort by speed with random tie-breaker
+    - map to actor objects
+      - group
+      - index
+    - set state:
+      - queue
+      - queueIndex: 0
+      - gameState: EXECUTING
+  */
+}
+
+
+<button onClick={beginNewRound} disabled={gameState === EXECUTING || gameState === POST_EXECUTION}>Execute!</button>
+
