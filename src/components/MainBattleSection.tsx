@@ -8,7 +8,8 @@ const BattleSection = styled.section`
 `;
 
 const MessageBox = styled.div`
-  width: 10%;
+  width: 15%;
+  min-width: 0;
   font-size: 1.4rem;
   border: 10px solid #e5e4e2;
   margin: 0 auto;
@@ -16,12 +17,14 @@ const MessageBox = styled.div`
   padding: 15px;
   margin-bottom: 14px;
   color: #e5e4e2;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const MainBattleSection = () => {
   return (
     <BattleSection>
-      <MessageBox>GIFOI</MessageBox>
+      <MessageBox>MEGID</MessageBox>
     </BattleSection>
   );
 };

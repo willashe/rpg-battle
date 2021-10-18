@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { AppStateContext } from '../state';
-import { Link } from 'react-router-dom';
 import { actions } from '../actions';
+import { Link } from 'react-router-dom';
 
 const { startNewGame, gameOver } = actions;
 
