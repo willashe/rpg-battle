@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Hero from './Hero';
 import { EntityType } from '../types';
+import Window from './Window';
 
 const PlayerInfo = styled.section`
   display: flex;
@@ -10,14 +11,12 @@ const PlayerInfo = styled.section`
   flex: 0 1 200px;
 `;
 
-const PlayerMenu = styled.div`
+const PlayerMenu = styled(Window)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 1.4rem;
-  padding: 0 70px;
+  width: 9%;
   margin: 0 1.1px;
-  border: 10px solid #e5e4e2;
   order: 1;
 `;
 

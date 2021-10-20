@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Window from './Window';
 
 const BattleSection = styled.section`
   display: flex;
@@ -7,18 +8,12 @@ const BattleSection = styled.section`
   background-color: midnightblue;
 `;
 
-const MessageBox = styled.div`
+const MessageBox = styled(Window)`
   width: 15%;
   min-width: 0;
-  font-size: 1.4rem;
-  border: 10px solid #e5e4e2;
   margin: 0 auto;
   align-self: flex-end;
-  padding: 15px;
   margin-bottom: 14px;
-  color: #e5e4e2;
-  overflow: hidden;
-  text-overflow: ellipsis;
 `;
 
 const MainBattleSection = () => {
