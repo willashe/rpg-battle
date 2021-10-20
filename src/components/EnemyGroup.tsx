@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 const EnemyGroupContainer = styled.div`
@@ -8,7 +7,7 @@ const EnemyGroupContainer = styled.div`
   border: 8px solid #e5e4e2;
 `;
 
-const EnemyDmg = styled.div`
+const EnemyMessage = styled.div`
   display: flex;
   align-items: center;
   font-size: 1.4rem;
@@ -28,16 +27,16 @@ const EnemyName = styled.div`
 
 interface EnemyGroupProps {
   name: string;
-  dmg: number;
+  message: string | number;
 }
 
 const EnemyGroup = (props: EnemyGroupProps) => {
-  const { name, dmg } = props;
+  const { name, message } = props;
 
   return (
     <EnemyGroupContainer>
       <EnemyName>{name}</EnemyName>
-      <EnemyDmg>{dmg}</EnemyDmg>
+      <EnemyMessage>{message}</EnemyMessage>
     </EnemyGroupContainer>
   );
 };

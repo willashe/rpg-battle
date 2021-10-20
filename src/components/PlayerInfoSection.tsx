@@ -1,7 +1,16 @@
-import React from 'react';
+import { useContext } from 'react';
 import styled from 'styled-components';
-import Hero from './Hero';
+
 import { EntityType } from '../types';
+import { AppStateContext } from '../state';
+import { actionCreators } from '../actions';
+import { GameStatesEnum } from '../constants';
+import { sortEntitiesBySpeed } from '../utils';
+import Hero from './Hero';
+
+const { startNewRound: startNewRoundAction, setPlayerInterrupt } =
+  actionCreators;
+const { EXECUTING, GAME_WON, GAME_LOST } = GameStatesEnum;
 
 const PlayerInfo = styled.section`
   display: flex;
@@ -31,7 +40,21 @@ interface PlayerInfoSectionProps {
 }
 
 const PlayerInfoSection = (props: PlayerInfoSectionProps) => {
-  const { heroes } = props;
+  const [state, dispatch] = useContext(AppStateContext);
+  const { gameState, queueIndex, heroes, enemies } = state;
+
+  const startNewRound = () => {
+    const newQueue = [
+      ...heroes,
+      ...enemies.left.entities,
+      ...enemies.right.entities,
+    ]
+      .sort(sortEntitiesBySpeed)
+      .map((entity) => entity.queuedActions)
+      .reduce((prev, curr) => [...prev, ...curr], []);
+
+    dispatch(startNewRoundAction(newQueue));
+  };
 
   return (
     <PlayerInfo>
@@ -41,9 +64,21 @@ const PlayerInfoSection = (props: PlayerInfoSectionProps) => {
 
       <PlayerMenu>
         <p>ATTK</p>
-        <PlayerButton></PlayerButton>
+        <PlayerButton
+          disabled={
+            queueIndex !== null ||
+            gameState === GAME_WON ||
+            gameState === GAME_LOST
+          }
+          onClick={startNewRound}
+        ></PlayerButton>
         <p>ORDR</p>
-        <PlayerButton></PlayerButton>
+        <PlayerButton
+          disabled={queueIndex === null || gameState !== EXECUTING}
+          onClick={() => {
+            dispatch(setPlayerInterrupt(true));
+          }}
+        ></PlayerButton>
       </PlayerMenu>
     </PlayerInfo>
   );

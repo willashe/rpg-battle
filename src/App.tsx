@@ -2,8 +2,7 @@ import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 
 import { AppStateProvider } from './state';
 import Home from './pages/Home';
-import Battle from './pages/Battle';
-// import Battle from './components/BattleWithStateExample';
+import BattleContainer from './containers/BattleContainer';
 import Player from './components/Player';
 import Monsters from './components/Enemies';
 import About from './pages/About';
@@ -25,7 +24,7 @@ export default function App() {
           <main>
             <Switch>
               <Route exact path="/" component={Home} />
-              <Route exact path="/battle" component={Battle} />
+              <Route exact path="/battle" component={BattleContainer} />
               <Route exact path="/player" component={Player} />
               <Route exact path="/monsters" component={Monsters} />
               <Route exact path="/about" component={About} />
