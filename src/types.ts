@@ -9,21 +9,17 @@ export interface AppStateType {
   activeHero: number | null;
   message: string;
   heroes: EntityType[];
-  enemies: {
-    [key: string]: {
-      name: string;
-      message: string | number;
-      entities: EntityType[];
-    };
-  };
+  enemies: EnemyGroupsType;
 }
 
 export interface EntityType {
   status: string;
   name: string;
   type: EntityTypesEnum;
-  maxHp: number;
   hp: number;
+  maxHp: number;
+  tp: number;
+  maxTp: number;
   attack: number;
   defense: number;
   speed: number;
@@ -60,4 +56,12 @@ export interface ActionType {
 export interface TargetType {
   group: string;
   index: number;
+}
+
+export interface EnemyGroupsType {
+  [key: string]: {
+    name: string;
+    message: string | number;
+    entities: EntityType[];
+  };
 }

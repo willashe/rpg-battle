@@ -1,53 +1,29 @@
+import styled from 'styled-components';
+
+const HeroContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.4rem;
+  padding: 0 70px;
+  margin: 0 1.1px;
+  border: 10px solid #e5e4e2;
+  flex: 0 1 auto;
+`;
+
 interface HeroProps {
   index: number;
-  active: boolean;
-  handleClick: () => void;
   name: string;
-  status: string;
   hp: number;
-  speed: number;
+  tp: number;
 }
 
-const Hero = ({
-  index,
-  active,
-  name,
-  status,
-  hp,
-  speed,
-  handleClick,
-}: HeroProps) => (
-  <button
-    disabled={hp <= 0}
-    // disabled
-    onClick={() => handleClick()}
-    style={{
-      margin: '0 auto',
-      height: 130,
-      width: 100,
-      color: 'black',
-      background:
-        status === 'acting'
-          ? 'green'
-          : status === 'hurt'
-          ? 'red'
-          : status === 'dead'
-          ? 'black'
-          : 'white',
-      transformOrigin: 'bottom right',
-      transform: `rotate(${status === 'dead' ? 90 : 0}deg)`,
-      animation:
-        status === 'hurt' || status === 'dying' ? 'shake 0.5s' : undefined,
-      animationIterationCount:
-        status === 'hurt' || status === 'dying' ? 'infinite' : undefined,
-      border: 'none',
-      outline: active ? '3px solid blue' : 'none',
-    }}
-  >
-    <div>{name}</div>
-    <div>HP: {hp}</div>
-    <div>Speed: {speed}</div>
-  </button>
+const Hero = ({ hp, tp, name, index }: HeroProps) => (
+  <HeroContainer style={{ order: index }}>
+    <p>HP: {hp <= 0 ? '✞' : hp}</p>
+    <p>TP: {tp}</p>
+    <p>{name}</p>
+  </HeroContainer>
 );
 
 export default Hero;

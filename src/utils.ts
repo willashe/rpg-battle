@@ -1,5 +1,5 @@
 import { EntityType } from './types';
-import { EntityTypesEnum } from './constants';
+import { EntityTypesEnum, HERO_NAMES } from './constants';
 const { HERO, MONSTER } = EntityTypesEnum;
 
 export const generateEntity = ({
@@ -8,6 +8,8 @@ export const generateEntity = ({
   type,
   maxHp,
   hp,
+  maxTp,
+  tp,
   attack,
   defense,
   speed,
@@ -19,6 +21,8 @@ export const generateEntity = ({
   type,
   maxHp,
   hp,
+  maxTp,
+  tp,
   attack,
   defense,
   speed,
@@ -26,8 +30,8 @@ export const generateEntity = ({
   queuedActions,
 });
 
-const generateHeroName = (index: number) => {
-  return `Hero-${index}`;
+const generateHeroName = (id: number) => {
+  return HERO_NAMES[id] || `Hero-${id}`;
 };
 
 const generateEnemyName = (type: EntityTypesEnum, index: number) => {
@@ -45,6 +49,8 @@ export const generateHeroes = (count: number) => {
         type: HERO,
         maxHp: 10,
         hp: 10,
+        maxTp: 5,
+        tp: 5,
         attack: 1,
         defense: 3,
         speed: 2,
@@ -68,6 +74,8 @@ export const generateEnemies = (count: number, type: EntityTypesEnum) => {
         type: type,
         maxHp: type === MONSTER ? 10 : 20,
         hp: type === MONSTER ? 10 : 20,
+        maxTp: type === MONSTER ? 5 : 0,
+        tp: type === MONSTER ? 5 : 0,
         attack: 1,
         defense: 3,
         speed: type === MONSTER ? 2 : 3,

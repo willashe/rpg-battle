@@ -2,11 +2,12 @@ import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 
 import './App.css';
 import { AppStateProvider } from './state';
-import Home from './components/Home';
-import Battle from './components/Battle';
+import Home from './pages/Home';
+import Battle from './components/TestBattle';
+// import Battle from './pages/Battle';
 import Player from './components/Player';
 import Monsters from './components/Monsters';
-import About from './components/About';
+import About from './pages/About';
 
 export default function App() {
   return (
@@ -18,7 +19,6 @@ export default function App() {
             <Link to="/battle">Fight Screen</Link>
             <Link to="/player">Player Stuff</Link>
             <Link to="/monsters">Monsters</Link>
-
             <Link to="about">About</Link>
           </nav>
           <Switch>

@@ -2,20 +2,26 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+a {
+  color: #e5e4e2;
+  text-decoration: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+a.visited {
+  color: #e5e4e2;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+a:hover {
+  color: red;
+}
+
+.App {
+  text-align: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,28 +44,7 @@
 }
 
 body {
-  padding: 1rem;
-  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#7ab49f+0,628dab+50,313353+100 */
-  background: #7ab49f; /* Old browsers */
-  background: -moz-linear-gradient(
-    left,
-    #7ab49f 0%,
-    #628dab 50%,
-    #313353 100%
-  ); /* FF3.6-15 */
-  background: -webkit-linear-gradient(
-    left,
-    #7ab49f 0%,
-    #628dab 50%,
-    #313353 100%
-  ); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(
-    to right,
-    #7ab49f 0%,
-    #628dab 50%,
-    #313353 100%
-  ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7ab49f', endColorstr='#313353',GradientType=1 ); /* IE6-9 */
+  background-color: midnightblue;
 }
 
 nav {

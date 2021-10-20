@@ -6,7 +6,7 @@ import { EntityType } from '../types';
 import { EntityTypesEnum, GameStatesEnum } from '../constants';
 import { generateHeroes, generateEnemies, sortEntitiesBySpeed } from '../utils';
 import Window from './Window';
-import Hero from './Hero';
+import Hero from './TestHero';
 import Enemy from './Enemy';
 const { HERO, MONSTER, ROBOT } = EntityTypesEnum;
 const {
