@@ -10,9 +10,11 @@ const Window = (props: any) => {
       {...props}
       style={{
         ...style,
-        padding: 30,
-        background: '#000080',
         position: 'relative',
+        padding: `${5 * multiplier}px ${7 * multiplier}px ${5 * multiplier}px ${
+          7 * multiplier
+        }px`,
+        background: '#000080',
       }}
     >
       <div
@@ -51,7 +53,6 @@ const Window = (props: any) => {
           backgroundSize: `${3 * multiplier}px 100%`,
         }}
       ></div>
-
       <div
         style={{
           position: 'absolute',
