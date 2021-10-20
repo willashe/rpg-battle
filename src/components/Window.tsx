@@ -47,7 +47,7 @@ const Window: React.FunctionComponent<WindowProps> = (props) => {
         style={{
           top: 0,
           left: 0,
-          width: 4 * multiplier,
+          width: 5 * multiplier,
           backgroundImage: `url('./img/left.png')`,
         }}
       />
@@ -73,9 +73,9 @@ const Window: React.FunctionComponent<WindowProps> = (props) => {
         style={{
           top: 0,
           left: 0,
-          width: 4 * multiplier,
+          width: 5 * multiplier,
           height: 3 * multiplier,
-          backgroundImage: `url('./img/top-left.png')`,
+          backgroundImage: `url('./img/top-left-corner.png')`,
         }}
       />
       <Corner
@@ -84,16 +84,16 @@ const Window: React.FunctionComponent<WindowProps> = (props) => {
           right: 0,
           width: 5 * multiplier,
           height: 3 * multiplier,
-          backgroundImage: `url('./img/top-right.png')`,
+          backgroundImage: `url('./img/top-right-corner.png')`,
         }}
       />
       <Corner
         style={{
           bottom: 0,
           left: 0,
-          width: 4 * multiplier,
+          width: 5 * multiplier,
           height: 3 * multiplier,
-          backgroundImage: `url('./img/bottom-left.png')`,
+          backgroundImage: `url('./img/bottom-left-corner.png')`,
         }}
       />
       <Corner
@@ -102,7 +102,7 @@ const Window: React.FunctionComponent<WindowProps> = (props) => {
           right: 0,
           width: 5 * multiplier,
           height: 3 * multiplier,
-          backgroundImage: `url('./img/bottom-right.png')`,
+          backgroundImage: `url('./img/bottom-right-corner.png')`,
         }}
       />
     </Container>

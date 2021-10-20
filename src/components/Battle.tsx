@@ -5,6 +5,7 @@ import { actionCreators } from '../actions';
 import { EntityType } from '../types';
 import { EntityTypesEnum, GameStatesEnum } from '../constants';
 import { generateHeroes, generateEnemies, sortEntitiesBySpeed } from '../utils';
+import Window from './Window';
 import Hero from './Hero';
 import Enemy from './Enemy';
 const { HERO, MONSTER, ROBOT } = EntityTypesEnum;
@@ -16,7 +17,6 @@ const {
   POST_EXECUTION,
   GAME_WON,
   GAME_LOST,
-  INTERRUPT,
 } = GameStatesEnum;
 
 const {
@@ -244,7 +244,7 @@ const Battle = () => {
     <>
       <h1>Battle!</h1>
 
-      <div>
+      <Window>
         <label htmlFor="numHeroes">Heroes: </label>
         <input
           type="number"
@@ -259,7 +259,7 @@ const Battle = () => {
           disabled={
             numLeftEnemies + numRightEnemies <= 0 ||
             gameState === EXECUTING ||
-            gameState === INTERRUPT
+            gameState === POST_EXECUTION
           }
         />
         <label htmlFor="numLeftEnemies">Monsters: </label>
@@ -276,7 +276,7 @@ const Battle = () => {
           disabled={
             numLeftEnemies + numRightEnemies <= 0 ||
             gameState === EXECUTING ||
-            gameState === INTERRUPT
+            gameState === POST_EXECUTION
           }
         />
         <label htmlFor="numRightEnemies">Robots: </label>
@@ -293,7 +293,7 @@ const Battle = () => {
           disabled={
             numLeftEnemies + numRightEnemies <= 0 ||
             gameState === EXECUTING ||
-            gameState === INTERRUPT
+            gameState === POST_EXECUTION
           }
         />
         <br />
@@ -302,12 +302,12 @@ const Battle = () => {
           disabled={
             numLeftEnemies + numRightEnemies <= 0 ||
             gameState === EXECUTING ||
-            gameState === INTERRUPT
+            gameState === POST_EXECUTION
           }
         >
           New Game
         </button>
-      </div>
+      </Window>
 
       <div>Game State: {gameState}</div>
       <div>Player Interrupt: {String(playerInterrupt)}</div>
@@ -322,28 +322,26 @@ const Battle = () => {
             justifyContent: 'space-between',
           }}
         >
-          <div
+          <Window
             style={{
               color: 'white',
               height: 100,
               width: 400,
-              background: 'blue',
             }}
           >
             <div>{enemies?.left?.name || ''}</div>
             <div>{enemies?.left?.message || ''}</div>
-          </div>
-          <div
+          </Window>
+          <Window
             style={{
               color: 'white',
               height: 100,
               width: 400,
-              background: 'blue',
             }}
           >
             <div>{enemies?.right?.name || ''}</div>
             <div>{enemies?.right?.message || ''}</div>
-          </div>
+          </Window>
         </div>
       )}
 
