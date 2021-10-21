@@ -1,15 +1,14 @@
 import styled from 'styled-components';
-import { EntityType } from '../types';
 
-const HeroContainer = styled.div`
+import { EntityType } from '../types';
+import Window from './Window';
+
+const HeroContainer = styled(Window)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 1.4rem;
-  padding: 0 70px;
-  margin: 0 1.1px;
-  border: 10px solid #e5e4e2;
   flex: 0 1 auto;
+  width: 270px;
 `;
 
 interface HeroProps {

@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  image-rendering: pixelated;
 }
 
 a {
@@ -38,7 +39,9 @@ main {
 }
 
 body {
-  background-color: midnightblue;
+  background: #000080;
+  font-size: 1.4rem;
+  color: white;
 }
 
 @keyframes shake {

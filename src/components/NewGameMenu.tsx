@@ -1,13 +1,25 @@
 import { useContext, useState } from 'react';
+import styled from 'styled-components';
+
 import { AppStateContext } from '../state';
 import { actionCreators } from '../actions';
 import { EntityTypesEnum, GameStatesEnum } from '../constants';
 import { generateHeroes, generateEnemies } from '../utils';
+import Window from './Window';
 
 const { HERO, MONSTER, ROBOT } = EntityTypesEnum;
 const { NEW_GAME, GAME_WON, GAME_LOST } = GameStatesEnum;
-
 const { startNewGame: startNewGameAction, attackThunk } = actionCreators;
+
+const Button = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.1rem;
+  border: 1px solid;
+  border-radius: 8px;
+  margin: 0 auto;
+`;
 
 const NewGameMenu = () => {
   const [state, dispatch] = useContext(AppStateContext);
@@ -72,16 +84,15 @@ const NewGameMenu = () => {
   };
 
   return (
-    <div
+    <Window
       style={{
         position: 'fixed',
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        background: '#000080',
         width: 500,
-        height: 300,
-        border: '8px solid white',
+        height: 150,
+        zIndex: 10, // TODO: might be worth building a simple dialog controller for windows like this
       }}
     >
       <div>
@@ -128,13 +139,13 @@ const NewGameMenu = () => {
         max="10"
       />
       <br />
-      <button
+      <Button
         onClick={startNewGame}
         disabled={numLeftEnemies + numRightEnemies <= 0}
       >
         New Game
-      </button>
-    </div>
+      </Button>
+    </Window>
   );
 };
 

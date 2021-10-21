@@ -2,29 +2,23 @@ import { useContext } from 'react';
 import styled from 'styled-components';
 
 import { AppStateContext } from '../state';
-import NewGameMenu from './NewGameMenu';
 import { GameStatesEnum } from '../constants';
+import Window from './Window';
+import NewGameMenu from './NewGameMenu';
 
 const { INIT, GAME_WON, GAME_LOST } = GameStatesEnum;
 
 const BattleSection = styled.section`
   position: relative;
   flex: 0 1 100%;
-  background-color: midnightblue;
-  text-align: center;
 `;
 
-const MessageBox = styled.div`
+const MessageBox = styled(Window)`
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  padding: 15px;
-  border: 10px solid #e5e4e2;
   margin-bottom: 14px;
-  font-size: 1.4rem;
-  color: #e5e4e2;
-  background: #000080;
 `;
 
 const MainBattleSection = () => {

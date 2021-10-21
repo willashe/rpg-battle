@@ -10,6 +10,7 @@ const BattleContainer = styled.div`
   flex-direction: column;
   top: 0;
   align-items: stretch;
+  background: #000080;
 `;
 
 const Battle = () => (
