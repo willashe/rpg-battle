@@ -1,5 +1,6 @@
-import React from 'react';
 import styled from 'styled-components';
+
+import { EntityType } from '../types';
 import Window from './Window';
 
 const HeroContainer = styled(Window)`
@@ -11,18 +12,20 @@ const HeroContainer = styled(Window)`
 `;
 
 interface HeroProps {
-  name: string;
-  hp: number;
-  tp: number;
+  hero: EntityType;
   index: number;
 }
 
-const Hero = ({ hp, tp, name, index }: HeroProps) => (
-  <HeroContainer style={{ order: index }}>
-    <p>HP: {hp <= 0 ? '✞' : hp}</p>
-    <p>TP: {tp}</p>
-    <p>{name}</p>
-  </HeroContainer>
-);
+const Hero = ({ hero, index }: HeroProps) => {
+  const { hp, tp, name } = hero;
+
+  return (
+    <HeroContainer style={{ order: index }}>
+      <p>HP: {hp <= 0 ? '✞' : hp}</p>
+      <p>TP: {tp}</p>
+      <p>{name}</p>
+    </HeroContainer>
+  );
+};
 
 export default Hero;

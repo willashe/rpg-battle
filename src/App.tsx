@@ -1,12 +1,11 @@
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 
-import { AppStateProvider } from './state';
-import Home from './pages/Home';
-import Battle from './pages/Battle';
-// import Battle from './components/BattleWithStateExample';
-import About from './pages/About';
 import './Reset.css';
 import './App.css';
+import { AppStateProvider } from './state';
+import Home from './pages/Home';
+import BattleContainer from './containers/BattleContainer';
+import About from './pages/About';
 
 export default function App() {
   return (
@@ -21,7 +20,7 @@ export default function App() {
           <main>
             <Switch>
               <Route exact path="/" component={Home} />
-              <Route exact path="/battle" component={Battle} />
+              <Route exact path="/battle" component={BattleContainer} />
               <Route exact path="/about" component={About} />
             </Switch>
           </main>

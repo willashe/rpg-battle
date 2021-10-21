@@ -1,8 +1,16 @@
-import React from 'react';
+import { useContext } from 'react';
 import styled from 'styled-components';
-import Hero from './Hero';
-import { EntityType } from '../types';
+
+import { AppStateContext } from '../state';
+import { actionCreators } from '../actions';
+import { GameStatesEnum } from '../constants';
+import { sortEntitiesBySpeed } from '../utils';
 import Window from './Window';
+import Hero from './Hero';
+
+const { startNewRound: startNewRoundAction, setPlayerInterrupt } =
+  actionCreators;
+const { INIT, EXECUTING, GAME_WON, GAME_LOST } = GameStatesEnum;
 
 const PlayerInfo = styled.section`
   display: flex;
@@ -25,24 +33,47 @@ const PlayerButton = styled.button`
   padding: 10px;
 `;
 
-interface PlayerInfoSectionProps {
-  heroes: Array<EntityType>;
-}
+const PlayerInfoSection = () => {
+  const [state, dispatch] = useContext(AppStateContext);
+  const { gameState, queueIndex, heroes, enemies } = state;
 
-const PlayerInfoSection = (props: PlayerInfoSectionProps) => {
-  const { heroes } = props;
+  const startNewRound = () => {
+    const newQueue = [
+      ...heroes,
+      ...enemies.left.entities,
+      ...enemies.right.entities,
+    ]
+      .sort(sortEntitiesBySpeed)
+      .map((entity) => entity.queuedActions)
+      .reduce((prev, curr) => [...prev, ...curr], []);
+
+    dispatch(startNewRoundAction(newQueue));
+  };
 
   return (
     <PlayerInfo>
-      {heroes.map(({ hp, tp, name }, index) => (
-        <Hero key={index} hp={hp} tp={tp} name={name} index={index} />
+      {heroes.map((hero, index) => (
+        <Hero hero={hero} index={index} />
       ))}
 
       <PlayerMenu>
         <p>ATTK</p>
-        <PlayerButton></PlayerButton>
+        <PlayerButton
+          disabled={
+            queueIndex !== null ||
+            gameState === INIT ||
+            gameState === GAME_WON ||
+            gameState === GAME_LOST
+          }
+          onClick={startNewRound}
+        ></PlayerButton>
         <p>ORDR</p>
-        <PlayerButton></PlayerButton>
+        <PlayerButton
+          disabled={queueIndex === null || gameState !== EXECUTING}
+          onClick={() => {
+            dispatch(setPlayerInterrupt(true));
+          }}
+        ></PlayerButton>
       </PlayerMenu>
     </PlayerInfo>
   );
