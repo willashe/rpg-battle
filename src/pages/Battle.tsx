@@ -1,6 +1,5 @@
-import { useContext } from 'react';
 import styled from 'styled-components';
-import { AppStateContext } from '../state';
+
 import EnemyGroupSection from '../components/EnemyGroupSection';
 import MainBattleSection from '../components/MainBattleSection';
 import PlayerInfoSection from '../components/PlayerInfoSection';
@@ -13,19 +12,14 @@ const BattleContainer = styled.div`
   align-items: stretch;
 `;
 
-const Battle = () => {
-  const [state] = useContext(AppStateContext);
-  const { heroes, enemies } = state;
-
-  return (
-    <>
-      <BattleContainer>
-        <EnemyGroupSection enemies={enemies} />
-        <MainBattleSection />
-        <PlayerInfoSection heroes={heroes} />
-      </BattleContainer>
-    </>
-  );
-};
+const Battle = () => (
+  <>
+    <BattleContainer>
+      <EnemyGroupSection />
+      <MainBattleSection />
+      <PlayerInfoSection />
+    </BattleContainer>
+  </>
+);
 
 export default Battle;

@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import styled from 'styled-components';
 
-import { EntityType } from '../types';
 import { AppStateContext } from '../state';
 import { actionCreators } from '../actions';
 import { GameStatesEnum } from '../constants';
@@ -35,11 +34,7 @@ const PlayerButton = styled.button`
   padding: 10px;
 `;
 
-interface PlayerInfoSectionProps {
-  heroes: Array<EntityType>;
-}
-
-const PlayerInfoSection = (props: PlayerInfoSectionProps) => {
+const PlayerInfoSection = () => {
   const [state, dispatch] = useContext(AppStateContext);
   const { gameState, queueIndex, heroes, enemies } = state;
 
@@ -58,8 +53,8 @@ const PlayerInfoSection = (props: PlayerInfoSectionProps) => {
 
   return (
     <PlayerInfo>
-      {heroes.map(({ hp, tp, name }, index) => (
-        <Hero key={index} hp={hp} tp={tp} name={name} index={index} />
+      {heroes.map((hero, index) => (
+        <Hero hero={hero} index={index} />
       ))}
 
       <PlayerMenu>

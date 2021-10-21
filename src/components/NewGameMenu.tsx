@@ -102,7 +102,6 @@ const NewGameMenu = () => {
         }}
         min="1"
         max="10"
-        disabled={numLeftEnemies + numRightEnemies <= 0}
       />
       <label htmlFor="numLeftEnemies">Monsters: </label>
       <input
@@ -115,7 +114,6 @@ const NewGameMenu = () => {
         }}
         min="0"
         max="10"
-        disabled={numLeftEnemies + numRightEnemies <= 0}
       />
       <label htmlFor="numRightEnemies">Robots: </label>
       <input
@@ -128,10 +126,14 @@ const NewGameMenu = () => {
         }}
         min="0"
         max="10"
-        disabled={numLeftEnemies + numRightEnemies <= 0}
       />
       <br />
-      <button onClick={startNewGame}>New Game</button>
+      <button
+        onClick={startNewGame}
+        disabled={numLeftEnemies + numRightEnemies <= 0}
+      >
+        New Game
+      </button>
     </div>
   );
 };

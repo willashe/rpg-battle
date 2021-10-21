@@ -17,6 +17,8 @@ import {
 } from './actionTypes';
 import {
   AppStateType,
+  EntityType,
+  EnemyGroupsType,
   ActionType,
   TargetType,
   EntityActionType,
@@ -156,6 +158,7 @@ export const attackThunk =
       }
     } else {
       if (actorGroup === HERO) {
+        // TODO: combine setEnemyGroupMessage and setMessage, and just set message based on provided group
         dispatch(setEnemyGroupMessage(targetGroup, 'miss'));
       } else {
         dispatch(setMessage('dodged!'));
@@ -172,9 +175,9 @@ export const attackThunk =
     dispatch(setGameState(POST_EXECUTION));
   };
 
-// TODO: ts
 export const deathCycleThunk =
-  (heroes: any, enemies: any) => async (dispatch: Dispatch<ActionType>) => {
+  (heroes: EntityType[], enemies: EnemyGroupsType) =>
+  async (dispatch: Dispatch<ActionType>) => {
     const { left, right } = enemies;
 
     let livingHeroes = 0;
