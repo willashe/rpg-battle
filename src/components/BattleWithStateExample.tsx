@@ -1,12 +1,12 @@
 import { useContext } from 'react';
 
 import { AppStateContext } from '../state';
-import { actions } from '../actions';
+// import { actionCreators } from '../actions';
 
-const { startNewGame, gameOver } = actions;
+// const { startNewGame, gameOver } = actionCreators;
 
 const Battle = () => {
-  const [state, dispatch] = useContext(AppStateContext);
+  const [state] = useContext(AppStateContext);
   const { heroes, enemies } = state;
 
   console.log(heroes);
@@ -16,8 +16,8 @@ const Battle = () => {
     <>
       <h1>Battle!</h1>
 
-      <button onClick={() => dispatch(startNewGame())}>New Game</button>
-      <button onClick={() => dispatch(gameOver())}>Game Over</button>
+      {/* <button onClick={() => dispatch(startNewGame())}>New Game</button>
+      <button onClick={() => dispatch(gameOver())}>Game Over</button> */}
     </>
   );
 };
