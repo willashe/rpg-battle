@@ -1,6 +1,34 @@
+@font-face {
+  font-family: 'PixelEmulator';
+  src: url('./fonts/PixelEmulator.eot') format('embedded-opentype'),
+    url('./fonts/PixelEmulator.woff2') format('woff2'),
+    url('./fonts/PixelEmulator.woff') format('woff'),
+    url('./fonts/PixelEmulator.ttf') format('truetype'),
+    url('./fonts/PixelEmulator.svg') format('svg');
+}
+
 * {
   box-sizing: border-box;
   image-rendering: pixelated;
+}
+
+body {
+  background: #000080;
+  font-size: 1.4rem;
+  color: white;
+  font-family: 'PixelEmulator', sans-serif;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: none;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+nav {
+  display: flex;
+  justify-content: space-evenly;
+  flex: 0 0 auto;
 }
 
 a {
@@ -26,22 +54,6 @@ a:hover {
   right: 0;
   display: flex;
   flex-direction: column;
-}
-
-nav {
-  display: flex;
-  justify-content: space-evenly;
-  flex: 0 0 auto;
-}
-
-main {
-  flex: 1 0 auto;
-}
-
-body {
-  background: #000080;
-  font-size: 1.4rem;
-  color: white;
 }
 
 @keyframes shake {
