@@ -10,10 +10,9 @@ const BattleButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 1.1rem;
   border: 1px solid;
-  border-radius: 10px;
-  width: 96px;
-  height: 36px;
+  border-radius: 8px;
   margin: 0 auto;
 `;
 
@@ -23,6 +22,7 @@ const BattleContainer = styled.div`
   flex-direction: column;
   top: 0;
   align-items: stretch;
+  background: #000080;
 `;
 
 const { startNewGame, gameOver } = actions;

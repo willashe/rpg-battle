@@ -6,9 +6,8 @@ const HeroContainer = styled(Window)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 1.1px;
   flex: 0 1 auto;
-  width: 250px;
+  width: 270px;
 `;
 
 interface HeroProps {

@@ -7,7 +7,7 @@ import Window from './Window';
 const PlayerInfo = styled.section`
   display: flex;
   justify-content: center;
-  background-color: midnightblue;
+  background-color: #000080;
   flex: 0 1 200px;
 `;
 

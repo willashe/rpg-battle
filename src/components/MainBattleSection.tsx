@@ -5,12 +5,11 @@ import Window from './Window';
 const BattleSection = styled.section`
   display: flex;
   flex: 0 1 100%;
-  background-color: midnightblue;
+  background-color: #000080;
 `;
 
 const MessageBox = styled(Window)`
-  width: 15%;
-  min-width: 0;
+  width: 17%;
   margin: 0 auto;
   align-self: flex-end;
   margin-bottom: 14px;

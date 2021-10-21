@@ -1,116 +1,111 @@
 import React from 'react';
+import styled from 'styled-components';
 
 const multiplier = 4;
 
-const Window = (props: any) => {
-  const { style, children } = props;
+const Container = styled.div`
+  background: #000080;
+  color: white;
+  position: relative;
+  padding: ${5 * multiplier}px ${8 * multiplier}px ${5 * multiplier}px
+    ${8 * multiplier}px;
+`;
+
+const Corner = styled.div`
+  position: absolute;
+  background-size: cover;
+  background-repeat: none;
+`;
+
+const Side = styled.div`
+  position: absolute;
+  height: 100%;
+  background-size: 100%;
+  background-repeat: repeat-y;
+`;
+
+const TopBottom = styled.div`
+  position: absolute;
+  height: ${3 * multiplier}px;
+  width: 100%;
+  background-size: ${5 * multiplier}px 100%;
+  background-repeat: repeat-x;
+`;
+
+interface WindowProps {
+  style?: object;
+}
+
+const Window: React.FunctionComponent<WindowProps> = (props) => {
+  const { children } = props;
 
   return (
-    <div
-      {...props}
-      style={{
-        ...style,
-        position: 'relative',
-        padding: `${5 * multiplier}px ${7 * multiplier}px ${5 * multiplier}px ${
-          7 * multiplier
-        }px`,
-        background: '#000080',
-      }}
-    >
-      <div
-        style={{
-          position: 'absolute',
-          height: 3 * multiplier,
-          width: '100%',
-          top: 0,
-          left: 0,
-          backgroundImage: 'url(./assets/top.png)',
-          backgroundRepeat: 'repeat-x',
-          backgroundSize: `${3 * multiplier}px 100%`,
-        }}
-      ></div>
-      <div
-        style={{
-          position: 'absolute',
-          right: 0,
-          height: '100%',
-          width: 5 * multiplier,
-          top: 0,
-          backgroundImage: 'url(./assets/right.png)',
-          backgroundRepeat: 'repeat-y',
-          backgroundSize: '100%',
-        }}
-      ></div>
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          height: 3 * multiplier,
-          width: '100%',
-          backgroundImage: 'url(./assets/bottom.png)',
-          backgroundRepeat: 'repeat-x',
-          backgroundSize: `${3 * multiplier}px 100%`,
-        }}
-      ></div>
-      <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          width: 5 * multiplier,
-          height: '100%',
-          backgroundImage: 'url(./assets/left.png)',
-          backgroundRepeat: 'repeat-y',
-          backgroundSize: '100%',
-        }}
-      ></div>
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          height: 3 * multiplier,
-          width: 5 * multiplier,
-          backgroundImage: 'url(./assets/top-left-corner.png)',
-          backgroundSize: '100%',
-        }}
-      ></div>
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          height: 3 * multiplier,
-          width: 5 * multiplier,
-          backgroundImage: 'url(./assets/bottom-left-corner.png)',
-          backgroundSize: '100%',
-        }}
-      ></div>
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          height: 3 * multiplier,
-          width: 5 * multiplier,
-          backgroundImage: 'url(./assets/top-right-corner.png)',
-          backgroundSize: '100%',
-        }}
-      ></div>
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          right: 0,
-          height: 3 * multiplier,
-          width: 5 * multiplier,
-          backgroundImage: 'url(./assets/bottom-right-corner.png)',
-          backgroundSize: '100%',
-        }}
-      ></div>
+    <Container {...props}>
       {children}
-    </div>
+
+      <Side
+        style={{
+          top: 0,
+          left: 0,
+          width: 5 * multiplier,
+          backgroundImage: 'url(./assets/left.png)',
+        }}
+      />
+      <Side
+        style={{
+          top: 0,
+          right: 0,
+          width: 5 * multiplier,
+          backgroundImage: 'url(./assets/right.png)',
+        }}
+      />
+      <TopBottom
+        style={{ top: 0, left: 0, backgroundImage: 'url(./assets/top.png)' }}
+      />
+      <TopBottom
+        style={{
+          bottom: 0,
+          left: 0,
+          backgroundImage: 'url(./assets/bottom.png)',
+        }}
+      />
+      <Corner
+        style={{
+          top: 0,
+          left: 0,
+          width: 5 * multiplier,
+          height: 3 * multiplier,
+          backgroundImage: 'url(./assets/top-left-corner.png)',
+        }}
+      />
+      <Corner
+        style={{
+          top: 0,
+          right: 0,
+          width: 5 * multiplier,
+          height: 3 * multiplier,
+          backgroundImage: 'url(./assets/top-right-corner.png)',
+        }}
+      />
+      <Corner
+        style={{
+          bottom: 0,
+          left: 0,
+          width: 5 * multiplier,
+          height: 3 * multiplier,
+          backgroundImage: 'url(./assets/bottom-left-corner.png)',
+        }}
+      />
+      <Corner
+        style={{
+          bottom: 0,
+          right: 0,
+          width: 5 * multiplier,
+          height: 3 * multiplier,
+          backgroundImage: 'url(./assets/bottom-right-corner.png)',
+        }}
+      />
+    </Container>
   );
 };
 

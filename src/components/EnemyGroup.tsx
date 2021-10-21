@@ -19,7 +19,7 @@ const EnemyName = styled(Window)`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 80%;
+  width: 75%;
 `;
 
 interface EnemyGroupProps {
