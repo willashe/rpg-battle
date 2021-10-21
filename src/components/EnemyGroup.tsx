@@ -1,29 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
+import Window from './Window';
 
 const EnemyGroupContainer = styled.div`
-  width: 30%;
+  width: 35%;
   display: flex;
   justify-content: flex-end;
-  border: 8px solid #e5e4e2;
 `;
 
-const EnemyDmg = styled.div`
+const EnemyDmg = styled(Window)`
   display: flex;
+  justify-content: center;
   align-items: center;
-  font-size: 1.4rem;
-  padding: 0 40px;
-  border: 3px solid #e5e4e2;
-  border-bottom-width: 1px;
-  border-top-width: 1px;
-  border-left-width: 9px;
+  width: 15%;
 `;
 
-const EnemyName = styled.div`
+const EnemyName = styled(Window)`
   display: flex;
+  justify-content: center;
   align-items: center;
-  font-size: 1.4rem;
-  width: 50%;
+  width: 75%;
 `;
 
 interface EnemyGroupProps {

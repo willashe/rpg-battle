@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 
 const About = () => (
   <div>
-    <h1>About Us</h1>
+    <h1>CREDITZ BELOW</h1>
     <Link to="/">
-      <h2>Back</h2>
+      <h3>Back</h3>
     </Link>
   </div>
 );
