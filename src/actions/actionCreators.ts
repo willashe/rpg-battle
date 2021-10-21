@@ -157,10 +157,14 @@ export const attackThunk =
     } else {
       if (actorGroup === HERO) {
         dispatch(setEnemyGroupMessage(targetGroup, 'miss'));
+      } else {
+        dispatch(setMessage('dodged!'));
       }
       await timeout(1000);
       if (actorGroup === HERO) {
         dispatch(setEnemyGroupMessage(targetGroup, ''));
+      } else {
+        dispatch(setMessage(''));
       }
     }
 
