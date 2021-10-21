@@ -1,33 +1,44 @@
-import { createContext, Dispatch, useReducer } from 'react';
+import { createContext, Dispatch, useReducer, useCallback } from 'react';
 
-import { AppStateType } from '../types';
+import { AppStateType, ActionType } from '../types';
+import { GameStatesEnum } from '../constants';
 import reducer from './reducer';
 
-const initialState = {
+const { INIT } = GameStatesEnum;
+
+export const initialState = {
+  gameState: INIT,
+  message: '',
   heroes: [],
-  enemies: {
-    left: {
-      name: '',
-      entities: [],
-    },
-    right: {
-      name: '',
-      entities: [],
-    },
-  },
-};
-
-export const AppStateProvider = ({ children }: any) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  return (
-    <AppStateContext.Provider value={[state, dispatch]}>
-      {children}
-    </AppStateContext.Provider>
-  );
+  enemies: {},
+  activeHero: null,
+  queue: [],
+  queueIndex: null,
+  playerInterrupt: false,
 };
 
 export const AppStateContext = createContext<[AppStateType, Dispatch<any>]>([
   initialState,
   () => null,
 ]);
+
+// TODO
+export const AppStateProvider = ({ children }: any) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  let customDispatch = useCallback((action: ActionType | void) => {
+    if (typeof action === 'function') {
+      // @ts-ignore
+      action(customDispatch);
+    } else {
+      // @ts-ignore
+      dispatch(action);
+    }
+  }, []);
+
+  return (
+    <AppStateContext.Provider value={[state, customDispatch]}>
+      {children}
+    </AppStateContext.Provider>
+  );
+};
