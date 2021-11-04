@@ -1,4 +1,8 @@
-import { GameStatesEnum, EntityTypesEnum } from './constants';
+import {
+  GameStatesEnum,
+  EntityTypesEnum,
+  EntityActionTypesEnum,
+} from './constants';
 
 // TODO: review interface vs. type
 export interface AppStateType {
@@ -26,6 +30,7 @@ export interface EntityType {
   speed: number;
   inventory: ItemType[];
   // equipment: EntityEquipmentType;
+  queuedActionType: EntityActionTypesEnum;
   queuedActions: EntityActionType[];
   animations?: {
     idle: AnimationType;

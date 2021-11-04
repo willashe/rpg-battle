@@ -21,7 +21,7 @@ import {
   TargetType,
   EntityActionType,
 } from '../types';
-import { GameStatesEnum } from '../constants';
+import { EntityActionTypesEnum, GameStatesEnum } from '../constants';
 const { EXECUTING, POST_EXECUTION } = GameStatesEnum;
 
 export const startNewGame = (newGameState: AppStateType) => ({
@@ -66,16 +66,19 @@ export const queueAction = ({
   heroIndex,
   target,
   actionCreator,
+  type,
 }: {
   heroIndex: number;
   target: TargetType;
   actionCreator: any; // TODO
+  type: EntityActionTypesEnum;
 }) => ({
   type: QUEUE_ACTION,
   payload: {
     heroIndex,
     target,
     actionCreator,
+    type,
   },
 });
 

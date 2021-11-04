@@ -11,7 +11,7 @@ const {
   SET_GAME_STATE,
   SET_PLAYER_INTERRUPT,
   // SET_ACTIVE_HERO,
-  // QUEUE_ACTION,
+  QUEUE_ACTION,
   SET_GROUP_MESSAGE,
   SET_ENTITY_STATUS,
   ENTITY_DAMAGE,
@@ -77,36 +77,6 @@ const reducer = (state: AppStateType, action: ActionType) => {
         playerInterrupt: payload,
       };
     }
-    // case SET_ACTIVE_HERO: {
-    //   return {
-    //     ...state,
-    //     activeHero: payload,
-    //   };
-    // }
-    // case QUEUE_ACTION: {
-    //   const { heroIndex, target, actionCreator } = payload;
-    //   const { heroes } = state;
-
-    //   return {
-    //     ...state,
-    //     activeHero: null,
-    //     heroes: [
-    //       ...heroes.slice(0, heroIndex),
-    //       {
-    //         ...heroes[heroIndex],
-    //         queuedActions: [
-    //           // TODO: loop over equipped weapons here if physical attack?
-    //           {
-    //             actor: { group: EntityTypesEnum.HERO, index: heroIndex },
-    //             target,
-    //             actionCreator,
-    //           },
-    //         ],
-    //       },
-    //       ...heroes.slice(heroIndex + 1),
-    //     ],
-    //   };
-    // }
     case SET_GROUP_MESSAGE: {
       const {
         target: { group },
@@ -172,6 +142,39 @@ const reducer = (state: AppStateType, action: ActionType) => {
         groups: {
           ...state.groups,
           [group]: { ...state.groups[group], entities: newGroupEntities },
+        },
+      };
+    }
+    // case SET_ACTIVE_HERO: {
+    //   return {
+    //     ...state,
+    //     activeHero: payload,
+    //   };
+    // }
+    case QUEUE_ACTION: {
+      const { heroIndex: index, target, actionCreator, type } = payload;
+
+      const newEntity = {
+        ...state.groups.player.entities[index],
+        queuedActionType: type,
+        queuedActions: [
+          { actionCreator, actor: { group: 'player', index }, target },
+        ],
+      };
+      const newGroupEntities = [
+        ...state.groups.player.entities.slice(0, index),
+        newEntity,
+        ...state.groups.player.entities.slice(index + 1),
+      ];
+
+      return {
+        ...state,
+        groups: {
+          ...state.groups,
+          player: {
+            ...state.groups.player,
+            entities: newGroupEntities,
+          },
         },
       };
     }

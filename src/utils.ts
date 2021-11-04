@@ -1,5 +1,5 @@
 import { EntityType, ActorType, TargetType } from './types';
-import { EntityTypesEnum, HERO_NAMES } from './constants';
+import { EntityTypesEnum, HERO_NAMES, ATTACK } from './constants';
 import { actionCreators } from './actions';
 const { HERO, MONSTER } = EntityTypesEnum;
 const { attackThunk } = actionCreators;
@@ -16,6 +16,7 @@ export const generateEntity = ({
   defense,
   speed,
   inventory,
+  queuedActionType,
   queuedActions,
 }: EntityType) => ({
   type,
@@ -29,6 +30,7 @@ export const generateEntity = ({
   defense,
   speed,
   inventory,
+  queuedActionType,
   queuedActions,
 });
 
@@ -69,6 +71,7 @@ export const generateHeroes = (count: number) => {
         defense: 3,
         speed: 2,
         inventory: [],
+        queuedActionType: ATTACK,
         queuedActions: [
           generateEntityAction(
             attackThunk,
@@ -104,6 +107,7 @@ export const generateEnemies = (
         defense: 3,
         speed: type === MONSTER ? 2 : 3,
         inventory: [],
+        queuedActionType: ATTACK,
         queuedActions: [
           generateEntityAction(
             attackThunk,

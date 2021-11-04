@@ -15,6 +15,14 @@ export enum EntityTypesEnum {
   ROBOT = 'ROBOT',
 }
 
+export enum EntityActionTypesEnum {
+  ATTACK = 'ATTACK',
+  SKILL = 'SKILL',
+  ITEM = 'ITEM',
+  DEFEND = 'DEFEND',
+}
+export const { ATTACK, SKILL, ITEM, DEFEND } = EntityActionTypesEnum;
+
 export enum GameStatesEnum {
   INIT = 'INIT',
   NEW_GAME = 'NEW_GAME',
@@ -45,5 +53,6 @@ export const NEI: EntityType = {
   defense: 5,
   speed: 3,
   inventory: [],
+  queuedActionType: EntityActionTypesEnum.ATTACK,
   queuedActions: [],
 };
