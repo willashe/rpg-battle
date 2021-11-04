@@ -105,7 +105,7 @@ const BattleContainer = () => {
                 : (leftCount + (rightCount + 1) / 2) * increment
               : targetGroup === 'leftEnemies'
               ? (targetIndex + 1) * increment
-              : (leftCount + targetIndex) * increment
+              : (leftCount + targetIndex + 1) * increment
             : undefined;
 
         dispatch(
