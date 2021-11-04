@@ -35,13 +35,13 @@ const PlayerButton = styled.button`
 
 const PlayerInfoSection = () => {
   const [state, dispatch] = useContext(AppStateContext);
-  const { gameState, queueIndex, heroes, enemies } = state;
+  const { gameState, queueIndex, groups } = state;
 
   const startNewRound = () => {
     const newQueue = [
-      ...heroes,
-      ...enemies.left.entities,
-      ...enemies.right.entities,
+      ...groups.player.entities,
+      ...groups.leftEnemies.entities,
+      ...groups.rightEnemies.entities,
     ]
       .sort(sortEntitiesBySpeed)
       .map((entity) => entity.queuedActions)
@@ -52,8 +52,8 @@ const PlayerInfoSection = () => {
 
   return (
     <PlayerInfo>
-      {heroes.map((hero, index) => (
-        <Hero hero={hero} index={index} />
+      {groups.player.entities.map((hero, index) => (
+        <Hero key={hero.name} hero={hero} index={index} />
       ))}
 
       <PlayerMenu>

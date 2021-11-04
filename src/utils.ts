@@ -1,11 +1,13 @@
-import { EntityType } from './types';
+import { EntityType, ActorType, TargetType } from './types';
 import { EntityTypesEnum, HERO_NAMES } from './constants';
+import { actionCreators } from './actions';
 const { HERO, MONSTER } = EntityTypesEnum;
+const { attackThunk } = actionCreators;
 
 export const generateEntity = ({
-  status,
-  name,
   type,
+  name,
+  status,
   maxHp,
   hp,
   maxTp,
@@ -16,9 +18,9 @@ export const generateEntity = ({
   inventory,
   queuedActions,
 }: EntityType) => ({
-  status,
-  name,
   type,
+  name,
+  status,
   maxHp,
   hp,
   maxTp,
@@ -38,15 +40,27 @@ const generateEnemyName = (type: EntityTypesEnum, index: number) => {
   return `${type}-${index}`;
 };
 
+// TODO: ts any
+export const generateEntityAction = (
+  actionCreator: any,
+  actor: ActorType,
+  target: TargetType
+) => ({
+  actionCreator,
+  actor,
+  target,
+});
+
+// TODO: attributes should be driven by 'type', NEI, ROLF, ROBOT, MONSTER, etc. and a default generic fallback
 export const generateHeroes = (count: number) => {
   const heroes: EntityType[] = [];
 
-  for (let i = 0; i < count; i++) {
+  for (let index = 0; index < count; index++) {
     heroes.push(
       generateEntity({
-        status: 'idle',
-        name: generateHeroName(i),
         type: HERO,
+        name: generateHeroName(index),
+        status: 'idle',
         maxHp: 10,
         hp: 10,
         maxTp: 5,
@@ -55,7 +69,13 @@ export const generateHeroes = (count: number) => {
         defense: 3,
         speed: 2,
         inventory: [],
-        queuedActions: [],
+        queuedActions: [
+          generateEntityAction(
+            attackThunk,
+            { group: 'player', index },
+            { group: 'leftEnemies', index: 0 }
+          ),
+        ],
       })
     );
   }
@@ -63,15 +83,19 @@ export const generateHeroes = (count: number) => {
   return heroes;
 };
 
-export const generateEnemies = (count: number, type: EntityTypesEnum) => {
+export const generateEnemies = (
+  count: number,
+  type: EntityTypesEnum,
+  group: 'leftEnemies' | 'rightEnemies'
+) => {
   const enemies: EntityType[] = [];
 
-  for (let i = 0; i < count; i++) {
+  for (let index = 0; index < count; index++) {
     enemies.push(
       generateEntity({
-        status: 'idle',
-        name: generateEnemyName(type, i),
         type: type,
+        name: generateEnemyName(type, index),
+        status: 'idle',
         maxHp: type === MONSTER ? 10 : 20,
         hp: type === MONSTER ? 10 : 20,
         maxTp: type === MONSTER ? 5 : 0,
@@ -80,7 +104,13 @@ export const generateEnemies = (count: number, type: EntityTypesEnum) => {
         defense: 3,
         speed: type === MONSTER ? 2 : 3,
         inventory: [],
-        queuedActions: [],
+        queuedActions: [
+          generateEntityAction(
+            attackThunk,
+            { group, index },
+            { group: 'player', index: 0 }
+          ),
+        ],
       })
     );
   }

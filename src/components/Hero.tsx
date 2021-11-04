@@ -17,13 +17,16 @@ interface HeroProps {
 }
 
 const Hero = ({ hero, index }: HeroProps) => {
-  const { hp, tp, name } = hero;
+  const { hp, tp, name, position } = hero;
 
   return (
     <HeroContainer style={{ order: index }}>
       <p>HP: {hp <= 0 ? '✞' : hp}</p>
       <p>TP: {tp}</p>
-      <p>{name}</p>
+      <p>
+        {name}
+        {position?.top},{position?.left}
+      </p>
     </HeroContainer>
   );
 };

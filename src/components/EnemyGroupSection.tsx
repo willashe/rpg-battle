@@ -15,13 +15,13 @@ const EnemySection = styled.section`
 const EnemyGroupSection = () => {
   const [state] = useContext(AppStateContext);
   const {
-    enemies: { left, right },
+    groups: { leftEnemies, rightEnemies },
   } = state;
 
   return (
     <EnemySection>
-      <EnemyGroup name={left?.name} message={left?.message} />
-      <EnemyGroup name={right?.name} message={right?.message} />
+      <EnemyGroup type={leftEnemies.type} message={leftEnemies.message} />
+      <EnemyGroup type={rightEnemies.type} message={rightEnemies.message} />
     </EnemySection>
   );
 };

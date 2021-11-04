@@ -6,16 +6,17 @@ export interface AppStateType {
   queue: EntityActionType[];
   queueIndex: number | null;
   playerInterrupt: boolean;
-  activeHero: number | null;
-  message: string;
-  heroes: EntityType[];
-  enemies: EnemyGroupsType;
+  groups: {
+    player: EntityGroupType;
+    leftEnemies: EntityGroupType;
+    rightEnemies: EntityGroupType;
+  };
 }
 
 export interface EntityType {
-  status: string;
-  name: string;
   type: EntityTypesEnum;
+  name: string;
+  status: string;
   hp: number;
   maxHp: number;
   tp: number;
@@ -26,7 +27,46 @@ export interface EntityType {
   inventory: ItemType[];
   // equipment: EntityEquipmentType;
   queuedActions: EntityActionType[];
+  animations?: {
+    idle: AnimationType;
+  };
+  position?: any;
 }
+
+export interface EntityGroupType {
+  type?: EntityTypesEnum;
+  entities: EntityType[];
+  message: string;
+}
+
+export interface AnimationType {
+  frames: string[];
+}
+/*
+
+const hero = {
+  ...,
+  animations: {
+    idle: {
+      frames: [1]
+      duration: 0, // infinite
+    },
+    staged: {
+      frames: [0]
+      duration: 0, // infinite
+    },
+    using: {
+      frames: [2]
+      duration: 1000,
+    },
+    attacking: {
+      frames: [3, 4, 5, 6, 7]
+      duration: 1000,
+    },
+  }
+}
+
+*/
 
 export interface ItemType {}
 
@@ -42,26 +82,47 @@ export interface EquippableItemType {
   twoHanded: boolean;
 }
 
-export interface EntityActionType {
-  actionCreator: any; // TODO
-  actor: TargetType;
-  target: TargetType;
-}
-
 export interface ActionType {
   type: string;
   payload?: any;
 }
 
-export interface TargetType {
-  group: string;
+export interface EntityActionType {
+  actionCreator: any; // TODO
+  // action: EntityActionsEnum;
+  actor: ActorType;
+  target: TargetType;
+}
+
+export interface ActorType {
+  group: 'player' | 'leftEnemies' | 'rightEnemies';
   index: number;
 }
 
-export interface EnemyGroupsType {
-  [key: string]: {
-    name: string;
-    message: string | number;
-    entities: EntityType[];
-  };
+export interface TargetType {
+  group: 'player' | 'leftEnemies' | 'rightEnemies';
+  // | Array<'player' | 'leftEnemies' | 'rightEnemies'>;
+  index?: number;
+  xPosition?: number;
 }
+
+/*
+THOUGHT: maybe multiple target types, MultiGroupTargetType, GroupTargetType, EntityTargetType
+
+export interface GroupTargetType {
+  group: Array<'player' | 'leftEnemies' | 'rightEnemies'>;
+  xPosition?: number;
+}
+
+export interface GroupTargetType {
+  group: 'player' | 'leftEnemies' | 'rightEnemies';
+  xPosition?: number;
+}
+
+export interface EntityTargetType {
+  group: 'player' | 'leftEnemies' | 'rightEnemies';
+  index: number;
+  xPosition?: number;
+}
+
+*/

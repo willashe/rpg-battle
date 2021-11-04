@@ -10,22 +10,19 @@ import {
   SET_PLAYER_INTERRUPT,
   SET_ACTIVE_HERO,
   QUEUE_ACTION,
-  SET_PLAYER_MESSAGE,
-  SET_ENEMY_GROUP_MESSAGE,
+  SET_GROUP_MESSAGE,
   SET_ENTITY_STATUS,
   ENTITY_DAMAGE,
 } from './actionTypes';
 import {
   AppStateType,
-  EntityType,
-  EnemyGroupsType,
+  EntityGroupType,
   ActionType,
   TargetType,
   EntityActionType,
 } from '../types';
-import { GameStatesEnum, EntityTypesEnum } from '../constants';
+import { GameStatesEnum } from '../constants';
 const { EXECUTING, POST_EXECUTION } = GameStatesEnum;
-const { HERO } = EntityTypesEnum;
 
 export const startNewGame = (newGameState: AppStateType) => ({
   type: START_NEW_GAME,
@@ -82,51 +79,59 @@ export const queueAction = ({
   },
 });
 
-export const setMessage = (message: string) => ({
-  type: SET_PLAYER_MESSAGE,
-  payload: message,
+export const setGroupMessage = ({
+  target,
+  message,
+}: {
+  target: TargetType;
+  message: string | number;
+}) => ({
+  type: SET_GROUP_MESSAGE,
+  payload: { target, message },
 });
 
 export const setEntityStatus = (
-  targetGroup: string,
-  targetIndex: number,
-  status: string
+  target: TargetType,
+  status: string,
+  position?: any
 ) => ({
   type: SET_ENTITY_STATUS,
-  payload: { targetGroup, targetIndex, status },
+  payload: { target, status, position },
 });
 
-export const setEnemyGroupMessage = (
-  targetGroup: string,
-  message: string | number
-) => ({
-  type: SET_ENEMY_GROUP_MESSAGE,
-  payload: { targetGroup, message },
-});
-
-export const entityDamage = (
-  targetGroup: string,
-  targetIndex: number,
-  attackPower: number
-) => ({
+export const entityDamage = (target: TargetType, attackPower: number) => ({
   type: ENTITY_DAMAGE,
-  payload: { targetGroup, targetIndex, attackPower },
+  payload: { target, attackPower },
 });
 
 function timeout(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// TODO: maybe pass in full actor/target objects, then we can use attributes and equipped weapons/armor to determine damage dealt, likelihood of missing, targeting behavior, number of attacks, etc.
+// if no index passed, would we then need an array of full group entity objects?
 export const attackThunk =
   (actor: TargetType, target: TargetType) =>
   async (dispatch: Dispatch<ActionType>) => {
-    const { group: actorGroup, index: actorIndex } = actor;
-    const { group: targetGroup, index: targetIndex } = target;
+    const { group: actorGroup } = actor;
 
-    dispatch(setEntityStatus(actorGroup, actorIndex, 'acting'));
+    dispatch(
+      setEntityStatus(
+        actor,
+        'attacking',
+        target.xPosition
+          ? {
+              top: 20,
+              left: `${target.xPosition}%`,
+            }
+          : undefined
+      )
+    );
     await timeout(1000);
-    dispatch(setEntityStatus(actorGroup, actorIndex, 'idle'));
+    dispatch(setEntityStatus(actor, 'idle'));
 
+    // TODO: use full objects for actor and target/s to determine who gets hit and for how much
+    // TODO: loop over target group if array
     const attackPower = Math.floor(Math.random() * 5);
     let crit = false;
     if (Math.random() > 0.85) {
@@ -135,39 +140,58 @@ export const attackThunk =
 
     if (attackPower > 0) {
       if (crit) {
-        dispatch(setMessage('terrific blow!!!'));
+        dispatch(
+          setGroupMessage({
+            target: { group: 'player' },
+            message: 'terrific blow!!!',
+          })
+        );
       }
-      if (actorGroup === HERO) {
-        dispatch(setEnemyGroupMessage(targetGroup, attackPower));
+      if (actorGroup === 'player') {
+        dispatch(
+          setGroupMessage({
+            target,
+            message: attackPower,
+          })
+        );
       }
-      dispatch(setEntityStatus(targetGroup, targetIndex, 'hurt'));
+      dispatch(setEntityStatus(target, 'hurt'));
       await timeout(1000);
-      if (actorGroup === HERO) {
-        dispatch(setEnemyGroupMessage(targetGroup, ''));
+      if (actorGroup === 'player') {
+        dispatch(
+          setGroupMessage({
+            target,
+            message: '',
+          })
+        );
       }
-      dispatch(setEntityStatus(targetGroup, targetIndex, 'alive'));
-      dispatch(
-        entityDamage(
-          targetGroup,
-          targetIndex,
-          crit ? attackPower * 2 : attackPower
-        )
-      );
+      dispatch(setEntityStatus(target, 'idle'));
+      dispatch(entityDamage(target, crit ? attackPower * 2 : attackPower));
       if (crit) {
-        dispatch(setMessage(''));
+        dispatch(
+          setGroupMessage({
+            target: { group: 'player' },
+            message: '',
+          })
+        );
       }
     } else {
-      if (actorGroup === HERO) {
-        // TODO: combine setEnemyGroupMessage and setMessage, and just set message based on provided group
-        dispatch(setEnemyGroupMessage(targetGroup, 'miss'));
-      } else {
-        dispatch(setMessage('dodged!'));
+      if (actorGroup === 'player') {
+        dispatch(
+          setGroupMessage({
+            target,
+            message: 'miss',
+          })
+        );
       }
       await timeout(1000);
-      if (actorGroup === HERO) {
-        dispatch(setEnemyGroupMessage(targetGroup, ''));
-      } else {
-        dispatch(setMessage(''));
+      if (actorGroup === 'player') {
+        dispatch(
+          setGroupMessage({
+            target,
+            message: '',
+          })
+        );
       }
     }
 
@@ -175,16 +199,18 @@ export const attackThunk =
     dispatch(setGameState(POST_EXECUTION));
   };
 
-export const deathCycleThunk =
-  (heroes: EntityType[], enemies: EnemyGroupsType) =>
+export const postExecutionThunk =
+  (
+    heroes: EntityGroupType,
+    leftEnemies: EntityGroupType,
+    rightEnemies: EntityGroupType
+  ) =>
   async (dispatch: Dispatch<ActionType>) => {
-    const { left, right } = enemies;
-
     let livingHeroes = 0;
     let livingLeft = 0;
     let livingRight = 0;
 
-    for (const [index, hero] of heroes.entries()) {
+    for (const [index, hero] of heroes.entities.entries()) {
       const { status, hp } = hero;
 
       if (hp > 0) {
@@ -192,12 +218,12 @@ export const deathCycleThunk =
       }
 
       if (status !== 'dying' && status !== 'dead' && hp <= 0) {
-        dispatch(setEntityStatus(HERO, index, 'dying'));
+        dispatch(setEntityStatus({ group: 'player', index }, 'dying'));
         await timeout(1000);
-        dispatch(setEntityStatus(HERO, index, 'dead'));
+        dispatch(setEntityStatus({ group: 'player', index }, 'dead'));
       }
     }
-    for (const [index, enemy] of left.entities.entries()) {
+    for (const [index, enemy] of leftEnemies.entities.entries()) {
       const { status, hp } = enemy;
 
       if (hp > 0) {
@@ -205,12 +231,12 @@ export const deathCycleThunk =
       }
 
       if (status !== 'dying' && status !== 'dead' && hp <= 0) {
-        dispatch(setEntityStatus('left', index, 'dying'));
+        dispatch(setEntityStatus({ group: 'leftEnemies', index }, 'dying'));
         await timeout(1000);
-        dispatch(setEntityStatus('left', index, 'dead'));
+        dispatch(setEntityStatus({ group: 'leftEnemies', index }, 'dead'));
       }
     }
-    for (const [index, enemy] of right.entities.entries()) {
+    for (const [index, enemy] of rightEnemies.entities.entries()) {
       const { status, hp } = enemy;
 
       if (hp > 0) {
@@ -218,9 +244,9 @@ export const deathCycleThunk =
       }
 
       if (status !== 'dying' && status !== 'dead' && hp <= 0) {
-        dispatch(setEntityStatus('right', index, 'dying'));
+        dispatch(setEntityStatus({ group: 'rightEnemies', index }, 'dying'));
         await timeout(1000);
-        dispatch(setEntityStatus('right', index, 'dead'));
+        dispatch(setEntityStatus({ group: 'rightEnemies', index }, 'dead'));
       }
     }
 

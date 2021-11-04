@@ -7,9 +7,9 @@ import { EntityTypesEnum, GameStatesEnum } from '../constants';
 import { generateHeroes, generateEnemies } from '../utils';
 import Window from './Window';
 
-const { HERO, MONSTER, ROBOT } = EntityTypesEnum;
+const { MONSTER, ROBOT } = EntityTypesEnum;
 const { NEW_GAME, GAME_WON, GAME_LOST } = GameStatesEnum;
-const { startNewGame: startNewGameAction, attackThunk } = actionCreators;
+const { startNewGame: startNewGameAction } = actionCreators;
 
 const Button = styled.button`
   display: flex;
@@ -29,55 +29,27 @@ const NewGameMenu = () => {
   const [numRightEnemies, setNumRightEnemies] = useState(1);
 
   const startNewGame = () => {
-    // TODO: abstract building of queuedActions into reusable util function (check equipped weapons)
-    const newHeroes = generateHeroes(numHeroes).map((hero, index) => ({
-      ...hero,
-      queuedActions: [
-        {
-          actionCreator: attackThunk,
-          actor: { group: HERO, index },
-          target: { group: 'left', index: 0 },
-        },
-      ],
-    }));
-    const leftEnemies = generateEnemies(numLeftEnemies, MONSTER).map(
-      (enemy, index) => ({
-        ...enemy,
-        queuedActions: [
-          {
-            actionCreator: attackThunk,
-            actor: { group: 'left', index },
-            target: { group: HERO, index: 0 },
-          },
-        ],
-      })
-    );
-    const rightEnemies = generateEnemies(numRightEnemies, ROBOT).map(
-      (enemy, index) => ({
-        ...enemy,
-        queuedActions: [
-          {
-            actionCreator: attackThunk,
-            actor: { group: 'right', index },
-            target: { group: HERO, index: 0 },
-          },
-        ],
-      })
-    );
-
-    // TODO: figure out where best to compose all this...
     const newGameData = {
       gameState: NEW_GAME,
-      message: '',
-      heroes: newHeroes,
-      enemies: {
-        left: { name: 'Monster', message: '', entities: leftEnemies },
-        right: { name: 'Robot', message: '', entities: rightEnemies },
-      },
-      activeHero: null,
       queue: [],
       queueIndex: null,
       playerInterrupt: false,
+      groups: {
+        player: {
+          entities: generateHeroes(numHeroes),
+          message: '',
+        },
+        leftEnemies: {
+          type: MONSTER,
+          message: '',
+          entities: generateEnemies(numLeftEnemies, MONSTER, 'leftEnemies'),
+        },
+        rightEnemies: {
+          type: ROBOT,
+          message: '',
+          entities: generateEnemies(numRightEnemies, ROBOT, 'rightEnemies'),
+        },
+      },
     };
 
     dispatch(startNewGameAction(newGameData));
