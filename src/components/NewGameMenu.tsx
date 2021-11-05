@@ -63,7 +63,8 @@ const NewGameMenu = () => {
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: 500,
-        height: 150,
+        height: 200,
+        padding: '1.5rem 0 0',
         zIndex: 10, // TODO: might be worth building a simple dialog controller for windows like this
       }}
     >
@@ -86,7 +87,8 @@ const NewGameMenu = () => {
         min="1"
         max="4"
       />
-      <label htmlFor="numLeftEnemies">Monsters: </label>
+      <br />
+      <label htmlFor="numLeftEnemies">Froggys: </label>
       <input
         type="number"
         id="numLeftEnemies"
@@ -98,7 +100,8 @@ const NewGameMenu = () => {
         min={numRightEnemies === 0 ? 1 : 0}
         max={numRightEnemies === 3 ? 1 : numRightEnemies === 2 ? 2 : 3}
       />
-      <label htmlFor="numRightEnemies">Robots: </label>
+      <br />
+      <label htmlFor="numRightEnemies">Sakoffs: </label>
       <input
         type="number"
         id="numRightEnemies"
@@ -115,7 +118,7 @@ const NewGameMenu = () => {
         onClick={startNewGame}
         disabled={numLeftEnemies + numRightEnemies <= 0}
       >
-        New Game
+        Start Game
       </Button>
     </Window>
   );
