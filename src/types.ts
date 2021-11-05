@@ -18,6 +18,8 @@ export interface AppStateType {
 }
 
 export interface EntityType {
+  id: number;
+  group: 'player' | 'leftEnemies' | 'rightEnemies';
   type: EntityTypesEnum;
   name: string;
   status: string;
@@ -30,8 +32,10 @@ export interface EntityType {
   speed: number;
   inventory: ItemType[];
   // equipment: EntityEquipmentType;
-  queuedActionType: EntityActionTypesEnum;
-  queuedActions: EntityActionType[];
+  queuedAction: {
+    type: EntityActionTypesEnum;
+    target: TargetType;
+  };
   animations?: {
     idle: AnimationType;
   };
@@ -108,7 +112,7 @@ export interface TargetType {
   group: 'player' | 'leftEnemies' | 'rightEnemies';
   // | Array<'player' | 'leftEnemies' | 'rightEnemies'>;
   index?: number;
-  xPosition?: number;
+  xPosition?: number | string;
 }
 
 /*

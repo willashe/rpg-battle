@@ -8,7 +8,7 @@ import NewGameMenu from './NewGameMenu';
 
 const multiplier = 3;
 
-const { INIT, GAME_WON, GAME_LOST } = GameStatesEnum;
+const { INIT, PLAYER_INPUT, GAME_WON, GAME_LOST } = GameStatesEnum;
 
 const BattleSection = styled.section`
   position: relative;
@@ -43,7 +43,7 @@ const MainBattleSection = () => {
           style={{
             position: 'absolute',
             top: 0,
-            left: `${index * 20 + 20}%`,
+            left: `${(index + 1) * (100 / (combinedEnemies.length + 1))}%`,
             height: 130,
             width: 100,
             transform: `translateX(-50%)`,
@@ -85,6 +85,10 @@ const MainBattleSection = () => {
       ))}
 
       {groups.player.entities.map(({ name, status, position }, index) => {
+        const defaultXPosition = `${
+          index === 0 ? 40 : index === 1 ? 60 : index === 2 ? 20 : 80
+        }%`;
+
         return (
           <div
             key={name}
@@ -92,18 +96,21 @@ const MainBattleSection = () => {
               position: 'absolute',
               top: position?.top,
               bottom: `${position?.bottom || 0}px`,
-              // TODO: wtf...?
-              // left: `${position?.left || index * 20 + 20}%`,
-              left: position?.left || `${index * 20 + 20}%`,
+              left: position?.left || defaultXPosition,
               right: position?.right,
               height: 64 * multiplier,
-              width: 32 * multiplier,
+              width: 64 * multiplier,
               transform: `translateX(-50%)`,
             }}
           >
             <div
               key={name}
               style={{
+                visibility:
+                  status === 'dead' ||
+                  (gameState !== PLAYER_INPUT && status === 'idle')
+                    ? 'hidden'
+                    : undefined,
                 height: '100%',
                 width: '100%',
                 transformOrigin: 'bottom right',
@@ -116,18 +123,26 @@ const MainBattleSection = () => {
                   status === 'hurt' || status === 'dying'
                     ? 'infinite'
                     : undefined,
-                backgroundImage: 'url("./assets/nei.png"',
+                backgroundImage: `url("./assets/${
+                  index === 0
+                    ? 'rolf'
+                    : index === 1
+                    ? 'rudo'
+                    : index === 2
+                    ? 'nei'
+                    : 'amy'
+                }.png"`,
                 backgroundSize: `auto ${64 * multiplier}px`,
                 backgroundPosition: `${
-                  -32 *
+                  -64 *
                   multiplier *
-                  (status === 'staged' || status === 'dead'
-                    ? 0
-                    : status === 'using'
+                  (status === 'using'
+                    ? 1
+                    : status === 'shooting'
                     ? 2
                     : status === 'attacking'
-                    ? 5
-                    : 1)
+                    ? 3
+                    : 0)
                 }px`,
               }}
             ></div>

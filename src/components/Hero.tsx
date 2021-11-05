@@ -19,7 +19,7 @@ interface HeroProps {
 }
 
 const Hero = ({ hero, index, active, handleSelect }: HeroProps) => {
-  const { hp, tp, name, queuedActionType } = hero;
+  const { hp, tp, name, queuedAction, position } = hero;
 
   return (
     <HeroContainer style={{ order: index }}>
@@ -41,7 +41,7 @@ const Hero = ({ hero, index, active, handleSelect }: HeroProps) => {
         <p>TP: {tp}</p>
         <p>{name}</p>
         {active ? '*' : ''}
-        {Boolean(queuedActionType) && queuedActionType}
+        {Boolean(queuedAction) && queuedAction.type}
       </button>
     </HeroContainer>
   );

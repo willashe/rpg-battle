@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import { AppStateContext } from '../state';
 import { actionCreators } from '../actions';
+import { generateQueue } from '../utils';
 import { GameStatesEnum, ATTACK } from '../constants';
-import { sortEntitiesBySpeed } from '../utils';
 import Window from './Window';
 import Hero from './Hero';
 
@@ -44,14 +44,11 @@ const PlayerInfoSection = () => {
   const [activeHero, setActiveHero] = useState<number | undefined>();
 
   const startNewRound = () => {
-    const newQueue = [
+    const newQueue = generateQueue([
       ...groups.player.entities,
       ...groups.leftEnemies.entities,
       ...groups.rightEnemies.entities,
-    ]
-      .sort(sortEntitiesBySpeed)
-      .map((entity) => entity.queuedActions)
-      .reduce((prev, curr) => [...prev, ...curr], []);
+    ]);
 
     dispatch(startNewRoundAction(newQueue));
   };

@@ -3,10 +3,12 @@ import { useContext, useRef, useEffect } from 'react';
 import { AppStateContext } from '../state';
 import { actionCreators } from '../actions';
 import { GameStatesEnum } from '../constants';
-import { sortEntitiesBySpeed } from '../utils';
+import { generateQueue, getActionXPosition } from '../utils';
 import Battle from '../pages/Battle';
 
-const { INIT, NEW_GAME, PLAYER_INPUT, POST_EXECUTION } = GameStatesEnum;
+// TODO: fix name collisions
+const { INIT, GAME_LOST, GAME_WON, PLAYER_INPUT, POST_EXECUTION } =
+  GameStatesEnum;
 
 const {
   startNewRound: startNewRoundAction,
@@ -40,7 +42,7 @@ const BattleContainer = () => {
         console.log(actionCreator);
 
         // TODO: randomize target selection from target group (only pass target group in queue object, no target index needed)
-        let { group: actorGroup, index: actorIndex } = actor;
+        const { group: actorGroup, index: actorIndex } = actor;
         let { group: targetGroup, index: targetIndex } = target;
 
         if (groups[actorGroup].entities[actorIndex].hp <= 0) {
@@ -88,31 +90,17 @@ const BattleContainer = () => {
         }
 
         // TODO: we need to look at actor/target(s) attributes, weapons/armor, etc. here to determine damage, success
-        // TODO: determine number of attacks based on number of weapons equipped at time of queueing
-
-        // TODO: pull this into util function?
-        const leftCount = groups.leftEnemies.entities.length;
-        const rightCount = groups.rightEnemies.entities.length;
-        const totalCount = leftCount + rightCount;
-        const increment = 100 / (totalCount + 1);
-        const targetXPosition =
-          actorGroup === 'player'
-            ? targetGroup === undefined
-              ? 50
-              : targetIndex === undefined
-              ? targetGroup === 'leftEnemies'
-                ? ((leftCount + 1) / 2) * increment
-                : (leftCount + (rightCount + 1) / 2) * increment
-              : targetGroup === 'leftEnemies'
-              ? (targetIndex + 1) * increment
-              : (leftCount + targetIndex + 1) * increment
-            : undefined;
 
         dispatch(
           attackThunk(actor, {
             group: targetGroup,
             index: targetIndex,
-            xPosition: targetXPosition,
+            xPosition: getActionXPosition(
+              groups.leftEnemies.entities,
+              groups.rightEnemies.entities,
+              actor,
+              { group: targetGroup, index: targetIndex }
+            ),
           })
         );
 
@@ -137,16 +125,18 @@ const BattleContainer = () => {
         `useEffect, gameState: ${gameState}, prevGameState: ${prevGameState.current}`
       );
 
-      if (prevGameState.current === INIT && gameState === NEW_GAME) {
-        // check for enemy pre-emptive attack
+      // enemy pre-emptive attack chance
+      if (
+        prevGameState.current === INIT ||
+        prevGameState.current === GAME_WON ||
+        prevGameState.current === GAME_LOST
+      ) {
+        // TODO: maybe check speed or luck or something
         if (Math.random() > 0.9) {
-          const newQueue = [
+          const newQueue = generateQueue([
             ...groups.leftEnemies.entities,
             ...groups.rightEnemies.entities,
-          ]
-            .sort(sortEntitiesBySpeed)
-            .map((entity) => entity.queuedActions)
-            .reduce((prev, curr) => [...prev, ...curr], []);
+          ]);
 
           dispatch(startNewRoundAction(newQueue));
           dispatch(setPlayerInterrupt(true));

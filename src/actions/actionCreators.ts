@@ -118,6 +118,7 @@ export const attackThunk =
   async (dispatch: Dispatch<ActionType>) => {
     const { group: actorGroup } = actor;
 
+    dispatch(setEntityStatus(target, 'targeted'));
     dispatch(
       setEntityStatus(
         actor,
@@ -125,7 +126,7 @@ export const attackThunk =
         target.xPosition
           ? {
               top: 20,
-              left: `${target.xPosition}%`,
+              left: target.xPosition,
             }
           : undefined
       )
@@ -168,7 +169,6 @@ export const attackThunk =
           })
         );
       }
-      dispatch(setEntityStatus(target, 'idle'));
       dispatch(entityDamage(target, crit ? attackPower * 2 : attackPower));
       if (crit) {
         dispatch(
@@ -197,6 +197,7 @@ export const attackThunk =
         );
       }
     }
+    dispatch(setEntityStatus(target, 'idle'));
 
     // need to dispatch this at the end of any queue action to progress the queue
     dispatch(setGameState(POST_EXECUTION));
@@ -252,6 +253,8 @@ export const postExecutionThunk =
         dispatch(setEntityStatus({ group: 'rightEnemies', index }, 'dead'));
       }
     }
+
+    await timeout(500);
 
     if (!livingHeroes) {
       dispatch(gameLost());

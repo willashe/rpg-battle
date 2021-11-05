@@ -1,10 +1,13 @@
 import { EntityType, ActorType, TargetType } from './types';
 import { EntityTypesEnum, HERO_NAMES, ATTACK } from './constants';
 import { actionCreators } from './actions';
+
 const { HERO, MONSTER } = EntityTypesEnum;
 const { attackThunk } = actionCreators;
 
 export const generateEntity = ({
+  id,
+  group,
   type,
   name,
   status,
@@ -16,9 +19,10 @@ export const generateEntity = ({
   defense,
   speed,
   inventory,
-  queuedActionType,
-  queuedActions,
+  queuedAction,
 }: EntityType) => ({
+  id,
+  group,
   type,
   name,
   status,
@@ -30,8 +34,7 @@ export const generateEntity = ({
   defense,
   speed,
   inventory,
-  queuedActionType,
-  queuedActions,
+  queuedAction,
 });
 
 const generateHeroName = (id: number) => {
@@ -60,6 +63,8 @@ export const generateHeroes = (count: number) => {
   for (let index = 0; index < count; index++) {
     heroes.push(
       generateEntity({
+        id: index,
+        group: 'player',
         type: HERO,
         name: generateHeroName(index),
         status: 'idle',
@@ -71,14 +76,10 @@ export const generateHeroes = (count: number) => {
         defense: 3,
         speed: 2,
         inventory: [],
-        queuedActionType: ATTACK,
-        queuedActions: [
-          generateEntityAction(
-            attackThunk,
-            { group: 'player', index },
-            { group: 'leftEnemies', index: 0 }
-          ),
-        ],
+        queuedAction: {
+          type: ATTACK,
+          target: { group: 'leftEnemies', index: 0 },
+        },
       })
     );
   }
@@ -96,7 +97,9 @@ export const generateEnemies = (
   for (let index = 0; index < count; index++) {
     enemies.push(
       generateEntity({
-        type: type,
+        id: index,
+        group,
+        type,
         name: generateEnemyName(type, index),
         status: 'idle',
         maxHp: type === MONSTER ? 10 : 20,
@@ -107,14 +110,10 @@ export const generateEnemies = (
         defense: 3,
         speed: type === MONSTER ? 2 : 3,
         inventory: [],
-        queuedActionType: ATTACK,
-        queuedActions: [
-          generateEntityAction(
-            attackThunk,
-            { group, index },
-            { group: 'player', index: 0 }
-          ),
-        ],
+        queuedAction: {
+          type: ATTACK,
+          target: { group: 'player', index: 0 },
+        },
       })
     );
   }
@@ -134,4 +133,56 @@ export const sortEntitiesBySpeed = (
   } else {
     return speedA > speedB ? -1 : 1;
   }
+};
+
+export const generateQueue = (entities: EntityType[]) => {
+  return [...entities]
+    .sort(sortEntitiesBySpeed)
+    .map((entity) => {
+      const { id, group, queuedAction } = entity;
+      const {
+        // type,
+        target,
+      } = queuedAction;
+
+      // TODO: check equipped weapons, etc. determine what kind of action or actions to queue
+
+      const action = {
+        actionCreator: attackThunk, // TODO: use 'type' to determine which actionCreator to use
+        actor: { group, index: id },
+        target,
+      };
+      return [action];
+    })
+    .reduce((prev, curr) => [...prev, ...curr], []);
+};
+
+// TODO: we should only have to determine enemy x positions once, store them with each enemy, then pass it along with TargetType
+export const getActionXPosition = (
+  leftGroup: EntityType[],
+  rightGroup: EntityType[],
+  actor: ActorType,
+  target: TargetType
+) => {
+  const { group: actorGroup } = actor;
+  const { group: targetGroup, index: targetIndex } = target;
+
+  const leftCount = leftGroup.length;
+  const rightCount = rightGroup.length;
+  const totalCount = leftCount + rightCount;
+  const increment = 100 / (totalCount + 1);
+  const targetXPosition =
+    actorGroup === 'player'
+      ? targetGroup === undefined
+        ? 50
+        : targetIndex === undefined
+        ? targetGroup === 'leftEnemies'
+          ? ((leftCount + 1) / 2) * increment
+          : (leftCount + (rightCount + 1) / 2) * increment
+        : targetGroup === 'leftEnemies'
+        ? (targetIndex + 1) * increment
+        : (leftCount + targetIndex + 1) * increment
+      : undefined;
+
+  return `${targetXPosition}%`;
 };

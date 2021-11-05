@@ -8,7 +8,7 @@ import { generateHeroes, generateEnemies } from '../utils';
 import Window from './Window';
 
 const { MONSTER, ROBOT } = EntityTypesEnum;
-const { NEW_GAME, GAME_WON, GAME_LOST } = GameStatesEnum;
+const { EXECUTING, GAME_WON, GAME_LOST } = GameStatesEnum;
 const { startNewGame: startNewGameAction } = actionCreators;
 
 const Button = styled.button`
@@ -30,7 +30,7 @@ const NewGameMenu = () => {
 
   const startNewGame = () => {
     const newGameData = {
-      gameState: NEW_GAME,
+      gameState: EXECUTING,
       queue: [],
       queueIndex: null,
       playerInterrupt: false,
