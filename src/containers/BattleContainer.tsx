@@ -2,28 +2,27 @@ import { useContext, useRef, useEffect } from 'react';
 
 import { AppStateContext } from '../state';
 import { actionCreators } from '../actions';
-import { EntityTypesEnum, GameStatesEnum } from '../constants';
+import { GameStatesEnum } from '../constants';
 import { sortEntitiesBySpeed } from '../utils';
 import Battle from '../pages/Battle';
 
-const { HERO } = EntityTypesEnum;
 const { INIT, NEW_GAME, PLAYER_INPUT, POST_EXECUTION } = GameStatesEnum;
 
 const {
   startNewRound: startNewRoundAction,
   setQueueIndex,
   incrementQueueIndex,
-  deathCycleThunk,
+  postExecutionThunk,
   gameWon,
   gameLost,
   setGameState,
   setPlayerInterrupt,
+  attackThunk,
 } = actionCreators;
 
 const BattleContainer = () => {
   const [state, dispatch] = useContext(AppStateContext);
-  const { gameState, heroes, enemies, queue, queueIndex, playerInterrupt } =
-    state;
+  const { gameState, groups, queue, queueIndex, playerInterrupt } = state;
   const prevQueueIndex = useRef(queueIndex);
   const prevGameState = useRef(gameState);
 
@@ -32,33 +31,33 @@ const BattleContainer = () => {
       console.log(
         `useEffect, queueIndex: ${queueIndex}, prevQueueIndex: ${prevQueueIndex.current}`
       );
-      console.log(queue);
 
       prevQueueIndex.current = queueIndex;
 
       if (queue[queueIndex]) {
         console.log(queue[queueIndex]);
-        const { actor, target, actionCreator } = queue[queueIndex];
+        const { actionCreator, actor, target } = queue[queueIndex];
+        console.log(actionCreator);
 
         // TODO: randomize target selection from target group (only pass target group in queue object, no target index needed)
+        let { group: actorGroup, index: actorIndex } = actor;
         let { group: targetGroup, index: targetIndex } = target;
 
-        // TODO: clean this code up
-        if (
-          (actor.group === HERO && heroes[actor.index].hp <= 0) ||
-          (actor.group !== HERO &&
-            enemies[actor.group] &&
-            enemies[actor.group].entities &&
-            enemies[actor.group].entities[actor.index] &&
-            enemies[actor.group].entities[actor.index].hp <= 0)
-        ) {
+        if (groups[actorGroup].entities[actorIndex].hp <= 0) {
           dispatch(incrementQueueIndex());
           return;
         }
 
-        if (targetGroup === HERO) {
-          if (!heroes[targetIndex] || heroes[targetIndex].hp <= 0) {
-            targetIndex = heroes.findIndex(({ hp }) => hp > 0);
+        // TODO: add support for no index passed (target entire group)
+        // TODO: add support for array of groups
+
+        if (targetGroup === 'player') {
+          if (
+            targetIndex !== undefined &&
+            (!groups.player.entities[targetIndex] ||
+              groups.player.entities[targetIndex].hp <= 0)
+          ) {
+            targetIndex = groups.player.entities.findIndex(({ hp }) => hp > 0);
 
             if (targetIndex === -1) {
               dispatch(gameLost());
@@ -66,17 +65,18 @@ const BattleContainer = () => {
             }
           }
         } else if (
-          !enemies[targetGroup] ||
-          !enemies[targetGroup].entities ||
-          !enemies[targetGroup].entities[targetIndex] ||
-          enemies[targetGroup].entities[targetIndex].hp <= 0
+          targetGroup !== undefined &&
+          targetIndex !== undefined &&
+          (!groups[targetGroup].entities[targetIndex] ||
+            groups[targetGroup].entities[targetIndex].hp <= 0)
         ) {
-          targetIndex = enemies[targetGroup].entities.findIndex(
+          targetIndex = groups[targetGroup].entities.findIndex(
             ({ hp }) => hp > 0
           );
           if (targetIndex === -1) {
-            targetGroup = targetGroup === 'left' ? 'right' : 'left';
-            targetIndex = enemies[targetGroup].entities.findIndex(
+            targetGroup =
+              targetGroup === 'leftEnemies' ? 'rightEnemies' : 'leftEnemies';
+            targetIndex = groups[targetGroup].entities.findIndex(
               ({ hp }) => hp > 0
             );
 
@@ -87,13 +87,39 @@ const BattleContainer = () => {
           }
         }
 
+        // TODO: we need to look at actor/target(s) attributes, weapons/armor, etc. here to determine damage, success
+        // TODO: determine number of attacks based on number of weapons equipped at time of queueing
+
+        // TODO: pull this into util function?
+        const leftCount = groups.leftEnemies.entities.length;
+        const rightCount = groups.rightEnemies.entities.length;
+        const totalCount = leftCount + rightCount;
+        const increment = 100 / (totalCount + 1);
+        const targetXPosition =
+          actorGroup === 'player'
+            ? targetGroup === undefined
+              ? 50
+              : targetIndex === undefined
+              ? targetGroup === 'leftEnemies'
+                ? ((leftCount + 1) / 2) * increment
+                : (leftCount + (rightCount + 1) / 2) * increment
+              : targetGroup === 'leftEnemies'
+              ? (targetIndex + 1) * increment
+              : (leftCount + targetIndex + 1) * increment
+            : undefined;
+
         dispatch(
-          actionCreator(actor, { group: targetGroup, index: targetIndex })
+          attackThunk(actor, {
+            group: targetGroup,
+            index: targetIndex,
+            xPosition: targetXPosition,
+          })
         );
 
         // TODO: ideally we would be able to wait for actionCreator to finish and then dispatch gameState: POST_EXECUTION here (should be doable since no new state is needed)
       } else {
         if (playerInterrupt) {
+          // TODO: need to set hero animations to 'idle'
           // TODO: maybe combine into single action?
           dispatch(setGameState(PLAYER_INPUT));
           dispatch(setQueueIndex(null));
@@ -103,15 +129,7 @@ const BattleContainer = () => {
         }
       }
     }
-  }, [
-    queueIndex,
-    gameState,
-    queue,
-    enemies,
-    heroes,
-    playerInterrupt,
-    dispatch,
-  ]);
+  }, [queueIndex, gameState, queue, groups, playerInterrupt, dispatch]);
 
   useEffect(() => {
     if (gameState !== prevGameState.current) {
@@ -120,13 +138,12 @@ const BattleContainer = () => {
       );
 
       if (prevGameState.current === INIT && gameState === NEW_GAME) {
-        console.log('useEffect process new game');
-
         // check for enemy pre-emptive attack
         if (Math.random() > 0.9) {
-          console.log('trigger enemy pre-emptive attack');
-
-          const newQueue = [...enemies.left.entities, ...enemies.right.entities]
+          const newQueue = [
+            ...groups.leftEnemies.entities,
+            ...groups.rightEnemies.entities,
+          ]
             .sort(sortEntitiesBySpeed)
             .map((entity) => entity.queuedActions)
             .reduce((prev, curr) => [...prev, ...curr], []);
@@ -141,10 +158,16 @@ const BattleContainer = () => {
       prevGameState.current = gameState;
 
       if (gameState === POST_EXECUTION) {
-        dispatch(deathCycleThunk(heroes, enemies));
+        dispatch(
+          postExecutionThunk(
+            groups.player,
+            groups.leftEnemies,
+            groups.rightEnemies
+          )
+        );
       }
     }
-  }, [gameState, enemies, heroes, dispatch]);
+  }, [gameState, groups, dispatch]);
 
   return <Battle />;
 };

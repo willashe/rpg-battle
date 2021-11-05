@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+
+import { EntityTypesEnum } from '../constants';
 import Window from './Window';
 
 const EnemyGroupContainer = styled.div`
@@ -22,16 +24,16 @@ const EnemyName = styled(Window)`
 `;
 
 interface EnemyGroupProps {
-  name: string;
+  type?: EntityTypesEnum;
   message: string | number;
 }
 
 const EnemyGroup = (props: EnemyGroupProps) => {
-  const { name, message } = props;
+  const { type, message } = props;
 
   return (
     <EnemyGroupContainer>
-      <EnemyName>{name}</EnemyName>
+      <EnemyName>{type}</EnemyName>
       <EnemyMessage>{message}</EnemyMessage>
     </EnemyGroupContainer>
   );

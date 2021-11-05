@@ -6,6 +6,8 @@ import { GameStatesEnum } from '../constants';
 import Window from './Window';
 import NewGameMenu from './NewGameMenu';
 
+const multiplier = 3;
+
 const { INIT, GAME_WON, GAME_LOST } = GameStatesEnum;
 
 const BattleSection = styled.section`
@@ -23,11 +25,11 @@ const MessageBox = styled(Window)`
 
 const MainBattleSection = () => {
   const [state] = useContext(AppStateContext);
-  const { gameState, message, enemies, heroes } = state;
+  const { gameState, groups } = state;
 
   const combinedEnemies = [
-    ...(enemies?.left?.entities || []),
-    ...(enemies?.right?.entities || []),
+    ...groups.leftEnemies.entities,
+    ...groups.rightEnemies.entities,
   ];
 
   // TODO
@@ -37,6 +39,7 @@ const MainBattleSection = () => {
     <BattleSection>
       {combinedEnemies.map(({ name, status, hp, speed }, index) => (
         <div
+          key={name}
           style={{
             position: 'absolute',
             top: 0,
@@ -53,7 +56,7 @@ const MainBattleSection = () => {
               width: '100%',
               color: 'black',
               background:
-                status === 'acting'
+                status === 'attacking'
                   ? 'green'
                   : status === 'hurt'
                   ? 'red'
@@ -81,53 +84,60 @@ const MainBattleSection = () => {
         </div>
       ))}
 
-      {heroes.map(({ name, status, hp, speed }, index) => (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: `${index * 20 + 20}%`,
-            height: 130,
-            width: 100,
-            transform: `translateX(-50%)`,
-          }}
-        >
+      {groups.player.entities.map(({ name, status, position }, index) => {
+        return (
           <div
             key={name}
             style={{
-              height: '100%',
-              width: '100%',
-              color: 'black',
-              background:
-                status === 'acting'
-                  ? 'green'
-                  : status === 'hurt'
-                  ? 'red'
-                  : status === 'dead'
-                  ? 'black'
-                  : 'white',
-              border: '1px solid black',
-              transformOrigin: 'bottom right',
-              transform: `rotate(${status === 'dead' ? 90 : 0}deg)`,
-              animation:
-                status === 'hurt' || status === 'dying'
-                  ? 'shake 0.5s'
-                  : undefined,
-              animationIterationCount:
-                status === 'hurt' || status === 'dying'
-                  ? 'infinite'
-                  : undefined,
-              outline: active ? '3px solid blue' : 'none',
+              position: 'absolute',
+              top: position?.top,
+              bottom: `${position?.bottom || 0}px`,
+              // TODO: wtf...?
+              // left: `${position?.left || index * 20 + 20}%`,
+              left: position?.left || `${index * 20 + 20}%`,
+              right: position?.right,
+              height: 64 * multiplier,
+              width: 32 * multiplier,
+              transform: `translateX(-50%)`,
             }}
           >
-            <div>{name}</div>
-            <div>HP: {hp}</div>
-            <div>Speed: {speed}</div>
+            <div
+              key={name}
+              style={{
+                height: '100%',
+                width: '100%',
+                transformOrigin: 'bottom right',
+                transform: `rotate(${status === 'dead' ? 90 : 0}deg)`,
+                animation:
+                  status === 'hurt' || status === 'dying'
+                    ? 'shake 0.5s'
+                    : undefined,
+                animationIterationCount:
+                  status === 'hurt' || status === 'dying'
+                    ? 'infinite'
+                    : undefined,
+                backgroundImage: 'url("./assets/nei.png"',
+                backgroundSize: `auto ${64 * multiplier}px`,
+                backgroundPosition: `${
+                  -32 *
+                  multiplier *
+                  (status === 'staged' || status === 'dead'
+                    ? 0
+                    : status === 'using'
+                    ? 2
+                    : status === 'attacking'
+                    ? 5
+                    : 1)
+                }px`,
+              }}
+            ></div>
           </div>
-        </div>
-      ))}
+        );
+      })}
 
-      {Boolean(message) && <MessageBox>{message}</MessageBox>}
+      {Boolean(groups.player.message) && (
+        <MessageBox>{groups.player.message}</MessageBox>
+      )}
 
       {(gameState === INIT ||
         gameState === GAME_WON ||

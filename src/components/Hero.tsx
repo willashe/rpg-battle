@@ -14,16 +14,35 @@ const HeroContainer = styled(Window)`
 interface HeroProps {
   hero: EntityType;
   index: number;
+  active: boolean;
+  handleSelect?: (index: number | undefined) => void;
 }
 
-const Hero = ({ hero, index }: HeroProps) => {
-  const { hp, tp, name } = hero;
+const Hero = ({ hero, index, active, handleSelect }: HeroProps) => {
+  const { hp, tp, name, queuedActionType } = hero;
 
   return (
     <HeroContainer style={{ order: index }}>
-      <p>HP: {hp <= 0 ? '✞' : hp}</p>
-      <p>TP: {tp}</p>
-      <p>{name}</p>
+      <button
+        onClick={() => {
+          if (typeof handleSelect === 'function') {
+            handleSelect(index);
+          }
+        }}
+        style={{
+          background: 'none',
+          border: 'none',
+          color: 'inherit',
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        <p>HP: {hp <= 0 ? '✞' : hp}</p>
+        <p>TP: {tp}</p>
+        <p>{name}</p>
+        {active ? '*' : ''}
+        {Boolean(queuedActionType) && queuedActionType}
+      </button>
     </HeroContainer>
   );
 };

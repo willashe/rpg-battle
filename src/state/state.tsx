@@ -8,13 +8,23 @@ const { INIT } = GameStatesEnum;
 
 export const initialState = {
   gameState: INIT,
-  message: '',
-  heroes: [],
-  enemies: {},
-  activeHero: null,
   queue: [],
   queueIndex: null,
   playerInterrupt: false,
+  groups: {
+    player: {
+      entities: [],
+      message: '',
+    },
+    leftEnemies: {
+      entities: [],
+      message: '',
+    },
+    rightEnemies: {
+      entities: [],
+      message: '',
+    },
+  },
 };
 
 export const AppStateContext = createContext<[AppStateType, Dispatch<any>]>([

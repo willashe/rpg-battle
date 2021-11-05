@@ -1,6 +1,6 @@
-import { AppStateType, ActionType } from '../types';
+import { AppStateType, ActionType, TargetType } from '../types';
 import { actionTypes } from '../actions';
-import { EntityTypesEnum, GameStatesEnum } from '../constants';
+import { GameStatesEnum } from '../constants';
 const {
   START_NEW_GAME,
   START_NEW_ROUND,
@@ -10,10 +10,9 @@ const {
   INCREMENT_QUEUE_INDEX,
   SET_GAME_STATE,
   SET_PLAYER_INTERRUPT,
-  SET_ACTIVE_HERO,
+  // SET_ACTIVE_HERO,
   QUEUE_ACTION,
-  SET_PLAYER_MESSAGE,
-  SET_ENEMY_GROUP_MESSAGE,
+  SET_GROUP_MESSAGE,
   SET_ENTITY_STATUS,
   ENTITY_DAMAGE,
 } = actionTypes;
@@ -32,27 +31,25 @@ const reducer = (state: AppStateType, action: ActionType) => {
     case START_NEW_ROUND: {
       return {
         ...state,
-        queue: payload,
-        queueIndex: 0,
         gameState: GameStatesEnum.EXECUTING,
+        queueIndex: 0,
+        queue: payload,
       };
     }
     case GAME_WON: {
       console.log('GAME_WON');
       return {
         ...state,
-        message: 'You win! :)',
-        queueIndex: null,
         gameState: GameStatesEnum.GAME_WON,
+        queueIndex: null,
       };
     }
     case GAME_LOST: {
       console.log('GAME_LOST');
       return {
         ...state,
-        message: 'You lose! :(',
-        queueIndex: null,
         gameState: GameStatesEnum.GAME_LOST,
+        queueIndex: null,
       };
     }
     case SET_QUEUE_INDEX: {
@@ -80,145 +77,106 @@ const reducer = (state: AppStateType, action: ActionType) => {
         playerInterrupt: payload,
       };
     }
-    case SET_ACTIVE_HERO: {
-      return {
-        ...state,
-        activeHero: payload,
-      };
-    }
-    case QUEUE_ACTION: {
-      const { heroIndex, target, actionCreator } = payload;
-      const { heroes } = state;
+    case SET_GROUP_MESSAGE: {
+      const {
+        target: { group },
+        message,
+      }: { target: TargetType; message: string | number } = payload;
 
       return {
         ...state,
-        activeHero: null,
-        heroes: [
-          ...heroes.slice(0, heroIndex),
-          {
-            ...heroes[heroIndex],
-            queuedActions: [
-              // TODO: loop over equipped weapons here if physical attack?
-              {
-                actor: { group: EntityTypesEnum.HERO, index: heroIndex },
-                target,
-                actionCreator,
-              },
-            ],
-          },
-          ...heroes.slice(heroIndex + 1),
-        ],
-      };
-    }
-    case SET_PLAYER_MESSAGE: {
-      return {
-        ...state,
-        message: payload,
-      };
-    }
-    case SET_ENEMY_GROUP_MESSAGE: {
-      const { targetGroup, message } = payload;
-
-      return {
-        ...state,
-        enemies: {
-          ...state.enemies,
-          [targetGroup]: {
-            ...state.enemies[targetGroup],
-            message,
-          },
+        groups: {
+          ...state.groups,
+          [group]: { ...state.groups[group], message },
         },
       };
     }
     case SET_ENTITY_STATUS: {
-      const { targetGroup, targetIndex, status } = payload;
+      const {
+        target: { group, index },
+        status,
+        position,
+      }: { target: TargetType; status: string; position: number } = payload;
 
-      // TODO: clean up code dup
-      if (targetGroup === EntityTypesEnum.HERO) {
-        const { heroes } = state;
-        const newHero = {
-          ...heroes[targetIndex],
-          status,
-        };
-        const newHeroes = [
-          ...heroes.slice(0, targetIndex),
-          newHero,
-          ...heroes.slice(targetIndex + 1),
-        ];
+      if (index === undefined) return state;
 
-        return {
-          ...state,
-          heroes: newHeroes,
-        };
-      } else {
-        const group = state.enemies[targetGroup];
-        const { entities } = group;
-        const newEnemy = {
-          ...entities[targetIndex],
-          status,
-        };
-        const newGroup = {
-          ...group,
-          entities: [
-            ...entities.slice(0, targetIndex),
-            newEnemy,
-            ...entities.slice(targetIndex + 1),
-          ],
-        };
+      const newEntity = {
+        ...state.groups[group].entities[index],
+        status,
+        position,
+      };
+      const newGroupEntities = [
+        ...state.groups[group].entities.slice(0, index),
+        newEntity,
+        ...state.groups[group].entities.slice(index + 1),
+      ];
 
-        return {
-          ...state,
-          enemies: {
-            ...state.enemies,
-            [targetGroup]: newGroup,
-          },
-        };
-      }
+      return {
+        ...state,
+        groups: {
+          ...state.groups,
+          [group]: { ...state.groups[group], entities: newGroupEntities },
+        },
+      };
     }
     case ENTITY_DAMAGE: {
-      const { targetGroup, targetIndex, attackPower } = payload;
+      const {
+        target: { group, index },
+        attackPower,
+      }: { target: TargetType; attackPower: number } = payload;
 
-      // TODO: clean up code dup
-      if (targetGroup === EntityTypesEnum.HERO) {
-        const { heroes } = state;
-        const newEntity = {
-          ...heroes[targetIndex],
-          hp: heroes[targetIndex].hp - attackPower,
-        };
-        const newHeroes = [
-          ...heroes.slice(0, targetIndex),
-          newEntity,
-          ...heroes.slice(targetIndex + 1),
-        ];
+      if (index === undefined) return state;
 
-        return {
-          ...state,
-          heroes: newHeroes,
-        };
-      } else {
-        const group = state.enemies[targetGroup];
-        const { entities } = group;
-        const newEntity = {
-          ...entities[targetIndex],
-          hp: entities[targetIndex].hp - attackPower,
-        };
-        const newGroup = {
-          ...group,
-          entities: [
-            ...entities.slice(0, targetIndex),
-            newEntity,
-            ...entities.slice(targetIndex + 1),
-          ],
-        };
+      const newEntity = {
+        ...state.groups[group].entities[index],
+        hp: state.groups[group].entities[index].hp - attackPower,
+      };
+      const newGroupEntities = [
+        ...state.groups[group].entities.slice(0, index),
+        newEntity,
+        ...state.groups[group].entities.slice(index + 1),
+      ];
 
-        return {
-          ...state,
-          enemies: {
-            ...state.enemies,
-            [targetGroup]: newGroup,
+      return {
+        ...state,
+        groups: {
+          ...state.groups,
+          [group]: { ...state.groups[group], entities: newGroupEntities },
+        },
+      };
+    }
+    // case SET_ACTIVE_HERO: {
+    //   return {
+    //     ...state,
+    //     activeHero: payload,
+    //   };
+    // }
+    case QUEUE_ACTION: {
+      const { heroIndex: index, target, actionCreator, type } = payload;
+
+      const newEntity = {
+        ...state.groups.player.entities[index],
+        queuedActionType: type,
+        queuedActions: [
+          { actionCreator, actor: { group: 'player', index }, target },
+        ],
+      };
+      const newGroupEntities = [
+        ...state.groups.player.entities.slice(0, index),
+        newEntity,
+        ...state.groups.player.entities.slice(index + 1),
+      ];
+
+      return {
+        ...state,
+        groups: {
+          ...state.groups,
+          player: {
+            ...state.groups.player,
+            entities: newGroupEntities,
           },
-        };
-      }
+        },
+      };
     }
     default:
       return state;
