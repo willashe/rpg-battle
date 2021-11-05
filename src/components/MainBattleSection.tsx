@@ -32,40 +32,28 @@ const MainBattleSection = () => {
     ...groups.rightEnemies.entities,
   ];
 
-  // TODO
-  const active = false;
-
   return (
     <BattleSection>
-      {combinedEnemies.map(({ name, status, hp, speed }, index) => (
+      {combinedEnemies.map(({ name, type, status, hp, speed }, index) => (
         <div
           key={name}
           style={{
             position: 'absolute',
             top: 0,
             left: `${(index + 1) * (100 / (combinedEnemies.length + 1))}%`,
-            height: 130,
-            width: 100,
+            height: 64 * multiplier,
+            width: 64 * multiplier,
             transform: `translateX(-50%)`,
           }}
         >
           <div
             key={name}
             style={{
+              visibility: status === 'dead' ? 'hidden' : undefined,
               height: '100%',
               width: '100%',
               color: 'black',
-              background:
-                status === 'attacking'
-                  ? 'green'
-                  : status === 'hurt'
-                  ? 'red'
-                  : status === 'dead'
-                  ? 'black'
-                  : 'white',
-              border: '1px solid black',
               transformOrigin: 'bottom right',
-              transform: `rotate(${status === 'dead' ? 90 : 0}deg)`,
               animation:
                 status === 'hurt' || status === 'dying'
                   ? 'shake 0.5s'
@@ -74,13 +62,29 @@ const MainBattleSection = () => {
                 status === 'hurt' || status === 'dying'
                   ? 'infinite'
                   : undefined,
-              outline: active ? '3px solid blue' : 'none',
+              background: `url("./assets/${
+                type ? String(type).toLowerCase() : 'froggy'
+              }.png"`,
+              backgroundSize: `auto ${64 * multiplier}px`,
+              backgroundPosition: `${
+                -64 *
+                multiplier *
+                (status === 'using'
+                  ? 0
+                  : status === 'shooting'
+                  ? 0
+                  : status === 'attacking'
+                  ? 0
+                  : 0)
+              }px`,
+              backgroundColor:
+                status === 'attacking'
+                  ? 'green'
+                  : status === 'hurt'
+                  ? 'red'
+                  : 'transparent',
             }}
-          >
-            <div>{name}</div>
-            <div>HP: {hp}</div>
-            <div>Speed: {speed}</div>
-          </div>
+          ></div>
         </div>
       ))}
 

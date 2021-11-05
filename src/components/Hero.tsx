@@ -19,7 +19,7 @@ interface HeroProps {
 }
 
 const Hero = ({ hero, index, active, handleSelect }: HeroProps) => {
-  const { hp, tp, name, queuedAction, position } = hero;
+  const { hp, tp, name, queuedAction } = hero;
 
   return (
     <HeroContainer style={{ order: index }}>

@@ -125,7 +125,7 @@ export const attackThunk =
         'attacking',
         target.xPosition
           ? {
-              top: 20,
+              top: 64,
               left: target.xPosition,
             }
           : undefined

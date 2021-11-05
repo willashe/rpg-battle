@@ -9,8 +9,8 @@ export enum EntityTypesEnum {
   HERO = 'HERO',
   HUMAN = 'HUMAN',
   NUMAN = 'NUMAN',
-  MONSTER = 'MONSTER',
-  ROBOT = 'ROBOT',
+  FROGGY = 'FROGGY',
+  SAKOFF = 'SAKOFF',
 }
 
 export enum EntityActionTypesEnum {

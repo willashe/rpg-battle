@@ -2,7 +2,7 @@ import { EntityType, ActorType, TargetType } from './types';
 import { EntityTypesEnum, HERO_NAMES, ATTACK } from './constants';
 import { actionCreators } from './actions';
 
-const { HERO, MONSTER } = EntityTypesEnum;
+const { HERO, FROGGY } = EntityTypesEnum;
 const { attackThunk } = actionCreators;
 
 export const generateEntity = ({
@@ -56,7 +56,7 @@ export const generateEntityAction = (
   target,
 });
 
-// TODO: attributes should be driven by 'type', NEI, ROLF, ROBOT, MONSTER, etc. and a default generic fallback
+// TODO: attributes should be driven by 'type', NEI, ROLF, ROBOT, FROGGY, etc. and a default generic fallback
 export const generateHeroes = (count: number) => {
   const heroes: EntityType[] = [];
 
@@ -102,13 +102,13 @@ export const generateEnemies = (
         type,
         name: generateEnemyName(type, index),
         status: 'idle',
-        maxHp: type === MONSTER ? 10 : 20,
-        hp: type === MONSTER ? 10 : 20,
-        maxTp: type === MONSTER ? 5 : 0,
-        tp: type === MONSTER ? 5 : 0,
+        maxHp: type === FROGGY ? 10 : 20,
+        hp: type === FROGGY ? 10 : 20,
+        maxTp: type === FROGGY ? 5 : 0,
+        tp: type === FROGGY ? 5 : 0,
         attack: 1,
         defense: 3,
-        speed: type === MONSTER ? 2 : 3,
+        speed: type === FROGGY ? 2 : 3,
         inventory: [],
         queuedAction: {
           type: ATTACK,

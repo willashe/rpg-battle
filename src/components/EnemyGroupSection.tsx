@@ -9,7 +9,7 @@ const EnemySection = styled.section`
   height: 100%;
   display: flex;
   top: 0;
-  justify-content: space-around;
+  justify-content: space-between;
 `;
 
 const EnemyGroupSection = () => {

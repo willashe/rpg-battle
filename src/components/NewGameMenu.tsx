@@ -7,7 +7,7 @@ import { EntityTypesEnum, GameStatesEnum } from '../constants';
 import { generateHeroes, generateEnemies } from '../utils';
 import Window from './Window';
 
-const { MONSTER, ROBOT } = EntityTypesEnum;
+const { FROGGY, SAKOFF } = EntityTypesEnum;
 const { EXECUTING, GAME_WON, GAME_LOST } = GameStatesEnum;
 const { startNewGame: startNewGameAction } = actionCreators;
 
@@ -40,14 +40,14 @@ const NewGameMenu = () => {
           message: '',
         },
         leftEnemies: {
-          type: MONSTER,
+          type: FROGGY,
           message: '',
-          entities: generateEnemies(numLeftEnemies, MONSTER, 'leftEnemies'),
+          entities: generateEnemies(numLeftEnemies, FROGGY, 'leftEnemies'),
         },
         rightEnemies: {
-          type: ROBOT,
+          type: SAKOFF,
           message: '',
-          entities: generateEnemies(numRightEnemies, ROBOT, 'rightEnemies'),
+          entities: generateEnemies(numRightEnemies, SAKOFF, 'rightEnemies'),
         },
       },
     };
