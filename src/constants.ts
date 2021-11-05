@@ -1,5 +1,3 @@
-import { EntityType } from './types';
-
 // export enum GroupsEnum {
 //   PLAYER_GROUP = 'PLAYER_GROUP',
 //   LEFT_ENEMY_GROUP = 'LEFT_ENEMY_GROUP',
@@ -40,19 +38,3 @@ export enum EntityActionsEnum {
 }
 
 export const HERO_NAMES = ['ROLF', 'NEI', 'RUDO', 'ANNA'];
-
-export const NEI: EntityType = {
-  name: 'NEI',
-  status: 'idle',
-  type: EntityTypesEnum.HERO,
-  hp: 10,
-  maxHp: 10,
-  tp: 5,
-  maxTp: 5,
-  attack: 10,
-  defense: 5,
-  speed: 3,
-  inventory: [],
-  queuedActionType: EntityActionTypesEnum.ATTACK,
-  queuedActions: [],
-};
