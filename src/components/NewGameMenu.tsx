@@ -84,7 +84,7 @@ const NewGameMenu = () => {
           setNumHeroes(e.target.value);
         }}
         min="1"
-        max="10"
+        max="4"
       />
       <label htmlFor="numLeftEnemies">Monsters: </label>
       <input
@@ -93,10 +93,10 @@ const NewGameMenu = () => {
         name="numLeftEnemies"
         value={numLeftEnemies}
         onChange={(e: any) => {
-          setNumLeftEnemies(e.target.value);
+          setNumLeftEnemies(Number(e.target.value));
         }}
-        min="0"
-        max="10"
+        min={numRightEnemies === 0 ? 1 : 0}
+        max={numRightEnemies === 3 ? 1 : numRightEnemies === 2 ? 2 : 3}
       />
       <label htmlFor="numRightEnemies">Robots: </label>
       <input
@@ -105,10 +105,10 @@ const NewGameMenu = () => {
         name="numRightEnemies"
         value={numRightEnemies}
         onChange={(e: any) => {
-          setNumRightEnemies(e.target.value);
+          setNumRightEnemies(Number(e.target.value));
         }}
-        min="0"
-        max="10"
+        min={numLeftEnemies === 0 ? 1 : 0}
+        max={numLeftEnemies === 3 ? 1 : numLeftEnemies === 2 ? 2 : 3}
       />
       <br />
       <Button
