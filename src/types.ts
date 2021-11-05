@@ -51,31 +51,6 @@ export interface EntityGroupType {
 export interface AnimationType {
   frames: string[];
 }
-/*
-
-const hero = {
-  ...,
-  animations: {
-    idle: {
-      frames: [1]
-      duration: 0, // infinite
-    },
-    staged: {
-      frames: [0]
-      duration: 0, // infinite
-    },
-    using: {
-      frames: [2]
-      duration: 1000,
-    },
-    attacking: {
-      frames: [3, 4, 5, 6, 7]
-      duration: 1000,
-    },
-  }
-}
-
-*/
 
 export interface ItemType {}
 
@@ -114,24 +89,3 @@ export interface TargetType {
   index?: number;
   xPosition?: number | string;
 }
-
-/*
-THOUGHT: maybe multiple target types, MultiGroupTargetType, GroupTargetType, EntityTargetType
-
-export interface GroupTargetType {
-  group: Array<'player' | 'leftEnemies' | 'rightEnemies'>;
-  xPosition?: number;
-}
-
-export interface GroupTargetType {
-  group: 'player' | 'leftEnemies' | 'rightEnemies';
-  xPosition?: number;
-}
-
-export interface EntityTargetType {
-  group: 'player' | 'leftEnemies' | 'rightEnemies';
-  index: number;
-  xPosition?: number;
-}
-
-*/
