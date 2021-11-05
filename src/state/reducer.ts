@@ -156,10 +156,10 @@ const reducer = (state: AppStateType, action: ActionType) => {
 
       const newEntity = {
         ...state.groups.player.entities[index],
-        queuedActionType: type,
-        queuedActions: [
-          { actionCreator, actor: { group: 'player', index }, target },
-        ],
+        queuedAction: {
+          type,
+          target,
+        },
       };
       const newGroupEntities = [
         ...state.groups.player.entities.slice(0, index),
