@@ -156,9 +156,6 @@ export const generateEnemies = (
 ) => {
   const enemies: EntityType[] = [];
 
-  // need total group size
-  // need "real" index relative to entire group
-
   for (let index = 0; index < count; index++) {
     const realIndex = offset ? index + offset : index;
 
@@ -226,35 +223,3 @@ export const generateQueue = (entities: EntityType[]) => {
     })
     .reduce((prev, curr) => [...prev, ...curr], []);
 };
-
-// TODO: we should only have to determine enemy x positions once, store them with each enemy, then pass it along with TargetType
-// TODO: we will als
-// TODO: probably still will need some of the logic here to get average position based on entire group or sets of groups
-// export const getActionXPosition = (
-//   leftGroup: EntityType[],
-//   rightGroup: EntityType[],
-//   actor: ActorType,
-//   target: TargetType
-// ) => {
-//   const { group: actorGroup } = actor;
-//   const { group: targetGroup, index: targetIndex } = target;
-
-//   const leftCount = leftGroup.length;
-//   const rightCount = rightGroup.length;
-//   const totalCount = leftCount + rightCount;
-//   const increment = 100 / (totalCount + 1);
-//   const targetXPosition =
-//     actorGroup === PLAYER_GROUP
-//       ? targetGroup === undefined
-//         ? 50
-//         : targetIndex === undefined
-//         ? targetGroup === LEFT_ENEMY_GROUP
-//           ? ((leftCount + 1) / 2) * increment
-//           : (leftCount + (rightCount + 1) / 2) * increment
-//         : targetGroup === LEFT_ENEMY_GROUP
-//         ? (targetIndex + 1) * increment
-//         : (leftCount + targetIndex + 1) * increment
-//       : undefined;
-
-//   return `${targetXPosition}%`;
-// };
