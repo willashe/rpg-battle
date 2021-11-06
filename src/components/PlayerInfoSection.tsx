@@ -14,6 +14,8 @@ import {
   PLAYER_GROUP,
   LEFT_ENEMY_GROUP,
   RIGHT_ENEMY_GROUP,
+  NEW_GAME,
+  POST_EXECUTION,
 } from '../constants';
 import Window from './Window';
 import Hero from './Hero';
@@ -127,6 +129,7 @@ const PlayerInfoSection = () => {
           disabled={
             queueIndex !== null ||
             gameState === INIT ||
+            gameState === NEW_GAME ||
             gameState === GAME_WON ||
             gameState === GAME_LOST
           }
