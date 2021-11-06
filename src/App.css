@@ -10,6 +10,7 @@
 * {
   box-sizing: border-box;
   image-rendering: pixelated;
+  user-select: none;
 }
 
 body {
