@@ -178,7 +178,7 @@ export const generateEnemies = (
         tp: type === FROGGY ? 5 : 0,
         attack: 1,
         defense: 3,
-        speed: type === FROGGY ? 2 : 3,
+        speed: type === FROGGY ? 1 : 3,
         inventory: [],
         leftPosition: `${
           (group === RIGHT_ENEMY_GROUP ? realIndex + 1 : realIndex + 1) *
