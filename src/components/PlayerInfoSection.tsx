@@ -30,8 +30,8 @@ const PlayerInfo = styled.section`
   display: flex;
   justify-content: center;
   background-color: #000080;
-  flex: 0 0 230px;
-  height: 230px;
+  flex: 0 0 170px;
+  height: 170px;
 `;
 
 const PlayerMenu = styled(Window)`
@@ -124,7 +124,7 @@ const PlayerInfoSection = () => {
       )}
 
       <PlayerMenu>
-        <p>ATTK</p>
+        <div>ATTK</div>
         <PlayerButton
           disabled={
             queueIndex !== null ||
@@ -135,7 +135,7 @@ const PlayerInfoSection = () => {
           }
           onClick={startNewRound}
         />
-        <p>ORDR</p>
+        <div>ORDR</div>
         <PlayerButton disabled onClick={() => {}} />
         <button
           disabled={
