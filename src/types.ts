@@ -43,13 +43,11 @@ export interface EntityType {
     type: EntityActionTypesEnum;
     target: TargetType;
   };
-  currentAnimation:
-    | AnimationTypesEnum
-    | {
-        type: AnimationTypesEnum;
-        left?: number | string;
-        right?: number | string;
-      };
+  currentAnimation: {
+    type: AnimationTypesEnum;
+    left?: number | string;
+    right?: number | string;
+  };
   animations: {
     [key in AnimationTypesEnum]: AnimationType;
   };
@@ -96,11 +94,12 @@ export interface EntityActionType {
 export interface ActorType {
   group: GroupsEnum;
   index: number;
+  leftPosition?: number | string;
 }
 
 export interface TargetType {
   group: GroupsEnum;
   // | Array<GroupsEnum>;
   index?: number;
-  xPosition?: number | string;
+  leftPosition?: number | string;
 }

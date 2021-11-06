@@ -45,15 +45,15 @@ const MainBattleSection = () => {
   return (
     <BattleSection>
       {combinedEnemies.map(
-        (
-          { name, type, status, leftPosition, currentAnimation, animations },
-          index
-        ) => {
-          // TODO: sniff sniff...smelly code here
-          const animationType =
-            !currentAnimation || typeof currentAnimation === 'string'
-              ? currentAnimation
-              : currentAnimation.type;
+        ({
+          name,
+          type, // TODO: consider renaming this to entityType
+          status,
+          leftPosition,
+          currentAnimation,
+          animations,
+        }) => {
+          const animationType = currentAnimation.type;
 
           const { frames = 0, duration = 0 } = animationType
             ? animations[animationType]
@@ -103,15 +103,8 @@ const MainBattleSection = () => {
           { name, status, leftPosition, currentAnimation, animations },
           index
         ) => {
-          // TODO: sniff sniff...smelly code here
-          const animationType =
-            !currentAnimation || typeof currentAnimation === 'string'
-              ? currentAnimation
-              : currentAnimation.type;
-          const left =
-            !currentAnimation || typeof currentAnimation === 'string'
-              ? undefined
-              : currentAnimation.left;
+          const animationType = currentAnimation.type;
+          const left = currentAnimation.left;
 
           const {
             frames = 0,

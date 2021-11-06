@@ -1,6 +1,7 @@
 import { AppStateType, ActionType, TargetType, AnimationType } from '../types';
 import { actionTypes } from '../actions';
 import {
+  AnimationTypesEnum,
   EntityStatusesEnum,
   EXECUTING,
   GAME_LOST,
@@ -133,14 +134,33 @@ const reducer = (state: AppStateType, action: ActionType) => {
         animation,
       }: {
         target: TargetType;
-        animation: AnimationType;
+        animation:
+          | AnimationTypesEnum
+          | {
+              type: AnimationTypesEnum;
+              left?: number | string;
+            };
       } = payload;
 
       if (index === undefined) return state;
 
+      let newAnimation = animation;
+
+      if (typeof animation === 'string') {
+        newAnimation = { type: animation };
+      } else {
+        newAnimation =
+          animation.left === -1
+            ? {
+                ...state.groups[group].entities[index].currentAnimation,
+                type: animation.type,
+              }
+            : animation;
+      }
+
       const newEntity = {
         ...state.groups[group].entities[index],
-        currentAnimation: animation,
+        currentAnimation: newAnimation,
       };
       const newGroupEntities = [
         ...state.groups[group].entities.slice(0, index),

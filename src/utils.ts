@@ -138,7 +138,7 @@ export const generateHeroes = (count: number) => {
           type: ATTACK,
           target: { group: LEFT_ENEMY_GROUP, index: 0 },
         },
-        currentAnimation: IDLE,
+        currentAnimation: { type: IDLE },
         animations: generateEntityAnimations(false),
       })
     );
@@ -185,7 +185,7 @@ export const generateEnemies = (
           type: ATTACK,
           target: { group: PLAYER_GROUP, index: 0 },
         },
-        currentAnimation: IDLE,
+        currentAnimation: { type: IDLE },
         animations: generateEntityAnimations(true),
       })
     );
@@ -212,14 +212,14 @@ export const generateQueue = (entities: EntityType[]) => {
   return [...entities]
     .sort(sortEntitiesBySpeed)
     .map((entity) => {
-      const { id, group, queuedAction } = entity;
+      const { id, group, queuedAction, leftPosition } = entity;
       const { type, target } = queuedAction;
 
       // TODO: check equipped weapons, etc. determine what kind of action or actions to queue
 
       const action = {
         type,
-        actor: { group, index: id },
+        actor: { group, index: id, leftPosition },
         target,
       };
       return [action];

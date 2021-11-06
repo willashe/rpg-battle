@@ -120,7 +120,6 @@ export const setEntityAnimation = (
     | {
         type: AnimationTypesEnum;
         left?: number | string;
-        right?: number | string;
       }
 ) => ({
   type: SET_ENTITY_ANIMATION,
@@ -146,7 +145,6 @@ export const attackThunk =
       type: AnimationTypesEnum;
       duration: number;
       left?: number | string;
-      right?: number | string;
     }
   ) =>
   async (dispatch: Dispatch<ActionType>) => {
@@ -155,7 +153,12 @@ export const attackThunk =
     const { duration } = mainAnimationData;
 
     dispatch(setEntityAnimation(actor, mainAnimationData));
-    dispatch(setEntityAnimation(target, TARGETED));
+    dispatch(
+      setEntityAnimation(target, {
+        type: TARGETED,
+        left: target.group === PLAYER_GROUP ? actor.leftPosition : undefined,
+      })
+    );
     await timeout(duration);
     dispatch(setEntityAnimation(actor, IDLE));
 
@@ -184,7 +187,12 @@ export const attackThunk =
           })
         );
       }
-      dispatch(setEntityAnimation(target, HURT));
+      dispatch(
+        setEntityAnimation(target, {
+          type: HURT,
+          left: target.group === PLAYER_GROUP ? actor.leftPosition : undefined,
+        })
+      );
       await timeout(1000);
       if (actorGroup === PLAYER_GROUP) {
         dispatch(
@@ -203,6 +211,7 @@ export const attackThunk =
           })
         );
       }
+      dispatch(setEntityAnimation(target, { type: IDLE, left: -1 }));
     } else {
       if (actorGroup === PLAYER_GROUP) {
         dispatch(
@@ -221,8 +230,8 @@ export const attackThunk =
           })
         );
       }
+      dispatch(setEntityAnimation(target, IDLE));
     }
-    dispatch(setEntityAnimation(target, IDLE));
 
     // need to dispatch this at the end of any queue action to progress the queue
     dispatch(setGameState(POST_EXECUTION));
@@ -245,8 +254,13 @@ export const postExecutionThunk =
       // TODO: will need to account for paralyzed as well
       if (hp > 0 && status === OK) {
         livingHeroes++;
-      } else if (currentAnimation !== DYING && status !== DEAD) {
-        dispatch(setEntityAnimation({ group: PLAYER_GROUP, index }, DYING));
+      } else if (currentAnimation.type !== DYING && status !== DEAD) {
+        dispatch(
+          setEntityAnimation(
+            { group: PLAYER_GROUP, index },
+            { type: DYING, left: -1 } // TODO: -1 thing is kind of hacky, maybe formalize into a preservePosition flag
+          )
+        );
         await timeout(1000);
         dispatch(setEntityStatus({ group: PLAYER_GROUP, index }, DEAD));
         dispatch(setEntityAnimation({ group: PLAYER_GROUP, index }, IDLE));
@@ -257,7 +271,7 @@ export const postExecutionThunk =
 
       if (hp > 0 && status === OK) {
         livingLeft++;
-      } else if (currentAnimation !== DYING && status !== DEAD) {
+      } else if (currentAnimation.type !== DYING && status !== DEAD) {
         dispatch(setEntityAnimation({ group: LEFT_ENEMY_GROUP, index }, DYING));
         await timeout(1000);
         dispatch(setEntityStatus({ group: LEFT_ENEMY_GROUP, index }, DEAD));
@@ -269,7 +283,7 @@ export const postExecutionThunk =
 
       if (hp > 0 && status === OK) {
         livingRight++;
-      } else if (currentAnimation !== DYING && status !== DEAD) {
+      } else if (currentAnimation.type !== DYING && status !== DEAD) {
         dispatch(
           setEntityAnimation({ group: RIGHT_ENEMY_GROUP, index }, DYING)
         );
