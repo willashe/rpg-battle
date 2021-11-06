@@ -123,7 +123,7 @@ const MainBattleSection = () => {
               style={{
                 position: 'absolute',
                 top: top,
-                bottom: `${bottom || 0}px`,
+                bottom: `${bottom || (index === 2 || index === 3 ? -24 : 0)}px`,
                 left: left || leftPosition,
                 height: 64 * SPRITE_MULTIPLIER,
                 width: 64 * SPRITE_MULTIPLIER,
