@@ -258,6 +258,9 @@ export const postExecutionThunk =
 
       // TODO: will need to account for paralyzed as well
       if (hp > 0 && status === OK) {
+        dispatch(
+          setEntityAnimation({ group: PLAYER_GROUP, index }, { type: IDLE })
+        );
         livingHeroes++;
       } else if (currentAnimation.type !== DYING && status !== DEAD) {
         dispatch(
