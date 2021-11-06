@@ -2,8 +2,8 @@ import { Dispatch } from 'react';
 import {
   START_NEW_GAME,
   START_NEW_ROUND,
-  GAME_WON,
-  GAME_LOST,
+  WIN_GAME,
+  LOSE_GAME,
   SET_QUEUE_INDEX,
   INCREMENT_QUEUE_INDEX,
   SET_GAME_STATE,
@@ -11,6 +11,7 @@ import {
   SET_ACTIVE_HERO,
   QUEUE_ACTION,
   SET_GROUP_MESSAGE,
+  SET_ENTITY_ANIMATION,
   SET_ENTITY_STATUS,
   ENTITY_DAMAGE,
 } from './actionTypes';
@@ -21,8 +22,22 @@ import {
   TargetType,
   EntityActionType,
 } from '../types';
-import { EntityActionTypesEnum, GameStatesEnum } from '../constants';
-const { EXECUTING, POST_EXECUTION } = GameStatesEnum;
+import {
+  EXECUTING,
+  POST_EXECUTION,
+  EntityActionTypesEnum,
+  AnimationTypesEnum,
+  TARGETED,
+  IDLE,
+  HURT,
+  EntityStatusesEnum,
+  DYING,
+  DEAD,
+  OK,
+  PLAYER_GROUP,
+  RIGHT_ENEMY_GROUP,
+  LEFT_ENEMY_GROUP,
+} from '../constants';
 
 export const startNewGame = (newGameState: AppStateType) => ({
   type: START_NEW_GAME,
@@ -34,9 +49,9 @@ export const startNewRound = (queue: EntityActionType[]) => ({
   payload: queue,
 });
 
-export const gameWon = () => ({ type: GAME_WON });
+export const winGame = () => ({ type: WIN_GAME });
 
-export const gameLost = () => ({ type: GAME_LOST });
+export const loseGame = () => ({ type: LOSE_GAME });
 
 export const setQueueIndex = (index: number | null) => ({
   type: SET_QUEUE_INDEX,
@@ -65,19 +80,16 @@ export const setActiveHero = (activeIndex: number) => ({
 export const queueAction = ({
   heroIndex,
   target,
-  actionCreator,
   type,
 }: {
   heroIndex: number;
   target: TargetType;
-  actionCreator: any; // TODO
   type: EntityActionTypesEnum;
 }) => ({
   type: QUEUE_ACTION,
   payload: {
     heroIndex,
     target,
-    actionCreator,
     type,
   },
 });
@@ -95,11 +107,23 @@ export const setGroupMessage = ({
 
 export const setEntityStatus = (
   target: TargetType,
-  status: string,
-  position?: any
+  status: EntityStatusesEnum
 ) => ({
   type: SET_ENTITY_STATUS,
-  payload: { target, status, position },
+  payload: { target, status },
+});
+
+export const setEntityAnimation = (
+  target: TargetType,
+  animation:
+    | AnimationTypesEnum
+    | {
+        type: AnimationTypesEnum;
+        left?: number | string;
+      }
+) => ({
+  type: SET_ENTITY_ANIMATION,
+  payload: { target, animation },
 });
 
 export const entityDamage = (target: TargetType, attackPower: number) => ({
@@ -114,24 +138,29 @@ function timeout(ms: number) {
 // TODO: maybe pass in full actor/target objects, then we can use attributes and equipped weapons/armor to determine damage dealt, likelihood of missing, targeting behavior, number of attacks, etc.
 // if no index passed, would we then need an array of full group entity objects?
 export const attackThunk =
-  (actor: TargetType, target: TargetType) =>
+  (
+    actor: TargetType,
+    target: TargetType,
+    mainAnimationData: {
+      type: AnimationTypesEnum;
+      duration: number;
+      left?: number | string;
+    }
+  ) =>
   async (dispatch: Dispatch<ActionType>) => {
     const { group: actorGroup } = actor;
+    // TODO: something off about this implementation, the only reason we need to pass duration here is to use it in the first animation timeout...
+    const { duration } = mainAnimationData;
 
+    dispatch(setEntityAnimation(actor, mainAnimationData));
     dispatch(
-      setEntityStatus(
-        actor,
-        'attacking',
-        target.xPosition
-          ? {
-              top: 20,
-              left: `${target.xPosition}%`,
-            }
-          : undefined
-      )
+      setEntityAnimation(target, {
+        type: TARGETED,
+        left: target.group === PLAYER_GROUP ? actor.leftPosition : undefined,
+      })
     );
-    await timeout(1000);
-    dispatch(setEntityStatus(actor, 'idle'));
+    await timeout(duration);
+    dispatch(setEntityAnimation(actor, IDLE));
 
     // TODO: use full objects for actor and target/s to determine who gets hit and for how much
     // TODO: loop over target group if array
@@ -145,12 +174,12 @@ export const attackThunk =
       if (crit) {
         dispatch(
           setGroupMessage({
-            target: { group: 'player' },
+            target: { group: PLAYER_GROUP },
             message: 'terrific blow!!!',
           })
         );
       }
-      if (actorGroup === 'player') {
+      if (actorGroup === PLAYER_GROUP) {
         dispatch(
           setGroupMessage({
             target,
@@ -158,9 +187,14 @@ export const attackThunk =
           })
         );
       }
-      dispatch(setEntityStatus(target, 'hurt'));
+      dispatch(
+        setEntityAnimation(target, {
+          type: HURT,
+          left: target.group === PLAYER_GROUP ? actor.leftPosition : undefined,
+        })
+      );
       await timeout(1000);
-      if (actorGroup === 'player') {
+      if (actorGroup === PLAYER_GROUP) {
         dispatch(
           setGroupMessage({
             target,
@@ -168,18 +202,18 @@ export const attackThunk =
           })
         );
       }
-      dispatch(setEntityStatus(target, 'idle'));
       dispatch(entityDamage(target, crit ? attackPower * 2 : attackPower));
       if (crit) {
         dispatch(
           setGroupMessage({
-            target: { group: 'player' },
+            target: { group: PLAYER_GROUP },
             message: '',
           })
         );
       }
+      dispatch(setEntityAnimation(target, { type: IDLE, left: -1 }));
     } else {
-      if (actorGroup === 'player') {
+      if (actorGroup === PLAYER_GROUP) {
         dispatch(
           setGroupMessage({
             target,
@@ -188,7 +222,7 @@ export const attackThunk =
         );
       }
       await timeout(1000);
-      if (actorGroup === 'player') {
+      if (actorGroup === PLAYER_GROUP) {
         dispatch(
           setGroupMessage({
             target,
@@ -196,6 +230,7 @@ export const attackThunk =
           })
         );
       }
+      dispatch(setEntityAnimation(target, IDLE));
     }
 
     // need to dispatch this at the end of any queue action to progress the queue
@@ -214,49 +249,56 @@ export const postExecutionThunk =
     let livingRight = 0;
 
     for (const [index, hero] of heroes.entities.entries()) {
-      const { status, hp } = hero;
+      const { status, currentAnimation, hp } = hero;
 
-      if (hp > 0) {
+      // TODO: will need to account for paralyzed as well
+      if (hp > 0 && status === OK) {
         livingHeroes++;
-      }
-
-      if (status !== 'dying' && status !== 'dead' && hp <= 0) {
-        dispatch(setEntityStatus({ group: 'player', index }, 'dying'));
+      } else if (currentAnimation.type !== DYING && status !== DEAD) {
+        dispatch(
+          setEntityAnimation(
+            { group: PLAYER_GROUP, index },
+            { type: DYING, left: -1 } // TODO: -1 thing is kind of hacky, maybe formalize into a preservePosition flag
+          )
+        );
         await timeout(1000);
-        dispatch(setEntityStatus({ group: 'player', index }, 'dead'));
+        dispatch(setEntityStatus({ group: PLAYER_GROUP, index }, DEAD));
+        dispatch(setEntityAnimation({ group: PLAYER_GROUP, index }, IDLE));
       }
     }
     for (const [index, enemy] of leftEnemies.entities.entries()) {
-      const { status, hp } = enemy;
+      const { status, currentAnimation, hp } = enemy;
 
-      if (hp > 0) {
+      if (hp > 0 && status === OK) {
         livingLeft++;
-      }
-
-      if (status !== 'dying' && status !== 'dead' && hp <= 0) {
-        dispatch(setEntityStatus({ group: 'leftEnemies', index }, 'dying'));
+      } else if (currentAnimation.type !== DYING && status !== DEAD) {
+        dispatch(setEntityAnimation({ group: LEFT_ENEMY_GROUP, index }, DYING));
         await timeout(1000);
-        dispatch(setEntityStatus({ group: 'leftEnemies', index }, 'dead'));
+        dispatch(setEntityStatus({ group: LEFT_ENEMY_GROUP, index }, DEAD));
+        dispatch(setEntityAnimation({ group: LEFT_ENEMY_GROUP, index }, IDLE));
       }
     }
     for (const [index, enemy] of rightEnemies.entities.entries()) {
-      const { status, hp } = enemy;
+      const { status, currentAnimation, hp } = enemy;
 
-      if (hp > 0) {
+      if (hp > 0 && status === OK) {
         livingRight++;
-      }
-
-      if (status !== 'dying' && status !== 'dead' && hp <= 0) {
-        dispatch(setEntityStatus({ group: 'rightEnemies', index }, 'dying'));
+      } else if (currentAnimation.type !== DYING && status !== DEAD) {
+        dispatch(
+          setEntityAnimation({ group: RIGHT_ENEMY_GROUP, index }, DYING)
+        );
         await timeout(1000);
-        dispatch(setEntityStatus({ group: 'rightEnemies', index }, 'dead'));
+        dispatch(setEntityStatus({ group: RIGHT_ENEMY_GROUP, index }, DEAD));
+        dispatch(setEntityAnimation({ group: RIGHT_ENEMY_GROUP, index }, IDLE));
       }
     }
 
+    await timeout(500);
+
     if (!livingHeroes) {
-      dispatch(gameLost());
+      dispatch(loseGame());
     } else if (!livingLeft && !livingRight) {
-      dispatch(gameWon());
+      dispatch(winGame());
     } else {
       dispatch(incrementQueueIndex());
       dispatch(setGameState(EXECUTING));

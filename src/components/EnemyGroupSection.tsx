@@ -3,25 +3,32 @@ import styled from 'styled-components';
 
 import EnemyGroup from './EnemyGroup';
 import { AppStateContext } from '../state';
+import { LEFT_ENEMY_GROUP, RIGHT_ENEMY_GROUP } from '../constants';
 
 const EnemySection = styled.section`
   flex: 0 1 200px;
   height: 100%;
   display: flex;
   top: 0;
-  justify-content: space-around;
+  justify-content: space-between;
 `;
 
 const EnemyGroupSection = () => {
   const [state] = useContext(AppStateContext);
   const {
-    groups: { leftEnemies, rightEnemies },
+    groups: {
+      [LEFT_ENEMY_GROUP]: leftEnemyGroup,
+      [RIGHT_ENEMY_GROUP]: rightEnemyGroup,
+    },
   } = state;
 
   return (
     <EnemySection>
-      <EnemyGroup type={leftEnemies.type} message={leftEnemies.message} />
-      <EnemyGroup type={rightEnemies.type} message={rightEnemies.message} />
+      <EnemyGroup type={leftEnemyGroup.type} message={leftEnemyGroup.message} />
+      <EnemyGroup
+        type={rightEnemyGroup.type}
+        message={rightEnemyGroup.message}
+      />
     </EnemySection>
   );
 };

@@ -3,8 +3,18 @@ import styled from 'styled-components';
 
 import { AppStateContext } from '../state';
 import { actionCreators } from '../actions';
-import { GameStatesEnum, ATTACK } from '../constants';
-import { sortEntitiesBySpeed } from '../utils';
+import { generateQueue } from '../utils';
+import {
+  INIT,
+  PLAYER_INPUT,
+  EXECUTING,
+  GAME_WON,
+  GAME_LOST,
+  ATTACK,
+  PLAYER_GROUP,
+  LEFT_ENEMY_GROUP,
+  RIGHT_ENEMY_GROUP,
+} from '../constants';
 import Window from './Window';
 import Hero from './Hero';
 
@@ -12,9 +22,7 @@ const {
   startNewRound: startNewRoundAction,
   setPlayerInterrupt,
   queueAction,
-  attackThunk,
 } = actionCreators;
-const { INIT, PLAYER_INPUT, EXECUTING, GAME_WON, GAME_LOST } = GameStatesEnum;
 
 const PlayerInfo = styled.section`
   display: flex;
@@ -40,18 +48,15 @@ const PlayerButton = styled.button`
 const PlayerInfoSection = () => {
   const [state, dispatch] = useContext(AppStateContext);
   const { gameState, queueIndex, groups } = state;
-  // TODO: looking like this will need to be global (need to access it in several places, )
+  // TODO: looking like this will need to be global (need to access it in several places, and be able to reset, etc.)
   const [activeHero, setActiveHero] = useState<number | undefined>();
 
   const startNewRound = () => {
-    const newQueue = [
-      ...groups.player.entities,
-      ...groups.leftEnemies.entities,
-      ...groups.rightEnemies.entities,
-    ]
-      .sort(sortEntitiesBySpeed)
-      .map((entity) => entity.queuedActions)
-      .reduce((prev, curr) => [...prev, ...curr], []);
+    const newQueue = generateQueue([
+      ...groups[PLAYER_GROUP].entities,
+      ...groups[LEFT_ENEMY_GROUP].entities,
+      ...groups[RIGHT_ENEMY_GROUP].entities,
+    ]);
 
     dispatch(startNewRoundAction(newQueue));
   };
@@ -62,7 +67,7 @@ const PlayerInfoSection = () => {
 
   return (
     <PlayerInfo>
-      {groups.player.entities.map((hero, index) => (
+      {groups[PLAYER_GROUP].entities.map((hero, index) => (
         <Hero
           key={hero.name}
           hero={hero}
@@ -90,8 +95,7 @@ const PlayerInfoSection = () => {
               dispatch(
                 queueAction({
                   heroIndex: activeHero,
-                  target: { group: 'leftEnemies', index: 0 },
-                  actionCreator: attackThunk,
+                  target: { group: LEFT_ENEMY_GROUP, index: 0 },
                   type: ATTACK,
                 })
               );
@@ -105,8 +109,7 @@ const PlayerInfoSection = () => {
               dispatch(
                 queueAction({
                   heroIndex: activeHero,
-                  target: { group: 'rightEnemies', index: 0 },
-                  actionCreator: attackThunk,
+                  target: { group: RIGHT_ENEMY_GROUP, index: 0 },
                   type: ATTACK,
                 })
               );
