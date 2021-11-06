@@ -66,4 +66,4 @@ export enum AnimationTypesEnum {
 export const { IDLE, SLASH, SHOOT, USE, TARGETED, HURT, DYING } =
   AnimationTypesEnum;
 
-export const HERO_NAMES = ['ROLF', 'NEI', 'RUDO', 'ANNA'];
+export const HERO_NAMES = ['ROLF', 'RUDO', 'NEI', 'AMY'];

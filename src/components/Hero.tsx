@@ -22,7 +22,9 @@ const Hero = ({ hero, index, active, handleSelect }: HeroProps) => {
   const { hp, tp, name, queuedAction } = hero;
 
   return (
-    <HeroContainer style={{ order: index }}>
+    <HeroContainer
+      style={{ order: index === 0 ? 1 : index === 1 ? 2 : index === 2 ? 0 : 3 }}
+    >
       <button
         onClick={() => {
           if (typeof handleSelect === 'function') {

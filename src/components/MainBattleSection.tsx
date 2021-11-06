@@ -134,15 +134,7 @@ const MainBattleSection = () => {
                 key={name}
                 height={64}
                 width={64}
-                spriteImg={
-                  index === 0
-                    ? 'rolf'
-                    : index === 1
-                    ? 'rudo'
-                    : index === 2
-                    ? 'nei'
-                    : 'amy'
-                }
+                spriteImg={name.toLowerCase()}
                 frames={frames}
                 duration={duration}
                 style={{
