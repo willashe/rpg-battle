@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { AppStateContext } from '../state';
 import { actionCreators } from '../actions';
 import {
-  EXECUTING,
+  NEW_GAME,
   GAME_WON,
   GAME_LOST,
   FROGGY,
@@ -38,7 +38,7 @@ const NewGameMenu = () => {
 
   const startNewGame = () => {
     const newGameData = {
-      gameState: EXECUTING,
+      gameState: NEW_GAME,
       queue: [],
       queueIndex: null,
       playerInterrupt: false,

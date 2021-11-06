@@ -1,4 +1,4 @@
-import { AppStateType, ActionType, TargetType, AnimationType } from '../types';
+import { AppStateType, ActionType, TargetType } from '../types';
 import { actionTypes } from '../actions';
 import {
   AnimationTypesEnum,
@@ -228,7 +228,7 @@ const reducer = (state: AppStateType, action: ActionType) => {
         ...state,
         groups: {
           ...state.groups,
-          player: {
+          [PLAYER_GROUP]: {
             ...state.groups[PLAYER_GROUP],
             entities: newGroupEntities,
           },

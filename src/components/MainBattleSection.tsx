@@ -17,6 +17,7 @@ import {
   PLAYER_GROUP,
 } from '../constants';
 import Window from './Window';
+import Dissolve from './Dissolve';
 import NewGameMenu from './NewGameMenu';
 import AnimatedSprite from './AnimatedSprite';
 
@@ -46,6 +47,7 @@ const MainBattleSection = () => {
     <BattleSection>
       {combinedEnemies.map(
         ({
+          id,
           name,
           type, // TODO: consider renaming this to entityType
           status,
@@ -60,8 +62,10 @@ const MainBattleSection = () => {
             : {};
 
           return (
-            <div
-              key={name}
+            <Dissolve
+              key={id}
+              reverse
+              width={64}
               style={{
                 position: 'absolute',
                 top: 0,
@@ -93,14 +97,14 @@ const MainBattleSection = () => {
                       : undefined,
                 }}
               />
-            </div>
+            </Dissolve>
           );
         }
       )}
 
       {groups[PLAYER_GROUP].entities.map(
         (
-          { name, status, leftPosition, currentAnimation, animations },
+          { id, name, status, leftPosition, currentAnimation, animations },
           index
         ) => {
           const animationType = currentAnimation.type;
@@ -115,11 +119,11 @@ const MainBattleSection = () => {
 
           return (
             <div
-              key={name}
+              key={id}
               style={{
                 position: 'absolute',
                 top: top,
-                bottom: `${bottom || 0}px`,
+                bottom: `${bottom || (index === 2 || index === 3 ? -24 : 0)}px`,
                 left: left || leftPosition,
                 height: 64 * SPRITE_MULTIPLIER,
                 width: 64 * SPRITE_MULTIPLIER,
@@ -130,15 +134,7 @@ const MainBattleSection = () => {
                 key={name}
                 height={64}
                 width={64}
-                spriteImg={
-                  index === 0
-                    ? 'rolf'
-                    : index === 1
-                    ? 'rudo'
-                    : index === 2
-                    ? 'nei'
-                    : 'amy'
-                }
+                spriteImg={name.toLowerCase()}
                 frames={frames}
                 duration={duration}
                 style={{

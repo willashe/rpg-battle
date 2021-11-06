@@ -1,3 +1,5 @@
+import { v4 as uuid } from 'uuid';
+
 import { EntityType } from './types';
 import {
   EntityTypesEnum,
@@ -21,6 +23,7 @@ import {
 
 export const generateEntity = ({
   id,
+  index,
   group,
   type,
   status,
@@ -39,6 +42,7 @@ export const generateEntity = ({
   animations,
 }: EntityType) => ({
   id,
+  index,
   group,
   type,
   status,
@@ -57,8 +61,8 @@ export const generateEntity = ({
   animations,
 });
 
-const generateHeroName = (id: number) => {
-  return HERO_NAMES[id] || `Hero-${id}`;
+const generateHeroName = (index: number) => {
+  return HERO_NAMES[index] || `Hero-${index}`;
 };
 
 const generateEnemyName = (type: EntityTypesEnum, index: number) => {
@@ -118,7 +122,8 @@ export const generateHeroes = (count: number) => {
   for (let index = 0; index < count; index++) {
     heroes.push(
       generateEntity({
-        id: index,
+        id: uuid(),
+        index,
         group: PLAYER_GROUP,
         type: HUMAN,
         status: OK,
@@ -161,7 +166,8 @@ export const generateEnemies = (
 
     enemies.push(
       generateEntity({
-        id: index,
+        id: uuid(),
+        index,
         group,
         type,
         status: OK,
@@ -172,7 +178,7 @@ export const generateEnemies = (
         tp: type === FROGGY ? 5 : 0,
         attack: 1,
         defense: 3,
-        speed: type === FROGGY ? 2 : 3,
+        speed: type === FROGGY ? 1 : 3,
         inventory: [],
         leftPosition: `${
           (group === RIGHT_ENEMY_GROUP ? realIndex + 1 : realIndex + 1) *
@@ -209,14 +215,14 @@ export const generateQueue = (entities: EntityType[]) => {
   return [...entities]
     .sort(sortEntitiesBySpeed)
     .map((entity) => {
-      const { id, group, queuedAction, leftPosition } = entity;
+      const { index, group, queuedAction, leftPosition } = entity;
       const { type, target } = queuedAction;
 
       // TODO: check equipped weapons, etc. determine what kind of action or actions to queue
 
       const action = {
         type,
-        actor: { group, index: id, leftPosition },
+        actor: { group, index, leftPosition },
         target,
       };
       return [action];

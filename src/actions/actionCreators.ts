@@ -135,6 +135,11 @@ function timeout(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export const newGameThunk = () => async (dispatch: Dispatch<ActionType>) => {
+  await timeout(3000);
+  dispatch(setGameState(EXECUTING));
+};
+
 // TODO: maybe pass in full actor/target objects, then we can use attributes and equipped weapons/armor to determine damage dealt, likelihood of missing, targeting behavior, number of attacks, etc.
 // if no index passed, would we then need an array of full group entity objects?
 export const attackThunk =
@@ -253,6 +258,9 @@ export const postExecutionThunk =
 
       // TODO: will need to account for paralyzed as well
       if (hp > 0 && status === OK) {
+        dispatch(
+          setEntityAnimation({ group: PLAYER_GROUP, index }, { type: IDLE })
+        );
         livingHeroes++;
       } else if (currentAnimation.type !== DYING && status !== DEAD) {
         dispatch(

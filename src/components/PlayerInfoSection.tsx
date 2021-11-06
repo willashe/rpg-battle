@@ -14,6 +14,8 @@ import {
   PLAYER_GROUP,
   LEFT_ENEMY_GROUP,
   RIGHT_ENEMY_GROUP,
+  NEW_GAME,
+  POST_EXECUTION,
 } from '../constants';
 import Window from './Window';
 import Hero from './Hero';
@@ -28,8 +30,8 @@ const PlayerInfo = styled.section`
   display: flex;
   justify-content: center;
   background-color: #000080;
-  flex: 0 0 230px;
-  height: 230px;
+  flex: 0 0 170px;
+  height: 170px;
 `;
 
 const PlayerMenu = styled(Window)`
@@ -47,7 +49,7 @@ const PlayerButton = styled.button`
 
 const PlayerInfoSection = () => {
   const [state, dispatch] = useContext(AppStateContext);
-  const { gameState, queueIndex, groups } = state;
+  const { gameState, queueIndex, playerInterrupt, groups } = state;
   // TODO: looking like this will need to be global (need to access it in several places, and be able to reset, etc.)
   const [activeHero, setActiveHero] = useState<number | undefined>();
 
@@ -122,23 +124,31 @@ const PlayerInfoSection = () => {
       )}
 
       <PlayerMenu>
-        <p>ATTK</p>
+        <div>ATTK</div>
         <PlayerButton
           disabled={
             queueIndex !== null ||
             gameState === INIT ||
+            gameState === NEW_GAME ||
             gameState === GAME_WON ||
             gameState === GAME_LOST
           }
           onClick={startNewRound}
-        ></PlayerButton>
-        <p>ORDR</p>
-        <PlayerButton
-          disabled={queueIndex === null || gameState !== EXECUTING}
+        />
+        <div>ORDR</div>
+        <PlayerButton disabled onClick={() => {}} />
+        <button
+          disabled={
+            playerInterrupt ||
+            queueIndex === null ||
+            (gameState !== EXECUTING && gameState !== POST_EXECUTION)
+          }
           onClick={() => {
             dispatch(setPlayerInterrupt(true));
           }}
-        ></PlayerButton>
+        >
+          Interrupt
+        </button>
       </PlayerMenu>
     </PlayerInfo>
   );

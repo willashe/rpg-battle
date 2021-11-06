@@ -5,6 +5,7 @@ import { actionCreators } from '../actions';
 import {
   GameStatesEnum,
   LEFT_ENEMY_GROUP,
+  NEW_GAME,
   PLAYER_GROUP,
   RIGHT_ENEMY_GROUP,
   SLASH,
@@ -13,8 +14,7 @@ import { generateQueue } from '../utils';
 import Battle from '../pages/Battle';
 
 // TODO: fix name collisions
-const { INIT, GAME_LOST, GAME_WON, PLAYER_INPUT, POST_EXECUTION } =
-  GameStatesEnum;
+const { PLAYER_INPUT, POST_EXECUTION } = GameStatesEnum;
 
 const {
   startNewRound: startNewRoundAction,
@@ -26,6 +26,7 @@ const {
   setGameState,
   setPlayerInterrupt,
   attackThunk,
+  newGameThunk,
 } = actionCreators;
 
 const BattleContainer = () => {
@@ -144,11 +145,7 @@ const BattleContainer = () => {
       );
 
       // enemy pre-emptive attack chance
-      if (
-        prevGameState.current === INIT ||
-        prevGameState.current === GAME_WON ||
-        prevGameState.current === GAME_LOST
-      ) {
+      if (prevGameState.current === NEW_GAME) {
         // TODO: maybe check speed or luck or something
         if (Math.random() > 0.9) {
           const newQueue = generateQueue([
@@ -161,11 +158,9 @@ const BattleContainer = () => {
         } else {
           dispatch(setGameState(PLAYER_INPUT));
         }
-      }
-
-      prevGameState.current = gameState;
-
-      if (gameState === POST_EXECUTION) {
+      } else if (gameState === NEW_GAME) {
+        dispatch(newGameThunk());
+      } else if (gameState === POST_EXECUTION) {
         dispatch(
           postExecutionThunk(
             groups[PLAYER_GROUP],
@@ -174,6 +169,8 @@ const BattleContainer = () => {
           )
         );
       }
+
+      prevGameState.current = gameState;
     }
   }, [gameState, groups, dispatch]);
 

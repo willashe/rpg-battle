@@ -24,7 +24,8 @@ export interface AppStateType {
 }
 
 export interface EntityType {
-  id: number;
+  id: string;
+  index: number;
   group: GroupsEnum;
   type: EntityTypesEnum;
   status: EntityStatusesEnum;
@@ -46,7 +47,6 @@ export interface EntityType {
   currentAnimation: {
     type: AnimationTypesEnum;
     left?: number | string;
-    right?: number | string;
   };
   animations: {
     [key in AnimationTypesEnum]: AnimationType;
