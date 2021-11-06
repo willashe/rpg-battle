@@ -17,6 +17,7 @@ import {
   PLAYER_GROUP,
 } from '../constants';
 import Window from './Window';
+import Dissolve from './Dissolve';
 import NewGameMenu from './NewGameMenu';
 import AnimatedSprite from './AnimatedSprite';
 
@@ -46,6 +47,7 @@ const MainBattleSection = () => {
     <BattleSection>
       {combinedEnemies.map(
         ({
+          id,
           name,
           type, // TODO: consider renaming this to entityType
           status,
@@ -60,8 +62,10 @@ const MainBattleSection = () => {
             : {};
 
           return (
-            <div
-              key={name}
+            <Dissolve
+              key={id}
+              reverse
+              width={64}
               style={{
                 position: 'absolute',
                 top: 0,
@@ -93,14 +97,14 @@ const MainBattleSection = () => {
                       : undefined,
                 }}
               />
-            </div>
+            </Dissolve>
           );
         }
       )}
 
       {groups[PLAYER_GROUP].entities.map(
         (
-          { name, status, leftPosition, currentAnimation, animations },
+          { id, name, status, leftPosition, currentAnimation, animations },
           index
         ) => {
           const animationType = currentAnimation.type;
@@ -115,7 +119,7 @@ const MainBattleSection = () => {
 
           return (
             <div
-              key={name}
+              key={id}
               style={{
                 position: 'absolute',
                 top: top,
