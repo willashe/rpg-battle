@@ -49,7 +49,7 @@ const PlayerButton = styled.button`
 
 const PlayerInfoSection = () => {
   const [state, dispatch] = useContext(AppStateContext);
-  const { gameState, queueIndex, groups } = state;
+  const { gameState, queueIndex, playerInterrupt, groups } = state;
   // TODO: looking like this will need to be global (need to access it in several places, and be able to reset, etc.)
   const [activeHero, setActiveHero] = useState<number | undefined>();
 
@@ -134,14 +134,21 @@ const PlayerInfoSection = () => {
             gameState === GAME_LOST
           }
           onClick={startNewRound}
-        ></PlayerButton>
+        />
         <p>ORDR</p>
-        <PlayerButton
-          disabled={queueIndex === null || gameState !== EXECUTING}
+        <PlayerButton disabled onClick={() => {}} />
+        <button
+          disabled={
+            playerInterrupt ||
+            queueIndex === null ||
+            (gameState !== EXECUTING && gameState !== POST_EXECUTION)
+          }
           onClick={() => {
             dispatch(setPlayerInterrupt(true));
           }}
-        ></PlayerButton>
+        >
+          Interrupt
+        </button>
       </PlayerMenu>
     </PlayerInfo>
   );
