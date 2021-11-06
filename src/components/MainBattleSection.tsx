@@ -2,13 +2,23 @@ import { useContext } from 'react';
 import styled from 'styled-components';
 
 import { AppStateContext } from '../state';
-import { GameStatesEnum } from '../constants';
+import {
+  SPRITE_MULTIPLIER,
+  INIT,
+  PLAYER_INPUT,
+  GAME_WON,
+  GAME_LOST,
+  DEAD,
+  IDLE,
+  DYING,
+  HURT,
+  LEFT_ENEMY_GROUP,
+  RIGHT_ENEMY_GROUP,
+  PLAYER_GROUP,
+} from '../constants';
 import Window from './Window';
 import NewGameMenu from './NewGameMenu';
-
-const multiplier = 3;
-
-const { INIT, PLAYER_INPUT, GAME_WON, GAME_LOST } = GameStatesEnum;
+import AnimatedSprite from './AnimatedSprite';
 
 const BattleSection = styled.section`
   position: relative;
@@ -28,106 +38,106 @@ const MainBattleSection = () => {
   const { gameState, groups } = state;
 
   const combinedEnemies = [
-    ...groups.leftEnemies.entities,
-    ...groups.rightEnemies.entities,
+    ...groups[LEFT_ENEMY_GROUP].entities,
+    ...groups[RIGHT_ENEMY_GROUP].entities,
   ];
 
   return (
     <BattleSection>
-      {combinedEnemies.map(({ name, type, status, hp, speed }, index) => (
-        <div
-          key={name}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: `${(index + 1) * (100 / (combinedEnemies.length + 1))}%`,
-            height: 64 * multiplier,
-            width: 64 * multiplier,
-            transform: `translateX(-50%)`,
-          }}
-        >
-          <div
-            key={name}
-            style={{
-              visibility: status === 'dead' ? 'hidden' : undefined,
-              height: '100%',
-              width: '100%',
-              color: 'black',
-              transformOrigin: 'bottom right',
-              animation:
-                status === 'hurt' || status === 'dying'
-                  ? 'shake 0.5s'
-                  : undefined,
-              animationIterationCount:
-                status === 'hurt' || status === 'dying'
-                  ? 'infinite'
-                  : undefined,
-              background: `url("./assets/${
-                type ? String(type).toLowerCase() : 'froggy'
-              }.png"`,
-              backgroundSize: `auto ${64 * multiplier}px`,
-              backgroundPosition: `${
-                -64 *
-                multiplier *
-                (status === 'using'
-                  ? 0
-                  : status === 'shooting'
-                  ? 0
-                  : status === 'attacking'
-                  ? 0
-                  : 0)
-              }px`,
-              backgroundColor:
-                status === 'attacking'
-                  ? 'green'
-                  : status === 'hurt'
-                  ? 'red'
-                  : 'transparent',
-            }}
-          ></div>
-        </div>
-      ))}
+      {combinedEnemies.map(
+        (
+          { name, type, status, leftPosition, currentAnimation, animations },
+          index
+        ) => {
+          // TODO: sniff sniff...smelly code here
+          const animationType =
+            !currentAnimation || typeof currentAnimation === 'string'
+              ? currentAnimation
+              : currentAnimation.type;
 
-      {groups.player.entities.map(({ name, status, position }, index) => {
-        const defaultXPosition = `${
-          index === 0 ? 40 : index === 1 ? 60 : index === 2 ? 20 : 80
-        }%`;
+          const { frames = 0, duration = 0 } = animationType
+            ? animations[animationType]
+            : {};
 
-        return (
-          <div
-            key={name}
-            style={{
-              position: 'absolute',
-              top: position?.top,
-              bottom: `${position?.bottom || 0}px`,
-              left: position?.left || defaultXPosition,
-              right: position?.right,
-              height: 64 * multiplier,
-              width: 64 * multiplier,
-              transform: `translateX(-50%)`,
-            }}
-          >
+          return (
             <div
               key={name}
               style={{
-                visibility:
-                  status === 'dead' ||
-                  (gameState !== PLAYER_INPUT && status === 'idle')
-                    ? 'hidden'
-                    : undefined,
-                height: '100%',
-                width: '100%',
-                transformOrigin: 'bottom right',
-                transform: `rotate(${status === 'dead' ? 90 : 0}deg)`,
-                animation:
-                  status === 'hurt' || status === 'dying'
-                    ? 'shake 0.5s'
-                    : undefined,
-                animationIterationCount:
-                  status === 'hurt' || status === 'dying'
-                    ? 'infinite'
-                    : undefined,
-                backgroundImage: `url("./assets/${
+                position: 'absolute',
+                top: 0,
+                left: leftPosition,
+                height: 64 * SPRITE_MULTIPLIER,
+                width: 64 * SPRITE_MULTIPLIER,
+                transform: `translateX(-50%)`,
+              }}
+            >
+              <AnimatedSprite
+                key={name}
+                height={64}
+                width={64}
+                spriteImg={type ? String(type).toLowerCase() : 'froggy'}
+                frames={frames}
+                duration={duration}
+                style={{
+                  visibility: status === DEAD ? 'hidden' : undefined,
+                  height: '100%',
+                  width: '100%',
+                  transformOrigin: 'bottom right',
+                  animation:
+                    animationType === HURT || animationType === DYING
+                      ? 'shake 0.5s'
+                      : undefined,
+                  animationIterationCount:
+                    animationType === HURT || animationType === DYING
+                      ? 'infinite'
+                      : undefined,
+                }}
+              />
+            </div>
+          );
+        }
+      )}
+
+      {groups[PLAYER_GROUP].entities.map(
+        (
+          { name, status, leftPosition, currentAnimation, animations },
+          index
+        ) => {
+          // TODO: sniff sniff...smelly code here
+          const animationType =
+            !currentAnimation || typeof currentAnimation === 'string'
+              ? currentAnimation
+              : currentAnimation.type;
+          const left =
+            !currentAnimation || typeof currentAnimation === 'string'
+              ? undefined
+              : currentAnimation.left;
+
+          const {
+            frames = 0,
+            duration = 0,
+            top = undefined,
+            bottom = undefined,
+          } = animationType ? animations[animationType] : {};
+
+          return (
+            <div
+              key={name}
+              style={{
+                position: 'absolute',
+                top: top,
+                bottom: `${bottom || 0}px`,
+                left: left || leftPosition,
+                height: 64 * SPRITE_MULTIPLIER,
+                width: 64 * SPRITE_MULTIPLIER,
+                transform: `translateX(-50%)`,
+              }}
+            >
+              <AnimatedSprite
+                key={name}
+                height={64}
+                width={64}
+                spriteImg={
                   index === 0
                     ? 'rolf'
                     : index === 1
@@ -135,27 +145,36 @@ const MainBattleSection = () => {
                     : index === 2
                     ? 'nei'
                     : 'amy'
-                }.png"`,
-                backgroundSize: `auto ${64 * multiplier}px`,
-                backgroundPosition: `${
-                  -64 *
-                  multiplier *
-                  (status === 'using'
-                    ? 1
-                    : status === 'shooting'
-                    ? 2
-                    : status === 'attacking'
-                    ? 3
-                    : 0)
-                }px`,
-              }}
-            ></div>
-          </div>
-        );
-      })}
+                }
+                frames={frames}
+                duration={duration}
+                style={{
+                  visibility:
+                    status === DEAD ||
+                    (gameState !== PLAYER_INPUT && animationType === IDLE)
+                      ? 'hidden'
+                      : undefined,
+                  height: '100%',
+                  width: '100%',
+                  transformOrigin: 'bottom right',
+                  transform: `rotate(${status === DEAD ? 90 : 0}deg)`,
+                  animation:
+                    animationType === HURT || animationType === DYING
+                      ? 'shake 0.5s'
+                      : undefined,
+                  animationIterationCount:
+                    animationType === HURT || animationType === DYING
+                      ? 'infinite'
+                      : undefined,
+                }}
+              />
+            </div>
+          );
+        }
+      )}
 
-      {Boolean(groups.player.message) && (
-        <MessageBox>{groups.player.message}</MessageBox>
+      {Boolean(groups[PLAYER_GROUP].message) && (
+        <MessageBox>{groups[PLAYER_GROUP].message}</MessageBox>
       )}
 
       {(gameState === INIT ||

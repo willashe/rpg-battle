@@ -2,8 +2,14 @@ import { useContext, useRef, useEffect } from 'react';
 
 import { AppStateContext } from '../state';
 import { actionCreators } from '../actions';
-import { GameStatesEnum } from '../constants';
-import { generateQueue, getActionXPosition } from '../utils';
+import {
+  GameStatesEnum,
+  LEFT_ENEMY_GROUP,
+  PLAYER_GROUP,
+  RIGHT_ENEMY_GROUP,
+  SLASH,
+} from '../constants';
+import { generateQueue } from '../utils';
 import Battle from '../pages/Battle';
 
 // TODO: fix name collisions
@@ -15,8 +21,8 @@ const {
   setQueueIndex,
   incrementQueueIndex,
   postExecutionThunk,
-  gameWon,
-  gameLost,
+  winGame,
+  loseGame,
   setGameState,
   setPlayerInterrupt,
   attackThunk,
@@ -38,14 +44,15 @@ const BattleContainer = () => {
 
       if (queue[queueIndex]) {
         console.log(queue[queueIndex]);
-        const { actionCreator, actor, target } = queue[queueIndex];
-        console.log(actionCreator);
+        const { type, actor, target } = queue[queueIndex];
 
         // TODO: randomize target selection from target group (only pass target group in queue object, no target index needed)
         const { group: actorGroup, index: actorIndex } = actor;
         let { group: targetGroup, index: targetIndex } = target;
 
-        if (groups[actorGroup].entities[actorIndex].hp <= 0) {
+        const actorEntity = groups[actorGroup].entities[actorIndex];
+
+        if (actorEntity.hp <= 0) {
           dispatch(incrementQueueIndex());
           return;
         }
@@ -53,16 +60,18 @@ const BattleContainer = () => {
         // TODO: add support for no index passed (target entire group)
         // TODO: add support for array of groups
 
-        if (targetGroup === 'player') {
+        if (targetGroup === PLAYER_GROUP) {
           if (
             targetIndex !== undefined &&
-            (!groups.player.entities[targetIndex] ||
-              groups.player.entities[targetIndex].hp <= 0)
+            (!groups[PLAYER_GROUP].entities[targetIndex] ||
+              groups[PLAYER_GROUP].entities[targetIndex].hp <= 0)
           ) {
-            targetIndex = groups.player.entities.findIndex(({ hp }) => hp > 0);
+            targetIndex = groups[PLAYER_GROUP].entities.findIndex(
+              ({ hp }) => hp > 0
+            );
 
             if (targetIndex === -1) {
-              dispatch(gameLost());
+              dispatch(loseGame());
               return;
             }
           }
@@ -77,13 +86,15 @@ const BattleContainer = () => {
           );
           if (targetIndex === -1) {
             targetGroup =
-              targetGroup === 'leftEnemies' ? 'rightEnemies' : 'leftEnemies';
+              targetGroup === LEFT_ENEMY_GROUP
+                ? RIGHT_ENEMY_GROUP
+                : LEFT_ENEMY_GROUP;
             targetIndex = groups[targetGroup].entities.findIndex(
               ({ hp }) => hp > 0
             );
 
             if (targetIndex === -1) {
-              dispatch(gameWon());
+              dispatch(winGame());
               return;
             }
           }
@@ -91,24 +102,31 @@ const BattleContainer = () => {
 
         // TODO: we need to look at actor/target(s) attributes, weapons/armor, etc. here to determine damage, success
 
-        dispatch(
-          attackThunk(actor, {
-            group: targetGroup,
-            index: targetIndex,
-            xPosition: getActionXPosition(
-              groups.leftEnemies.entities,
-              groups.rightEnemies.entities,
-              actor,
-              { group: targetGroup, index: targetIndex }
-            ),
-          })
-        );
+        const newTarget = {
+          group: targetGroup,
+          index: targetIndex,
+        };
+
+        // TODO: need get average position of group/groups instead of falling back to 50% (though 50% would be a valid fallback for anything larger than a single group)
+        const left =
+          targetIndex !== undefined
+            ? groups[targetGroup].entities[targetIndex].leftPosition
+            : '50%';
+
+        console.log(type);
+
+        const mainAnimationData = {
+          type: SLASH, // TODO: use action type to determine this
+          duration: actorEntity.animations[SLASH].duration,
+          left,
+        };
+
+        // TODO: use action type to determine what thunk to dispatch
+        dispatch(attackThunk(actor, newTarget, mainAnimationData));
 
         // TODO: ideally we would be able to wait for actionCreator to finish and then dispatch gameState: POST_EXECUTION here (should be doable since no new state is needed)
       } else {
         if (playerInterrupt) {
-          // TODO: need to set hero animations to 'idle'
-          // TODO: maybe combine into single action?
           dispatch(setGameState(PLAYER_INPUT));
           dispatch(setQueueIndex(null));
           dispatch(setPlayerInterrupt(false));
@@ -134,8 +152,8 @@ const BattleContainer = () => {
         // TODO: maybe check speed or luck or something
         if (Math.random() > 0.9) {
           const newQueue = generateQueue([
-            ...groups.leftEnemies.entities,
-            ...groups.rightEnemies.entities,
+            ...groups[LEFT_ENEMY_GROUP].entities,
+            ...groups[RIGHT_ENEMY_GROUP].entities,
           ]);
 
           dispatch(startNewRoundAction(newQueue));
@@ -150,9 +168,9 @@ const BattleContainer = () => {
       if (gameState === POST_EXECUTION) {
         dispatch(
           postExecutionThunk(
-            groups.player,
-            groups.leftEnemies,
-            groups.rightEnemies
+            groups[PLAYER_GROUP],
+            groups[LEFT_ENEMY_GROUP],
+            groups[RIGHT_ENEMY_GROUP]
           )
         );
       }

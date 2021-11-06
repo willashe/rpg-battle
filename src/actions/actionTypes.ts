@@ -1,7 +1,7 @@
 export const START_NEW_GAME = 'START_NEW_GAME';
 export const START_NEW_ROUND = 'START_NEW_ROUND';
-export const GAME_WON = 'GAME_WON';
-export const GAME_LOST = 'GAME_LOST';
+export const WIN_GAME = 'WIN_GAME';
+export const LOSE_GAME = 'LOSE_GAME';
 
 export const SET_QUEUE_INDEX = 'SET_QUEUE_INDEX';
 export const INCREMENT_QUEUE_INDEX = 'INCREMENT_QUEUE_INDEX';
@@ -12,4 +12,5 @@ export const QUEUE_ACTION = 'QUEUE_ACTION';
 
 export const SET_GROUP_MESSAGE = 'SET_GROUP_MESSAGE';
 export const SET_ENTITY_STATUS = 'SET_ENTITY_STATUS';
+export const SET_ENTITY_ANIMATION = 'SET_ENTITY_ANIMATION';
 export const ENTITY_DAMAGE = 'ENTITY_DAMAGE';

@@ -1,11 +1,17 @@
-import { AppStateType, ActionType, TargetType } from '../types';
+import { AppStateType, ActionType, TargetType, AnimationType } from '../types';
 import { actionTypes } from '../actions';
-import { GameStatesEnum } from '../constants';
+import {
+  EntityStatusesEnum,
+  EXECUTING,
+  GAME_LOST,
+  GAME_WON,
+  PLAYER_GROUP,
+} from '../constants';
 const {
   START_NEW_GAME,
   START_NEW_ROUND,
-  GAME_WON,
-  GAME_LOST,
+  WIN_GAME,
+  LOSE_GAME,
   SET_QUEUE_INDEX,
   INCREMENT_QUEUE_INDEX,
   SET_GAME_STATE,
@@ -14,6 +20,7 @@ const {
   QUEUE_ACTION,
   SET_GROUP_MESSAGE,
   SET_ENTITY_STATUS,
+  SET_ENTITY_ANIMATION,
   ENTITY_DAMAGE,
 } = actionTypes;
 
@@ -31,24 +38,24 @@ const reducer = (state: AppStateType, action: ActionType) => {
     case START_NEW_ROUND: {
       return {
         ...state,
-        gameState: GameStatesEnum.EXECUTING,
+        gameState: EXECUTING,
         queueIndex: 0,
         queue: payload,
       };
     }
-    case GAME_WON: {
-      console.log('GAME_WON');
+    case WIN_GAME: {
+      console.log('WIN_GAME');
       return {
         ...state,
-        gameState: GameStatesEnum.GAME_WON,
+        gameState: GAME_WON,
         queueIndex: null,
       };
     }
-    case GAME_LOST: {
-      console.log('GAME_LOST');
+    case LOSE_GAME: {
+      console.log('LOSE_GAME');
       return {
         ...state,
-        gameState: GameStatesEnum.GAME_LOST,
+        gameState: GAME_LOST,
         queueIndex: null,
       };
     }
@@ -95,15 +102,45 @@ const reducer = (state: AppStateType, action: ActionType) => {
       const {
         target: { group, index },
         status,
-        position,
-      }: { target: TargetType; status: string; position: number } = payload;
+      }: {
+        target: TargetType;
+        status: EntityStatusesEnum;
+      } = payload;
 
       if (index === undefined) return state;
 
       const newEntity = {
         ...state.groups[group].entities[index],
         status,
-        position,
+      };
+      const newGroupEntities = [
+        ...state.groups[group].entities.slice(0, index),
+        newEntity,
+        ...state.groups[group].entities.slice(index + 1),
+      ];
+
+      return {
+        ...state,
+        groups: {
+          ...state.groups,
+          [group]: { ...state.groups[group], entities: newGroupEntities },
+        },
+      };
+    }
+    case SET_ENTITY_ANIMATION: {
+      const {
+        target: { group, index },
+        animation,
+      }: {
+        target: TargetType;
+        animation: AnimationType;
+      } = payload;
+
+      if (index === undefined) return state;
+
+      const newEntity = {
+        ...state.groups[group].entities[index],
+        currentAnimation: animation,
       };
       const newGroupEntities = [
         ...state.groups[group].entities.slice(0, index),
@@ -152,19 +189,19 @@ const reducer = (state: AppStateType, action: ActionType) => {
     //   };
     // }
     case QUEUE_ACTION: {
-      const { heroIndex: index, target, actionCreator, type } = payload;
+      const { heroIndex: index, target, type } = payload;
 
       const newEntity = {
-        ...state.groups.player.entities[index],
+        ...state.groups[PLAYER_GROUP].entities[index],
         queuedAction: {
           type,
           target,
         },
       };
       const newGroupEntities = [
-        ...state.groups.player.entities.slice(0, index),
+        ...state.groups[PLAYER_GROUP].entities.slice(0, index),
         newEntity,
-        ...state.groups.player.entities.slice(index + 1),
+        ...state.groups[PLAYER_GROUP].entities.slice(index + 1),
       ];
 
       return {
@@ -172,7 +209,7 @@ const reducer = (state: AppStateType, action: ActionType) => {
         groups: {
           ...state.groups,
           player: {
-            ...state.groups.player,
+            ...state.groups[PLAYER_GROUP],
             entities: newGroupEntities,
           },
         },

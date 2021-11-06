@@ -3,12 +3,19 @@ import styled from 'styled-components';
 
 import { AppStateContext } from '../state';
 import { actionCreators } from '../actions';
-import { EntityTypesEnum, GameStatesEnum } from '../constants';
+import {
+  EXECUTING,
+  GAME_WON,
+  GAME_LOST,
+  FROGGY,
+  SAKOFF,
+  PLAYER_GROUP,
+  LEFT_ENEMY_GROUP,
+  RIGHT_ENEMY_GROUP,
+} from '../constants';
 import { generateHeroes, generateEnemies } from '../utils';
 import Window from './Window';
 
-const { FROGGY, SAKOFF } = EntityTypesEnum;
-const { EXECUTING, GAME_WON, GAME_LOST } = GameStatesEnum;
 const { startNewGame: startNewGameAction } = actionCreators;
 
 const Button = styled.button`
@@ -25,8 +32,9 @@ const NewGameMenu = () => {
   const [state, dispatch] = useContext(AppStateContext);
   const { gameState } = state;
   const [numHeroes, setNumHeroes] = useState(4);
-  const [numLeftEnemies, setNumLeftEnemies] = useState(3);
-  const [numRightEnemies, setNumRightEnemies] = useState(1);
+  const [leftEnemyCount, setLeftEnemyCount] = useState(2);
+  const [rightEnemyCount, setRightEnemyCount] = useState(1);
+  const totalEnemyCount = leftEnemyCount + rightEnemyCount;
 
   const startNewGame = () => {
     const newGameData = {
@@ -35,19 +43,30 @@ const NewGameMenu = () => {
       queueIndex: null,
       playerInterrupt: false,
       groups: {
-        player: {
+        [PLAYER_GROUP]: {
           entities: generateHeroes(numHeroes),
           message: '',
         },
-        leftEnemies: {
+        [LEFT_ENEMY_GROUP]: {
           type: FROGGY,
           message: '',
-          entities: generateEnemies(numLeftEnemies, FROGGY, 'leftEnemies'),
+          entities: generateEnemies(
+            leftEnemyCount,
+            FROGGY,
+            LEFT_ENEMY_GROUP,
+            totalEnemyCount
+          ),
         },
-        rightEnemies: {
+        [RIGHT_ENEMY_GROUP]: {
           type: SAKOFF,
           message: '',
-          entities: generateEnemies(numRightEnemies, SAKOFF, 'rightEnemies'),
+          entities: generateEnemies(
+            rightEnemyCount,
+            SAKOFF,
+            RIGHT_ENEMY_GROUP,
+            totalEnemyCount,
+            leftEnemyCount
+          ),
         },
       },
     };
@@ -88,35 +107,35 @@ const NewGameMenu = () => {
         max="4"
       />
       <br />
-      <label htmlFor="numLeftEnemies">Froggys: </label>
+      <label htmlFor="leftEnemyCount">Froggys: </label>
       <input
         type="number"
-        id="numLeftEnemies"
-        name="numLeftEnemies"
-        value={numLeftEnemies}
+        id="leftEnemyCount"
+        name="leftEnemyCount"
+        value={leftEnemyCount}
         onChange={(e: any) => {
-          setNumLeftEnemies(Number(e.target.value));
+          setLeftEnemyCount(Number(e.target.value));
         }}
-        min={numRightEnemies === 0 ? 1 : 0}
-        max={numRightEnemies === 3 ? 1 : numRightEnemies === 2 ? 2 : 3}
+        min={rightEnemyCount === 0 ? 1 : 0}
+        max={rightEnemyCount === 3 ? 1 : rightEnemyCount === 2 ? 2 : 3}
       />
       <br />
-      <label htmlFor="numRightEnemies">Sakoffs: </label>
+      <label htmlFor="rightEnemyCount">Sakoffs: </label>
       <input
         type="number"
-        id="numRightEnemies"
-        name="numRightEnemies"
-        value={numRightEnemies}
+        id="rightEnemyCount"
+        name="rightEnemyCount"
+        value={rightEnemyCount}
         onChange={(e: any) => {
-          setNumRightEnemies(Number(e.target.value));
+          setRightEnemyCount(Number(e.target.value));
         }}
-        min={numLeftEnemies === 0 ? 1 : 0}
-        max={numLeftEnemies === 3 ? 1 : numLeftEnemies === 2 ? 2 : 3}
+        min={leftEnemyCount === 0 ? 1 : 0}
+        max={leftEnemyCount === 3 ? 1 : leftEnemyCount === 2 ? 2 : 3}
       />
       <br />
       <Button
         onClick={startNewGame}
-        disabled={numLeftEnemies + numRightEnemies <= 0}
+        disabled={leftEnemyCount + rightEnemyCount <= 0}
       >
         Start Game
       </Button>

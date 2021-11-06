@@ -1,10 +1,13 @@
 import { createContext, Dispatch, useReducer, useCallback } from 'react';
 
 import { AppStateType, ActionType } from '../types';
-import { GameStatesEnum } from '../constants';
+import {
+  INIT,
+  LEFT_ENEMY_GROUP,
+  PLAYER_GROUP,
+  RIGHT_ENEMY_GROUP,
+} from '../constants';
 import reducer from './reducer';
-
-const { INIT } = GameStatesEnum;
 
 export const initialState = {
   gameState: INIT,
@@ -12,15 +15,15 @@ export const initialState = {
   queueIndex: null,
   playerInterrupt: false,
   groups: {
-    player: {
+    [PLAYER_GROUP]: {
       entities: [],
       message: '',
     },
-    leftEnemies: {
+    [LEFT_ENEMY_GROUP]: {
       entities: [],
       message: '',
     },
-    rightEnemies: {
+    [RIGHT_ENEMY_GROUP]: {
       entities: [],
       message: '',
     },

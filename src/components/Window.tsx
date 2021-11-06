@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const multiplier = 4;
+import { SPRITE_MULTIPLIER } from '../constants';
 
 const Container = styled.div`
   background: #000080;
   color: white;
   position: relative;
-  padding: ${5 * multiplier}px ${8 * multiplier}px ${5 * multiplier}px
-    ${8 * multiplier}px;
+  padding: ${5 * SPRITE_MULTIPLIER}px ${8 * SPRITE_MULTIPLIER}px
+    ${5 * SPRITE_MULTIPLIER}px ${8 * SPRITE_MULTIPLIER}px;
 `;
 
 const Corner = styled.div`
@@ -26,9 +26,9 @@ const Side = styled.div`
 
 const TopBottom = styled.div`
   position: absolute;
-  height: ${3 * multiplier}px;
+  height: ${3 * SPRITE_MULTIPLIER}px;
   width: 100%;
-  background-size: ${5 * multiplier}px 100%;
+  background-size: ${5 * SPRITE_MULTIPLIER}px 100%;
   background-repeat: repeat-x;
 `;
 
@@ -47,7 +47,7 @@ const Window: React.FunctionComponent<WindowProps> = (props) => {
         style={{
           top: 0,
           left: 0,
-          width: 5 * multiplier,
+          width: 5 * SPRITE_MULTIPLIER,
           backgroundImage: 'url(./assets/left.png)',
         }}
       />
@@ -55,7 +55,7 @@ const Window: React.FunctionComponent<WindowProps> = (props) => {
         style={{
           top: 0,
           right: 0,
-          width: 5 * multiplier,
+          width: 5 * SPRITE_MULTIPLIER,
           backgroundImage: 'url(./assets/right.png)',
         }}
       />
@@ -73,8 +73,8 @@ const Window: React.FunctionComponent<WindowProps> = (props) => {
         style={{
           top: 0,
           left: 0,
-          width: 5 * multiplier,
-          height: 3 * multiplier,
+          width: 5 * SPRITE_MULTIPLIER,
+          height: 3 * SPRITE_MULTIPLIER,
           backgroundImage: 'url(./assets/top-left-corner.png)',
         }}
       />
@@ -82,8 +82,8 @@ const Window: React.FunctionComponent<WindowProps> = (props) => {
         style={{
           top: 0,
           right: 0,
-          width: 5 * multiplier,
-          height: 3 * multiplier,
+          width: 5 * SPRITE_MULTIPLIER,
+          height: 3 * SPRITE_MULTIPLIER,
           backgroundImage: 'url(./assets/top-right-corner.png)',
         }}
       />
@@ -91,8 +91,8 @@ const Window: React.FunctionComponent<WindowProps> = (props) => {
         style={{
           bottom: 0,
           left: 0,
-          width: 5 * multiplier,
-          height: 3 * multiplier,
+          width: 5 * SPRITE_MULTIPLIER,
+          height: 3 * SPRITE_MULTIPLIER,
           backgroundImage: 'url(./assets/bottom-left-corner.png)',
         }}
       />
@@ -100,8 +100,8 @@ const Window: React.FunctionComponent<WindowProps> = (props) => {
         style={{
           bottom: 0,
           right: 0,
-          width: 5 * multiplier,
-          height: 3 * multiplier,
+          width: 5 * SPRITE_MULTIPLIER,
+          height: 3 * SPRITE_MULTIPLIER,
           backgroundImage: 'url(./assets/bottom-right-corner.png)',
         }}
       />

@@ -1,25 +1,8 @@
-// export enum GroupsEnum {
-//   PLAYER_GROUP = 'PLAYER_GROUP',
-//   LEFT_ENEMY_GROUP = 'LEFT_ENEMY_GROUP',
-//   RIGHT_ENEMY_GROUP = 'RIGHT_ENEMY_GROUP',
-// }
-// export const { PLAYER_GROUP, LEFT_ENEMY_GROUP, RIGHT_ENEMY_GROUP } = GroupsEnum;
-
-export enum EntityTypesEnum {
-  HERO = 'HERO',
-  HUMAN = 'HUMAN',
-  NUMAN = 'NUMAN',
-  FROGGY = 'FROGGY',
-  SAKOFF = 'SAKOFF',
-}
-
-export enum EntityActionTypesEnum {
-  ATTACK = 'ATTACK',
-  SKILL = 'SKILL',
-  ITEM = 'ITEM',
-  DEFEND = 'DEFEND',
-}
-export const { ATTACK, SKILL, ITEM, DEFEND } = EntityActionTypesEnum;
+// TODO: this probably belongs in a config file or something
+export const SPRITE_MULTIPLIER = 3;
+// all images at native dimensions (tiny)
+// multiplier is used to uniformly scale all pixel art assets up
+// usage: actual size = (desired size in px) * multiplier
 
 export enum GameStatesEnum {
   INIT = 'INIT',
@@ -30,11 +13,57 @@ export enum GameStatesEnum {
   EXECUTING = 'EXECUTING',
   POST_EXECUTION = 'POST_EXECUTION',
 }
+export const {
+  INIT,
+  NEW_GAME,
+  GAME_WON,
+  GAME_LOST,
+  PLAYER_INPUT,
+  EXECUTING,
+  POST_EXECUTION,
+} = GameStatesEnum;
 
-export enum EntityActionsEnum {
-  ATTACK = 'ATTACK',
-  USE_ITEM = 'USE_ITEM',
-  USE_SKILL = 'USE_SKILL',
+export enum GroupsEnum {
+  PLAYER_GROUP = 'PLAYER_GROUP',
+  LEFT_ENEMY_GROUP = 'LEFT_ENEMY_GROUP',
+  RIGHT_ENEMY_GROUP = 'RIGHT_ENEMY_GROUP',
 }
+export const { PLAYER_GROUP, LEFT_ENEMY_GROUP, RIGHT_ENEMY_GROUP } = GroupsEnum;
+
+export enum EntityTypesEnum {
+  HUMAN = 'HUMAN',
+  NUMAN = 'NUMAN',
+  FROGGY = 'FROGGY',
+  SAKOFF = 'SAKOFF',
+}
+export const { HUMAN, NUMAN, FROGGY, SAKOFF } = EntityTypesEnum;
+
+export enum EntityStatusesEnum {
+  OK = 'OK',
+  DEAD = 'DEAD',
+  PARALYZED = 'PARALYZED',
+  POISONED = 'POISONED',
+}
+export const { OK, DEAD, PARALYZED, POISONED } = EntityStatusesEnum;
+
+export enum EntityActionTypesEnum {
+  ATTACK = 'ATTACK',
+  TECH = 'TECH',
+  ITEM = 'ITEM',
+  DEFEND = 'DEFEND',
+}
+export const { ATTACK, TECH, ITEM, DEFEND } = EntityActionTypesEnum;
+
+export enum AnimationTypesEnum {
+  IDLE = 'IDLE',
+  SLASH = 'SLASH',
+  SHOOT = 'SHOOT',
+  USE = 'USE',
+  TARGETED = 'TARGETED',
+  HURT = 'HURT',
+  DYING = 'DYING',
+}
+export const { IDLE, SLASH, SHOOT, USE, TARGETED, HURT, DYING } =
+  AnimationTypesEnum;
 
 export const HERO_NAMES = ['ROLF', 'NEI', 'RUDO', 'ANNA'];

@@ -2,6 +2,12 @@ import {
   GameStatesEnum,
   EntityTypesEnum,
   EntityActionTypesEnum,
+  AnimationTypesEnum,
+  EntityStatusesEnum,
+  GroupsEnum,
+  PLAYER_GROUP,
+  LEFT_ENEMY_GROUP,
+  RIGHT_ENEMY_GROUP,
 } from './constants';
 
 // TODO: review interface vs. type
@@ -11,18 +17,18 @@ export interface AppStateType {
   queueIndex: number | null;
   playerInterrupt: boolean;
   groups: {
-    player: EntityGroupType;
-    leftEnemies: EntityGroupType;
-    rightEnemies: EntityGroupType;
+    [PLAYER_GROUP]: EntityGroupType;
+    [LEFT_ENEMY_GROUP]: EntityGroupType;
+    [RIGHT_ENEMY_GROUP]: EntityGroupType;
   };
 }
 
 export interface EntityType {
   id: number;
-  group: 'player' | 'leftEnemies' | 'rightEnemies';
+  group: GroupsEnum;
   type: EntityTypesEnum;
+  status: EntityStatusesEnum;
   name: string;
-  status: string;
   hp: number;
   maxHp: number;
   tp: number;
@@ -32,14 +38,21 @@ export interface EntityType {
   speed: number;
   inventory: ItemType[];
   // equipment: EntityEquipmentType;
+  leftPosition: number | string;
   queuedAction: {
     type: EntityActionTypesEnum;
     target: TargetType;
   };
-  animations?: {
-    idle: AnimationType;
+  currentAnimation:
+    | AnimationTypesEnum
+    | {
+        type: AnimationTypesEnum;
+        left?: number | string;
+        right?: number | string;
+      };
+  animations: {
+    [key in AnimationTypesEnum]: AnimationType;
   };
-  position?: any;
 }
 
 export interface EntityGroupType {
@@ -49,7 +62,10 @@ export interface EntityGroupType {
 }
 
 export interface AnimationType {
-  frames: string[];
+  frames: number | number[];
+  duration: number;
+  top?: number;
+  bottom?: number;
 }
 
 export interface ItemType {}
@@ -72,20 +88,19 @@ export interface ActionType {
 }
 
 export interface EntityActionType {
-  actionCreator: any; // TODO
-  // action: EntityActionsEnum;
+  type: any; // TODO
   actor: ActorType;
   target: TargetType;
 }
 
 export interface ActorType {
-  group: 'player' | 'leftEnemies' | 'rightEnemies';
+  group: GroupsEnum;
   index: number;
 }
 
 export interface TargetType {
-  group: 'player' | 'leftEnemies' | 'rightEnemies';
-  // | Array<'player' | 'leftEnemies' | 'rightEnemies'>;
+  group: GroupsEnum;
+  // | Array<GroupsEnum>;
   index?: number;
   xPosition?: number | string;
 }
