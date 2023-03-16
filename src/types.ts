@@ -8,10 +8,15 @@ import {
   PLAYER_GROUP,
   LEFT_ENEMY_GROUP,
   RIGHT_ENEMY_GROUP,
+  TargetTypesEnum,
+  EffectTypesEnum,
+  ArmorTypesEnum,
+  HeroesEnum,
+  EnemyTypesEnum,
 } from './constants';
 
-// TODO: review interface vs. type
 export interface AppStateType {
+  pixelMultiplier: number;
   gameState: GameStatesEnum;
   queue: EntityActionType[];
   queueIndex: number | null;
@@ -38,11 +43,20 @@ export interface EntityType {
   defense: number;
   speed: number;
   inventory: ItemType[];
-  // equipment: EntityEquipmentType;
+  equipment: {
+    leftHand?: WeaponType | ShieldType;
+    rightHand?: WeaponType | ShieldType;
+    head?: ArmorType;
+    body?: ArmorType;
+    legs?: ArmorType;
+  };
+  techniques: TechniqueType[];
   leftPosition: number | string;
   queuedAction: {
     type: EntityActionTypesEnum;
     target: TargetType;
+    techIndex: number;
+    itemIndex: number;
   };
   currentAnimation: {
     type: AnimationTypesEnum;
@@ -51,33 +65,63 @@ export interface EntityType {
   animations: {
     [key in AnimationTypesEnum]: AnimationType;
   };
+  height?: number;
+  width?: number;
+}
+
+export interface EnemyType extends EntityType {
+  size: number;
 }
 
 export interface EntityGroupType {
-  type?: EntityTypesEnum;
-  entities: EntityType[];
+  type?: EnemyTypesEnum;
+  entities: Array<EntityType | EnemyType>;
   message: string;
 }
 
 export interface AnimationType {
   frames: number | number[];
   duration: number;
-  top?: number;
-  bottom?: number;
+  top?: number | string;
+  bottom?: number | string;
 }
 
-export interface ItemType {}
-
-export interface EntityEquipmentType {
-  // head: EquippableItemType | null;
-  // leftHand: EquippableItemType | null;
-  // rightHand: EquippableItemType | null;
-  // body: EquippableItemType | null;
-  // legs: EquippableItemType | null;
+export interface ItemType {
+  name: string;
+  consumable?: boolean;
+  itemTargetType?: TargetTypesEnum;
+  itemTargetAllies?: boolean;
+  itemEffect?: EffectTypesEnum;
+  itemPower?: number;
 }
 
-export interface EquippableItemType {
-  twoHanded: boolean;
+export interface WeaponType extends ItemType {
+  attackPower: number;
+  defensePower: number;
+  attackType: 'SLASH' | 'SHOOT'; // TODO
+  twoHanded?: boolean;
+  targetType: TargetTypesEnum;
+  equippableBy: HeroesEnum[];
+}
+
+export interface ShieldType extends ItemType {
+  defensePower: number;
+  equippableBy: HeroesEnum[];
+}
+
+export interface ArmorType extends ItemType {
+  defensePower: number;
+  type: ArmorTypesEnum;
+  equippableBy: HeroesEnum[];
+}
+
+export interface TechniqueType {
+  name: string;
+  targetType: TargetTypesEnum;
+  targetAllies: boolean;
+  effect: EffectTypesEnum;
+  power: number;
+  tp: number;
 }
 
 export interface ActionType {
@@ -89,17 +133,16 @@ export interface EntityActionType {
   type: any; // TODO
   actor: ActorType;
   target: TargetType;
+  techIndex?: number;
+  itemIndex?: number;
 }
 
 export interface ActorType {
   group: GroupsEnum;
   index: number;
-  leftPosition?: number | string;
 }
 
 export interface TargetType {
-  group: GroupsEnum;
-  // | Array<GroupsEnum>;
+  group: GroupsEnum | Array<GroupsEnum>;
   index?: number;
-  leftPosition?: number | string;
 }
