@@ -33,7 +33,7 @@ const BattleWindow = styled((props: any) => <div {...props} />)`
   width: 133.33vmin;
   overflow: hidden;
   outline: 4px solid #000088;
-  background: url('/assets/battle-bg.png');
+  background: url('./assets/battle-bg.png');
   background-size: auto 100%;
   ${({ bgFlash }: any) => {
     if (bgFlash) {
