@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/rpg-battle/static/css/main.948d06d1.chunk.css",
-    "main.js": "/rpg-battle/static/js/main.e416e19c.chunk.js",
-    "main.js.map": "/rpg-battle/static/js/main.e416e19c.chunk.js.map",
+    "main.js": "/rpg-battle/static/js/main.6b9193bd.chunk.js",
+    "main.js.map": "/rpg-battle/static/js/main.6b9193bd.chunk.js.map",
     "runtime-main.js": "/rpg-battle/static/js/runtime-main.08d870b7.js",
     "runtime-main.js.map": "/rpg-battle/static/js/runtime-main.08d870b7.js.map",
-    "static/js/2.d2dc6ae3.chunk.js": "/rpg-battle/static/js/2.d2dc6ae3.chunk.js",
-    "static/js/2.d2dc6ae3.chunk.js.map": "/rpg-battle/static/js/2.d2dc6ae3.chunk.js.map",
+    "static/js/2.a5c7adc0.chunk.js": "/rpg-battle/static/js/2.a5c7adc0.chunk.js",
+    "static/js/2.a5c7adc0.chunk.js.map": "/rpg-battle/static/js/2.a5c7adc0.chunk.js.map",
     "static/js/3.4eb738ca.chunk.js": "/rpg-battle/static/js/3.4eb738ca.chunk.js",
     "static/js/3.4eb738ca.chunk.js.map": "/rpg-battle/static/js/3.4eb738ca.chunk.js.map",
     "index.html": "/rpg-battle/index.html",
     "static/css/main.948d06d1.chunk.css.map": "/rpg-battle/static/css/main.948d06d1.chunk.css.map",
-    "static/js/2.d2dc6ae3.chunk.js.LICENSE.txt": "/rpg-battle/static/js/2.d2dc6ae3.chunk.js.LICENSE.txt",
+    "static/js/2.a5c7adc0.chunk.js.LICENSE.txt": "/rpg-battle/static/js/2.a5c7adc0.chunk.js.LICENSE.txt",
     "static/media/App.css": "/rpg-battle/static/media/ps2-webfont.f5b66150.ttf"
   },
   "entrypoints": [
     "static/js/runtime-main.08d870b7.js",
-    "static/js/2.d2dc6ae3.chunk.js",
+    "static/js/2.a5c7adc0.chunk.js",
     "static/css/main.948d06d1.chunk.css",
-    "static/js/main.e416e19c.chunk.js"
+    "static/js/main.6b9193bd.chunk.js"
   ]
 }
