@@ -9,11 +9,11 @@ import Window from '../Window';
 
 const { startNewGame: startNewGameAction } = actionCreators;
 
-const Button = styled.button`
+const Button = styled((props) => <button {...props} />)`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.1rem;
+  font-size: ${({ pixelMultiplier }) => 8 * pixelMultiplier}px;
   border: 1px solid;
   border-radius: 8px;
   margin: 0 auto;
@@ -25,7 +25,7 @@ interface GameMenuProps {
 
 const GameMenu: React.FC<GameMenuProps> = ({ handleClose }) => {
   const [state, dispatch] = useContext(AppStateContext);
-  const { gameState } = state;
+  const { gameState, pixelMultiplier } = state;
 
   const replayGame = () => {
     const newGameData = {
@@ -59,18 +59,20 @@ const GameMenu: React.FC<GameMenuProps> = ({ handleClose }) => {
           : 'Had Enough?'}
       </div>
       --------------
-      <Button disabled onClick={replayGame}>
+      <Button pixelMultiplier={pixelMultiplier} disabled onClick={replayGame}>
         Replay
       </Button>
       {/* TODO: global link/button styles */}
       <Link to="/new-game">
-        <Button>New Game</Button>
+        <Button pixelMultiplier={pixelMultiplier}>New Game</Button>
       </Link>
       <Link to="/">
-        <Button>Quit</Button>
+        <Button pixelMultiplier={pixelMultiplier}>Quit</Button>
       </Link>
       --------------
-      <Button onClick={handleClose}>Continue</Button>
+      <Button pixelMultiplier={pixelMultiplier} onClick={handleClose}>
+        Continue
+      </Button>
     </Window>
   );
 };

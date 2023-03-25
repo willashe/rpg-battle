@@ -28,17 +28,19 @@ import Window from '../components/Window';
 
 const { startNewGame: startNewGameAction } = actionCreators;
 
-const Button = styled.button`
+const Button = styled((props) => <button {...props} />)`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.1rem;
+  font-size: ${({ pixelMultiplier }) => 8 * pixelMultiplier}px;
   border: 1px solid;
   border-radius: 8px;
   margin: 0 auto;
 `;
 
 const NewGameMenu = () => {
+  const [state] = useContext(AppStateContext);
+  const { pixelMultiplier } = state;
   const history = useHistory();
   const [, dispatch] = useContext(AppStateContext);
 
@@ -270,11 +272,12 @@ const NewGameMenu = () => {
       <Button
         onClick={startNewGame}
         disabled={!heroes.length || totalEnemyCount <= 0}
+        pixelMultiplier={pixelMultiplier}
       >
         Start
       </Button>
       <Link to="/">
-        <Button>Cancel</Button>
+        <Button pixelMultiplier={pixelMultiplier}>Cancel</Button>
       </Link>
     </Window>
   );
