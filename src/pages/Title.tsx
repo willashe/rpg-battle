@@ -29,8 +29,8 @@ const TitleMenu = styled((props: any) => <div {...props} />)`
 const Title = () => (
   <TitleContainer>
     <TitleMenu>
-      <Link to="new-game">Start</Link>
-      <Link to="about">About</Link>
+      <Link to="/new-game">Start</Link>
+      <Link to="/about">About</Link>
     </TitleMenu>
   </TitleContainer>
 );
