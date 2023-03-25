@@ -5,11 +5,12 @@ import Window from '../components/Window';
 import Sprite from '../components/Sprite';
 
 const Content = styled.div`
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
 `;
 const IconLink = styled.a`
-  margin: 0 1em;
+  margin: 0 1rem 1rem;
+  display: inline-block;
 `;
 
 const About = () => (
@@ -28,7 +29,7 @@ const About = () => (
       <div style={{ display: 'flex', margin: '0 0 1em' }}>
         <Window style={{ width: '50%' }}>
           <h3>Will Ashe</h3>
-          <IconLink href="">
+          <IconLink href="https://willashe.com/">
             <Sprite
               src="./assets/website-icon.png"
               width={16}
@@ -36,7 +37,7 @@ const About = () => (
               alt="website icon"
             />
           </IconLink>
-          <IconLink href="">
+          <IconLink href="https://github.com/willashe">
             <Sprite
               src="./assets/github-icon.png"
               width={16}
@@ -44,7 +45,7 @@ const About = () => (
               alt="GitHub icon"
             />
           </IconLink>
-          <IconLink href="">
+          <IconLink href="https://www.linkedin.com/in/will-ashe/">
             <Sprite
               src="./assets/linkedin-icon.png"
               width={16}
@@ -55,15 +56,15 @@ const About = () => (
         </Window>
         <Window style={{ width: '50%' }}>
           <h3>Tomas Ortiz</h3>
-          <IconLink href="">
+          {/* <IconLink href="">
             <Sprite
               src="./assets/website-icon.png"
               width={16}
               height={16}
               alt="website icon"
             />
-          </IconLink>
-          <IconLink href="">
+          </IconLink> */}
+          <IconLink href="https://github.com/tomas395">
             <Sprite
               src="./assets/github-icon.png"
               width={16}
@@ -71,7 +72,7 @@ const About = () => (
               alt="GitHub icon"
             />
           </IconLink>
-          <IconLink href="">
+          <IconLink href="https://www.linkedin.com/in/tomas-ortiz-15b7a5199/">
             <Sprite
               src="./assets/linkedin-icon.png"
               width={16}
