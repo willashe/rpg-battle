@@ -13,5 +13,8 @@ typings/
 # Optional npm cache directory
 .npm
 
+# Build
+build/
+
 # misc
 .DS_Store
