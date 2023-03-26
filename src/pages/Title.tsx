@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const TitleContainer = styled.div`
   margin: 0;
@@ -23,11 +23,7 @@ const TitleMenu = styled((props: any) => <div {...props} />)`
   aspect-ratio: 4 / 3;
   width: 133.33vmin;
   overflow: hidden;
-  padding: 0.5rem;
-`;
-
-const Link = styled((props: any) => <RouterLink {...props} />)`
-  margin-bottom: 0.5rem;
+  padding: 0.75em;
 `;
 
 const Title = () => (
