@@ -16,7 +16,8 @@ const Button = styled((props) => <button {...props} />)`
   font-size: ${({ pixelMultiplier }) => 8 * pixelMultiplier}px;
   border: 1px solid;
   border-radius: 8px;
-  margin: 0 auto;
+  margin: 1rem auto;
+  cursor: pointer;
 `;
 
 interface GameMenuProps {
@@ -63,16 +64,20 @@ const GameMenu: React.FC<GameMenuProps> = ({ handleClose }) => {
         Replay
       </Button>
       {/* TODO: global link/button styles */}
-      <Link to="/new-game">
+      <Link to="/new-game" style={{ textDecoration: 'none' }}>
         <Button pixelMultiplier={pixelMultiplier}>New Game</Button>
       </Link>
-      <Link to="/">
+      <Link to="/" style={{ textDecoration: 'none' }}>
         <Button pixelMultiplier={pixelMultiplier}>Quit</Button>
       </Link>
-      --------------
-      <Button pixelMultiplier={pixelMultiplier} onClick={handleClose}>
-        Continue
-      </Button>
+      {gameState !== GAME_WON && gameState !== GAME_LOST ? (
+        <>
+          --------------
+          <Button pixelMultiplier={pixelMultiplier} onClick={handleClose}>
+            Continue
+          </Button>
+        </>
+      ) : null}
     </Window>
   );
 };

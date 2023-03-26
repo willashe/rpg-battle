@@ -35,7 +35,8 @@ const Button = styled((props) => <button {...props} />)`
   font-size: ${({ pixelMultiplier }) => 8 * pixelMultiplier}px;
   border: 1px solid;
   border-radius: 8px;
-  margin: 0 auto;
+  margin: 1rem auto;
+  cursor: pointer;
 `;
 
 const NewGameMenu = () => {
@@ -147,7 +148,7 @@ const NewGameMenu = () => {
       <div
         style={{
           display: 'flex',
-          justifyContent: 'space-around',
+          justifyContent: 'space-evenly',
           textAlign: 'left',
         }}
       >
@@ -165,7 +166,11 @@ const NewGameMenu = () => {
             style={{ minWidth: 100 }}
           >
             {heroes.map((heroName: HeroesEnum) => (
-              <option value={heroName} key={heroName.replace(' ', '-')}>
+              <option
+                value={heroName}
+                key={heroName.replace(' ', '-')}
+                style={{ cursor: 'pointer' }}
+              >
                 {heroName}
               </option>
             ))}
@@ -187,7 +192,11 @@ const NewGameMenu = () => {
             {Object.values(HeroesEnum)
               .filter((heroName: HeroesEnum) => heroes.indexOf(heroName) === -1)
               .map((heroName: HeroesEnum) => (
-                <option value={heroName} key={heroName.replace(' ', '-')}>
+                <option
+                  value={heroName}
+                  key={heroName.replace(' ', '-')}
+                  style={{ cursor: 'pointer' }}
+                >
                   {heroName}
                 </option>
               ))}
@@ -279,7 +288,7 @@ const NewGameMenu = () => {
       >
         Start
       </Button>
-      <Link to="/">
+      <Link to="/" style={{ textDecoration: 'none' }}>
         <Button pixelMultiplier={pixelMultiplier}>Cancel</Button>
       </Link>
     </Window>
