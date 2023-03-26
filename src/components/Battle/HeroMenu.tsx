@@ -407,7 +407,7 @@ const HeroMenu: React.FC<HeroMenuProps> = ({ activeHero, handleClose }) => {
         <TargetMenu height="133%">
           <Menu>
             {playerGroup.entities.map((hero, index) => (
-              <MenuItem pixelMultiplier={pixelMultiplier}>
+              <MenuItem pixelMultiplier={pixelMultiplier} key={index}>
                 <Button
                   onClick={() => {
                     dispatch(

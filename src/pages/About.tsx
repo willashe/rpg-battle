@@ -11,6 +11,7 @@ const Content = styled.div`
 const IconLink = styled.a`
   margin: 0 1rem 1rem;
   display: inline-block;
+  cursor: pointer;
 `;
 
 const About = () => (
@@ -29,7 +30,11 @@ const About = () => (
       <div style={{ display: 'flex', margin: '0 0 1em' }}>
         <Window style={{ width: '50%' }}>
           <h3>Will Ashe</h3>
-          <IconLink href="https://willashe.com/">
+          <IconLink
+            href="https://willashe.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Sprite
               src="./assets/website-icon.png"
               width={16}
@@ -37,7 +42,11 @@ const About = () => (
               alt="website icon"
             />
           </IconLink>
-          <IconLink href="https://github.com/willashe">
+          <IconLink
+            href="https://github.com/willashe"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Sprite
               src="./assets/github-icon.png"
               width={16}
@@ -45,7 +54,11 @@ const About = () => (
               alt="GitHub icon"
             />
           </IconLink>
-          <IconLink href="https://www.linkedin.com/in/will-ashe/">
+          <IconLink
+            href="https://www.linkedin.com/in/will-ashe/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Sprite
               src="./assets/linkedin-icon.png"
               width={16}
@@ -56,7 +69,9 @@ const About = () => (
         </Window>
         <Window style={{ width: '50%' }}>
           <h3>Tomas Ortiz</h3>
-          {/* <IconLink href="">
+          {/* <IconLink href=""
+      target="_blank"
+      rel="noopener noreferrer">
             <Sprite
               src="./assets/website-icon.png"
               width={16}
@@ -64,7 +79,11 @@ const About = () => (
               alt="website icon"
             />
           </IconLink> */}
-          <IconLink href="https://github.com/tomas395">
+          <IconLink
+            href="https://github.com/tomas395"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Sprite
               src="./assets/github-icon.png"
               width={16}
@@ -72,7 +91,11 @@ const About = () => (
               alt="GitHub icon"
             />
           </IconLink>
-          <IconLink href="https://www.linkedin.com/in/tomas-ortiz-15b7a5199/">
+          <IconLink
+            href="https://www.linkedin.com/in/tomas-ortiz-15b7a5199/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Sprite
               src="./assets/linkedin-icon.png"
               width={16}

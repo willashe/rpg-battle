@@ -138,12 +138,12 @@ const NewGameMenu = () => {
         transform: 'translate(-50%, -50%)',
         padding: '2rem',
         zIndex: 10, // TODO: might be worth building a simple dialog controller for windows like this
+        width: '70%',
       }}
     >
-      <h3>Let's go!</h3>
+      <h3 style={{ marginBottom: 0 }}>Let's go!</h3>
       --------------
-      <br />
-      <h4>Heroes: </h4>
+      <h4 style={{ margin: '1rem 0' }}>Heroes: </h4>
       <div
         style={{
           display: 'flex',
@@ -151,6 +151,26 @@ const NewGameMenu = () => {
           textAlign: 'left',
         }}
       >
+        <div>
+          <label>In:</label>
+          <br />
+          <select
+            onClick={({ target: { value } }: any) => {
+              // TODO: ts
+              const newHeroes = [...heroes];
+              newHeroes.splice(heroes.indexOf(value as HeroesEnum), 1);
+              setHeroes(newHeroes);
+            }}
+            size={4}
+            style={{ minWidth: 100 }}
+          >
+            {heroes.map((heroName: HeroesEnum) => (
+              <option value={heroName} key={heroName.replace(' ', '-')}>
+                {heroName}
+              </option>
+            ))}
+          </select>
+        </div>
         <div>
           <label>Out:</label>
           <br />
@@ -167,32 +187,15 @@ const NewGameMenu = () => {
             {Object.values(HeroesEnum)
               .filter((heroName: HeroesEnum) => heroes.indexOf(heroName) === -1)
               .map((heroName: HeroesEnum) => (
-                <option value={heroName}>{heroName}</option>
+                <option value={heroName} key={heroName.replace(' ', '-')}>
+                  {heroName}
+                </option>
               ))}
           </select>
         </div>
-        <div>
-          <label>In:</label>
-          <br />
-          <select
-            onClick={({ target: { value } }: any) => {
-              // TODO: ts
-              const newHeroes = [...heroes];
-              newHeroes.splice(heroes.indexOf(value as HeroesEnum), 1);
-              setHeroes(newHeroes);
-            }}
-            size={4}
-            style={{ minWidth: 100 }}
-          >
-            {heroes.map((heroName: HeroesEnum) => (
-              <option value={heroName}>{heroName}</option>
-            ))}
-          </select>
-        </div>
       </div>
-      <br />
       --------------
-      <h4>Enemies: </h4>
+      <h4 style={{ margin: '1rem 0' }}>Enemies: </h4>
       <select
         value={leftEnemyType}
         onChange={({ target: { value } }: ChangeEvent<HTMLSelectElement>) =>
