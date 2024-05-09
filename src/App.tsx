@@ -71,6 +71,12 @@ export default function App() {
   return (
     <Router>
       <AppContainer pixelMultiplier={pixelMultiplier}>
+        <a
+          href="https://willashe.com"
+          style={{ position: 'absolute', bottom: 0, left: 0, zIndex: 1 }}
+        >
+          Home
+        </a>
         <Switch>
           <Route exact path="/" component={Title} />
           <Route exact path="/new-game" component={NewGame} />
